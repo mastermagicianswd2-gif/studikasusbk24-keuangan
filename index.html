@@ -613,6 +613,144 @@
       <!-- Konten Admin 1: Antrean Verifikasi Pengajuan Dana -->
       <div id="adminContentVerifikasi" class="hidden space-y-4">
         <div class="p-5 rounded-2xl bg-white dark:bg-brand-darkCard border border-stone-200 dark:border-brand-darkBorder shadow-sm">
+          <div class="flex items-center justify-between mb-4">
+            <div>
+              <h3 class="font-bold text-stone-900 dark:text-white text-base">Antrean Persetujuan Kebutuhan Dana Divisi</h3>
+              <p class="text-xs text-stone-500">Tinjau, setujui dengan instruksi pencairan, atau tolak permohonan dana disertai catatan revisi.</p>
+            </div>
+            <button onclick="muatDataPengajuanAdmin(true)" class="p-1.5 rounded-xl border border-stone-300 dark:border-stone-700 hover:bg-stone-100 dark:hover:bg-stone-800 text-stone-600 dark:text-stone-300 transition" title="Refresh Data Pengajuan">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>
+            </button>
+          </div>
+
+          <div class="overflow-x-auto">
+            <table class="w-full text-left text-xs sm:text-sm">
+              <thead class="bg-stone-50 dark:bg-stone-800/60 text-stone-500 uppercase font-semibold text-[11px] border-b border-stone-200 dark:border-stone-800">
+                <tr>
+                  <th class="py-2.5 px-3">Kode</th>
+                  <th class="py-2.5 px-3">Tanggal</th>
+                  <th class="py-2.5 px-3">Divisi</th>
+                  <th class="py-2.5 px-3">Kebutuhan & Rincian</th>
+                  <th class="py-2.5 px-3 text-right">Nominal</th>
+                  <th class="py-2.5 px-3 text-center">Status</th>
+                  <th class="py-2.5 px-3 text-center">Tindakan</th>
+                </tr>
+              </thead>
+              <tbody id="tabelAdminPengajuanBody" class="divide-y divide-stone-100 dark:divide-stone-800/60">
+                <tr><td colspan="7" class="py-6 text-center text-stone-400">Memuat data permohonan dana divisi...</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- Konten Admin 2: Catat Pemasukan Kas Baru -->
+      <div id="adminContentPemasukan" class="hidden space-y-4">
+        <div class="p-5 rounded-2xl bg-white dark:bg-brand-darkCard border border-stone-200 dark:border-brand-darkBorder shadow-sm">
+          <h3 class="font-bold text-stone-900 dark:text-white text-base mb-1">Catat Dana Masuk / Pemasukan Kas</h3>
+          <p class="text-xs text-stone-500 mb-4">Catat sumber dana masuk seperti sponsor, tiket seminar, subsidi kampus/fakultas, maupun donasi kegiatan.</p>
+
+          <form id="formPemasukanAdmin" onsubmit="handleKirimPemasukan(event)" class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+            <div>
+              <label class="block text-xs font-semibold text-stone-600 dark:text-stone-300 mb-1">Tanggal Terima Dana *</label>
+              <input type="date" id="inTanggal" required class="w-full px-3 py-2 text-sm rounded-xl border border-stone-300 dark:border-stone-700 bg-stone-50 dark:bg-stone-800 focus:ring-2 focus:ring-brand-caramel outline-none">
+            </div>
+
+            <div>
+              <label class="block text-xs font-semibold text-stone-600 dark:text-stone-300 mb-1">Asal Sumber Dana *</label>
+              <input type="text" id="inSumber" required placeholder="Contoh: Sponsor Bank Mandiri / Penjualan Tiket" class="w-full px-3 py-2 text-sm rounded-xl border border-stone-300 dark:border-stone-700 bg-stone-50 dark:bg-stone-800 focus:ring-2 focus:ring-brand-caramel outline-none">
+            </div>
+
+            <div>
+              <label class="block text-xs font-semibold text-stone-600 dark:text-stone-300 mb-1">Nominal Dana (Rp) *</label>
+              <input type="number" id="inNominal" required min="1000" placeholder="Contoh: 2500000" class="w-full px-3 py-2 text-sm rounded-xl border border-stone-300 dark:border-stone-700 bg-stone-50 dark:bg-stone-800 focus:ring-2 focus:ring-brand-caramel outline-none">
+            </div>
+
+            <div class="sm:col-span-3">
+              <label class="block text-xs font-semibold text-stone-600 dark:text-stone-300 mb-1">Catatan / Bukti Referensi Transaksi</label>
+              <input type="text" id="inCatatan" placeholder="Contoh: Transfer rekening BNI nomor ref #99812 - Tahap 1" class="w-full px-3 py-2 text-sm rounded-xl border border-stone-300 dark:border-stone-700 bg-stone-50 dark:bg-stone-800 focus:ring-2 focus:ring-brand-caramel outline-none">
+            </div>
+
+            <div class="sm:col-span-3 flex justify-end">
+              <button type="submit" id="btnSubmitPemasukan" class="px-5 py-2.5 rounded-xl bg-emerald-700 text-white font-semibold text-sm hover:bg-emerald-800 transition flex items-center shadow-sm">
+                <svg class="w-4 h-4 mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"/></svg>
+                Simpan Dana Masuk
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+
+      <!-- Konten Admin 3: Pagu Anggaran RAB Seluruh Divisi -->
+      <div id="adminContentRab" class="hidden space-y-4">
+        <!-- Form Tambah Pos Anggaran Baru -->
+        <div class="p-5 rounded-2xl bg-white dark:bg-brand-darkCard border border-stone-200 dark:border-brand-darkBorder shadow-sm">
+          <h3 class="font-bold text-stone-900 dark:text-white text-base mb-1">Tetapkan Pos Pagu Anggaran RAB</h3>
+          <p class="text-xs text-stone-500 mb-4">Tambahkan batas alokasi pagu anggaran untuk masing-masing divisi panitia.</p>
+
+          <form id="formRABAdmin" onsubmit="handleKirimRAB(event)" class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+            <div>
+              <label class="block text-xs font-semibold text-stone-600 dark:text-stone-300 mb-1">Nama Divisi Penerima *</label>
+              <input type="text" id="rabDivisi" required placeholder="Contoh: Divisi Konsumsi" class="w-full px-3 py-2 text-sm rounded-xl border border-stone-300 dark:border-stone-700 bg-stone-50 dark:bg-stone-800 focus:ring-2 focus:ring-brand-caramel outline-none">
+            </div>
+
+            <div>
+              <label class="block text-xs font-semibold text-stone-600 dark:text-stone-300 mb-1">Nama Pos Kebutuhan *</label>
+              <input type="text" id="rabPos" required placeholder="Contoh: Konsumsi Narasumber & Peserta" class="w-full px-3 py-2 text-sm rounded-xl border border-stone-300 dark:border-stone-700 bg-stone-50 dark:bg-stone-800 focus:ring-2 focus:ring-brand-caramel outline-none">
+            </div>
+
+            <div>
+              <label class="block text-xs font-semibold text-stone-600 dark:text-stone-300 mb-1">Pagu Anggaran (Rp) *</label>
+              <input type="number" id="rabPagu" required min="1000" placeholder="Contoh: 1500000" class="w-full px-3 py-2 text-sm rounded-xl border border-stone-300 dark:border-stone-700 bg-stone-50 dark:bg-stone-800 focus:ring-2 focus:ring-brand-caramel outline-none">
+            </div>
+
+            <div class="sm:col-span-3 flex justify-end">
+              <button type="submit" id="btnSubmitRAB" class="px-5 py-2.5 rounded-xl bg-brand-coffee text-white dark:bg-brand-caramel font-semibold text-sm hover:opacity-90 transition flex items-center shadow-sm">
+                <svg class="w-4 h-4 mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"/></svg>
+                Tambah Pos RAB
+              </button>
+            </div>
+          </form>
+        </div>
+
+        <!-- Tabel Rekap Pos Anggaran Seluruh Divisi -->
+        <div class="p-5 rounded-2xl bg-white dark:bg-brand-darkCard border border-stone-200 dark:border-brand-darkBorder shadow-sm">
+          <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-4">
+            <div>
+              <h3 class="font-bold text-stone-900 dark:text-white text-base">Daftar Pagu Anggaran RAB Seluruh Divisi</h3>
+              <p class="text-xs text-stone-500">Kelola dan sesuaikan besaran pagu anggaran kegiatan per divisi.</p>
+            </div>
+            <div class="flex items-center space-x-2">
+              <input type="text" id="cariRABAdmin" oninput="filterTabelRABAdmin()" placeholder="Cari divisi / pos..." class="px-3 py-1.5 rounded-xl border border-stone-300 dark:border-stone-700 bg-stone-50 dark:bg-stone-800 text-xs focus:ring-2 focus:ring-brand-caramel outline-none w-44 sm:w-56">
+              <button onclick="muatDataRABAdmin()" class="p-1.5 rounded-xl border border-stone-300 dark:border-stone-700 hover:bg-stone-100 dark:hover:bg-stone-800 text-stone-600 dark:text-stone-300 transition" title="Refresh">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>
+              </button>
+            </div>
+          </div>
+
+          <div class="overflow-x-auto">
+            <table class="w-full text-left text-xs sm:text-sm">
+              <thead class="bg-stone-50 dark:bg-stone-800/60 text-stone-500 uppercase font-semibold text-[11px] border-b border-stone-200 dark:border-stone-800">
+                <tr>
+                  <th class="py-2.5 px-3">Kode</th>
+                  <th class="py-2.5 px-3">Divisi</th>
+                  <th class="py-2.5 px-3">Nama Pos Kebutuhan</th>
+                  <th class="py-2.5 px-3 text-right">Pagu Anggaran</th>
+                  <th class="py-2.5 px-3">Catatan</th>
+                  <th class="py-2.5 px-3 text-center">Aksi</th>
+                </tr>
+              </thead>
+              <tbody id="tabelAdminRABBody" class="divide-y divide-stone-100 dark:divide-stone-800/60">
+                <tr><td colspan="6" class="py-6 text-center text-stone-400">Memuat pos anggaran RAB...</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- Konten Admin 4: Kelola Akun Panitia Divisi -->
+      <div id="adminContentUsers" class="hidden space-y-4">
+        <div class="p-5 rounded-2xl bg-white dark:bg-brand-darkCard border border-stone-200 dark:border-brand-darkBorder shadow-sm">
           <h3 class="font-bold text-stone-900 dark:text-white text-base mb-1">Buat Akun Panitia Divisi Baru</h3>
           <p class="text-xs text-stone-500 mb-4">Password disimpan aman dalam format hash SHA-256 pada Google Sheets.</p>
 

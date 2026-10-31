@@ -327,11 +327,10 @@
                   <th class="py-2.5 px-3 text-right">Nominal</th>
                   <th class="py-2.5 px-3 text-center">Status</th>
                   <th class="py-2.5 px-3">Catatan Bendahara</th>
-                  <th class="py-2.5 px-3 text-center">Aksi</th>
                 </tr>
               </thead>
               <tbody id="tabelPengajuanDivisiBody" class="divide-y divide-stone-100 dark:divide-stone-800/60">
-                <tr><td colspan="7" class="py-4 text-center text-stone-400">Belum ada pengajuan.</td></tr>
+                <tr><td colspan="6" class="py-4 text-center text-stone-400">Belum ada pengajuan.</td></tr>
               </tbody>
             </table>
           </div>
@@ -380,38 +379,6 @@
               </button>
             </div>
           </form>
-        </div>
-
-        <!-- Riwayat Laporan Belanja (Edit & Hapus) -->
-        <div class="p-5 rounded-2xl bg-white dark:bg-brand-darkCard border border-stone-200 dark:border-brand-darkBorder shadow-sm">
-          <div class="flex items-center justify-between mb-4">
-            <div>
-              <h3 class="font-bold text-stone-900 dark:text-white text-base">Daftar Laporan Belanja Divisi Anda</h3>
-              <p class="text-xs text-stone-500">Koreksi nominal, deskripsi, atau nota yang keliru, maupun hapus laporan yang salah input.</p>
-            </div>
-            <button onclick="muatDataLaporDivisi(true)" class="p-1.5 rounded-xl border border-stone-300 dark:border-stone-700 hover:bg-stone-100 dark:hover:bg-stone-800 text-stone-600 dark:text-stone-300 transition" title="Refresh Data">
-              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>
-            </button>
-          </div>
-
-          <div class="overflow-x-auto">
-            <table class="w-full text-left text-xs sm:text-sm">
-              <thead class="bg-stone-50 dark:bg-stone-800/60 text-stone-500 uppercase font-semibold text-[11px] border-b border-stone-200 dark:border-stone-800">
-                <tr>
-                  <th class="py-2.5 px-3">ID Nota</th>
-                  <th class="py-2.5 px-3">Tanggal Nota</th>
-                  <th class="py-2.5 px-3">Deskripsi Belanja</th>
-                  <th class="py-2.5 px-3">Kode Pengajuan</th>
-                  <th class="py-2.5 px-3 text-right">Nominal Riil</th>
-                  <th class="py-2.5 px-3 text-center">Berkas Bukti</th>
-                  <th class="py-2.5 px-3 text-center">Aksi</th>
-                </tr>
-              </thead>
-              <tbody id="tabelLaporDivisiBody" class="divide-y divide-stone-100 dark:divide-stone-800/60">
-                <tr><td colspan="7" class="py-6 text-center text-stone-400">Memuat laporan belanja...</td></tr>
-              </tbody>
-            </table>
-          </div>
         </div>
       </div>
 
@@ -563,6 +530,9 @@
         <button onclick="gantiSubTabAdmin('pemasukan')" id="adminSubInBtn" class="py-2 px-1 border-b-2 border-transparent text-stone-500 hover:text-stone-800 dark:hover:text-stone-200 font-semibold text-xs sm:text-sm whitespace-nowrap">
           Catat Pemasukan
         </button>
+        <button onclick="gantiSubTabAdmin('pengeluaran')" id="adminSubOutBtn" class="py-2 px-1 border-b-2 border-transparent text-stone-500 hover:text-stone-800 dark:hover:text-stone-200 font-semibold text-xs sm:text-sm whitespace-nowrap">
+          Catatan Pengeluaran
+        </button>
         <button onclick="gantiSubTabAdmin('rab')" id="adminSubRabBtn" class="py-2 px-1 border-b-2 border-transparent text-stone-500 hover:text-stone-800 dark:hover:text-stone-200 font-semibold text-xs sm:text-sm whitespace-nowrap">
           Pagu Anggaran RAB
         </button>
@@ -712,17 +682,60 @@
             </div>
           </form>
         </div>
+      </div>
 
-        <!-- Rekap Catatan Pemasukan Kas -->
+      <!-- Konten Admin 2b: Catatan Pengeluaran (Bendahara dapat tambah, edit, hapus) -->
+      <div id="adminContentPengeluaran" class="hidden space-y-4">
+        <div class="p-5 rounded-2xl bg-white dark:bg-brand-darkCard border border-stone-200 dark:border-brand-darkBorder shadow-sm">
+          <h3 class="font-bold text-stone-900 dark:text-white text-base mb-1">Catat Pengeluaran Kas</h3>
+          <p class="text-xs text-stone-500 mb-4">Catat belanja atau pengeluaran yang dilakukan langsung oleh Bendahara. Nota bersifat opsional.</p>
+
+          <form id="formPengeluaranAdmin" onsubmit="handleKirimPengeluaranAdmin(event)" class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+            <div>
+              <label class="block text-xs font-semibold text-stone-600 dark:text-stone-300 mb-1">Tanggal Pengeluaran *</label>
+              <input type="date" id="outTanggal" required class="w-full px-3 py-2 text-sm rounded-xl border border-stone-300 dark:border-stone-700 bg-stone-50 dark:bg-stone-800 focus:ring-2 focus:ring-brand-caramel outline-none">
+            </div>
+
+            <div>
+              <label class="block text-xs font-semibold text-stone-600 dark:text-stone-300 mb-1">Divisi / Pos Penerima</label>
+              <input type="text" id="outDivisi" list="daftarDivisiAdmin" placeholder="Kosongkan = Bendahara Utama" class="w-full px-3 py-2 text-sm rounded-xl border border-stone-300 dark:border-stone-700 bg-stone-50 dark:bg-stone-800 focus:ring-2 focus:ring-brand-caramel outline-none">
+              <datalist id="daftarDivisiAdmin"></datalist>
+            </div>
+
+            <div>
+              <label class="block text-xs font-semibold text-stone-600 dark:text-stone-300 mb-1">Nominal Pengeluaran (Rp) *</label>
+              <input type="number" id="outNominal" required min="100" placeholder="Contoh: 350000" class="w-full px-3 py-2 text-sm rounded-xl border border-stone-300 dark:border-stone-700 bg-stone-50 dark:bg-stone-800 focus:ring-2 focus:ring-brand-caramel outline-none">
+            </div>
+
+            <div class="sm:col-span-2">
+              <label class="block text-xs font-semibold text-stone-600 dark:text-stone-300 mb-1">Deskripsi Pengeluaran *</label>
+              <textarea id="outDeskripsi" required rows="2" placeholder="Contoh: Pembelian ATK dan materai untuk administrasi acara" class="w-full px-3 py-2 text-sm rounded-xl border border-stone-300 dark:border-stone-700 bg-stone-50 dark:bg-stone-800 focus:ring-2 focus:ring-brand-caramel outline-none"></textarea>
+            </div>
+
+            <div>
+              <label class="block text-xs font-semibold text-stone-600 dark:text-stone-300 mb-1">Berkas Nota (Opsional)</label>
+              <input type="file" id="outFile" accept=".jpg,.jpeg,.png,.pdf,.doc,.docx" onchange="handlePilihBerkasPengeluaran(event)" class="w-full text-xs text-stone-500 file:mr-3 file:py-2 file:px-3 file:rounded-xl file:border-0 file:text-xs file:font-semibold file:bg-brand-creamDark file:text-brand-coffee hover:file:opacity-80">
+              <span id="outFileInfo" class="text-[11px] text-emerald-600 dark:text-emerald-400 mt-1 block"></span>
+            </div>
+
+            <div class="sm:col-span-3 flex justify-end">
+              <button type="submit" id="btnSubmitPengeluaranAdmin" class="px-5 py-2.5 rounded-xl bg-rose-700 text-white font-semibold text-sm hover:bg-rose-800 transition flex items-center shadow-sm">
+                <svg class="w-4 h-4 mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"/></svg>
+                Simpan Pengeluaran
+              </button>
+            </div>
+          </form>
+        </div>
+
         <div class="p-5 rounded-2xl bg-white dark:bg-brand-darkCard border border-stone-200 dark:border-brand-darkBorder shadow-sm">
           <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-4">
             <div>
-              <h3 class="font-bold text-stone-900 dark:text-white text-base">Rekap Catatan Pemasukan Kas</h3>
-              <p class="text-xs text-stone-500">Daftar seluruh dana masuk. Koreksi atau hapus catatan yang keliru.</p>
+              <h3 class="font-bold text-stone-900 dark:text-white text-base">Daftar Catatan Pengeluaran</h3>
+              <p class="text-xs text-stone-500">Seluruh pengeluaran (Bendahara & divisi). Bendahara dapat mengedit atau menghapus setiap catatan.</p>
             </div>
             <div class="flex items-center space-x-2">
-              <input type="text" id="cariPemasukanAdmin" oninput="filterTabelPemasukanAdmin()" placeholder="Cari sumber / catatan..." class="px-3 py-1.5 rounded-xl border border-stone-300 dark:border-stone-700 bg-stone-50 dark:bg-stone-800 text-xs focus:ring-2 focus:ring-brand-caramel outline-none w-44 sm:w-56">
-              <button onclick="muatDataPemasukanAdmin(true)" class="p-1.5 rounded-xl border border-stone-300 dark:border-stone-700 hover:bg-stone-100 dark:hover:bg-stone-800 text-stone-600 dark:text-stone-300 transition" title="Refresh">
+              <input type="text" id="cariPengeluaranAdmin" oninput="filterTabelPengeluaranAdmin()" placeholder="Cari divisi / deskripsi..." class="px-3 py-1.5 rounded-xl border border-stone-300 dark:border-stone-700 bg-stone-50 dark:bg-stone-800 text-xs focus:ring-2 focus:ring-brand-caramel outline-none w-44 sm:w-56">
+              <button onclick="muatDataPengeluaranAdmin(true)" class="p-1.5 rounded-xl border border-stone-300 dark:border-stone-700 hover:bg-stone-100 dark:hover:bg-stone-800 text-stone-600 dark:text-stone-300 transition" title="Refresh">
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>
               </button>
             </div>
@@ -734,14 +747,15 @@
                 <tr>
                   <th class="py-2.5 px-3">Kode</th>
                   <th class="py-2.5 px-3">Tanggal</th>
-                  <th class="py-2.5 px-3">Sumber Dana</th>
-                  <th class="py-2.5 px-3">Catatan</th>
+                  <th class="py-2.5 px-3">Divisi / Pihak</th>
+                  <th class="py-2.5 px-3">Deskripsi</th>
                   <th class="py-2.5 px-3 text-right">Nominal</th>
+                  <th class="py-2.5 px-3 text-center">Bukti Nota</th>
                   <th class="py-2.5 px-3 text-center">Aksi</th>
                 </tr>
               </thead>
-              <tbody id="tabelAdminPemasukanBody" class="divide-y divide-stone-100 dark:divide-stone-800/60">
-                <tr><td colspan="6" class="py-6 text-center text-stone-400">Memuat catatan pemasukan...</td></tr>
+              <tbody id="tabelAdminPengeluaranBody" class="divide-y divide-stone-100 dark:divide-stone-800/60">
+                <tr><td colspan="7" class="py-6 text-center text-stone-400">Memuat catatan pengeluaran...</td></tr>
               </tbody>
             </table>
           </div>
@@ -819,7 +833,7 @@
       <div id="adminContentUsers" class="hidden space-y-4">
         <div class="p-5 rounded-2xl bg-white dark:bg-brand-darkCard border border-stone-200 dark:border-brand-darkBorder shadow-sm">
           <h3 class="font-bold text-stone-900 dark:text-white text-base mb-1">Buat Akun Panitia Divisi Baru</h3>
-          <p class="text-xs text-stone-500 mb-4">Kata sandi disimpan sebagai hash SHA-256 untuk login. Salinan teks akun divisi disimpan agar Bendahara dapat melihatnya di daftar akun.</p>
+          <p class="text-xs text-stone-500 mb-4">Password disimpan aman dalam format hash SHA-256 pada Google Sheets.</p>
 
           <form id="formUserBaru" onsubmit="handleKirimUserBaru(event)" class="grid grid-cols-1 sm:grid-cols-4 gap-4">
             <div>
@@ -859,7 +873,7 @@
           <div class="flex items-center justify-between mb-4">
             <div>
               <h3 class="font-bold text-stone-900 dark:text-white text-base">Data Seluruh Akun Panitia Divisi</h3>
-              <p class="text-xs text-stone-500">Lihat username & kata sandi, edit akun, serta kelola status aktif atau nonaktifkan akses akun panitia.</p>
+              <p class="text-xs text-stone-500">Kelola status aktif atau nonaktifkan akses akun panitia.</p>
             </div>
             <button onclick="muatDataPenggunaAdmin(true)" class="p-1.5 rounded-xl border border-stone-300 dark:border-stone-700 hover:bg-stone-100 dark:hover:bg-stone-800 text-stone-600 dark:text-stone-300 transition" title="Muat Ulang Data">
               <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>
@@ -873,14 +887,13 @@
                   <th class="py-2.5 px-3">ID Pengguna</th>
                   <th class="py-2.5 px-3">Username</th>
                   <th class="py-2.5 px-3">Nama Divisi</th>
-                  <th class="py-2.5 px-3">Kata Sandi</th>
                   <th class="py-2.5 px-3">Peran</th>
                   <th class="py-2.5 px-3 text-center">Status</th>
                   <th class="py-2.5 px-3 text-center">Aksi</th>
                 </tr>
               </thead>
               <tbody id="tabelAdminUsersBody" class="divide-y divide-stone-100 dark:divide-stone-800/60">
-                <tr><td colspan="7" class="py-4 text-center text-stone-400">Memuat data pengguna...</td></tr>
+                <tr><td colspan="6" class="py-4 text-center text-stone-400">Memuat data pengguna...</td></tr>
               </tbody>
             </table>
           </div>
@@ -977,16 +990,6 @@
 
       <input type="hidden" id="modalResponIdPengajuan">
       <input type="hidden" id="modalResponTipeAksi">
-      <input type="hidden" id="modalResponMode" value="baru">
-
-      <div id="modalResponStatusWrap" class="mb-3 hidden">
-        <label class="block text-xs font-semibold text-stone-600 dark:text-stone-300 mb-1">Status Pengajuan *</label>
-        <select id="modalResponStatus" class="w-full px-3 py-2 text-sm rounded-xl border border-stone-300 dark:border-stone-700 bg-stone-50 dark:bg-stone-800 focus:ring-2 focus:ring-brand-caramel outline-none">
-          <option value="Menunggu">Menunggu</option>
-          <option value="Disetujui">Disetujui</option>
-          <option value="Ditolak">Ditolak</option>
-        </select>
-      </div>
 
       <div class="mb-4">
         <label class="block text-xs font-semibold text-stone-600 dark:text-stone-300 mb-1">Catatan Bendahara (Instruksi Pencairan / Alasan Revisi) *</label>
@@ -1082,117 +1085,44 @@
     </div>
   </div>
 
-  <!-- ================= MODAL EDIT CATATAN PEMASUKAN ================= -->
-  <div id="modalEditPemasukan" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm hidden">
-    <div class="bg-white dark:bg-brand-darkCard rounded-2xl max-w-md w-full p-6 shadow-2xl border border-stone-200 dark:border-brand-darkBorder relative max-h-[90vh] overflow-y-auto">
-      <button onclick="tutupModalEditPemasukan()" class="absolute top-4 right-4 text-stone-400 hover:text-stone-600 dark:hover:text-stone-200">
-        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
-      </button>
-
-      <h3 class="text-base font-bold text-stone-900 dark:text-white mb-1">Edit Catatan Pemasukan</h3>
-      <p class="text-xs text-stone-500 mb-4" id="modalEditPemasukanSubjudul"></p>
-
-      <form id="formEditPemasukan" onsubmit="handleSimpanEditPemasukan(event)" class="space-y-3">
-        <input type="hidden" id="editInId">
-        <div>
-          <label class="block text-xs font-semibold text-stone-600 dark:text-stone-300 mb-1">Tanggal Terima Dana *</label>
-          <input type="date" id="editInTanggal" required class="w-full px-3 py-2 text-sm rounded-xl border border-stone-300 dark:border-stone-700 bg-stone-50 dark:bg-stone-800 focus:ring-2 focus:ring-brand-caramel outline-none">
-        </div>
-        <div>
-          <label class="block text-xs font-semibold text-stone-600 dark:text-stone-300 mb-1">Asal Sumber Dana *</label>
-          <input type="text" id="editInSumber" required class="w-full px-3 py-2 text-sm rounded-xl border border-stone-300 dark:border-stone-700 bg-stone-50 dark:bg-stone-800 focus:ring-2 focus:ring-brand-caramel outline-none">
-        </div>
-        <div>
-          <label class="block text-xs font-semibold text-stone-600 dark:text-stone-300 mb-1">Nominal Dana (Rp) *</label>
-          <input type="number" id="editInNominal" required min="1000" class="w-full px-3 py-2 text-sm rounded-xl border border-stone-300 dark:border-stone-700 bg-stone-50 dark:bg-stone-800 focus:ring-2 focus:ring-brand-caramel outline-none">
-        </div>
-        <div>
-          <label class="block text-xs font-semibold text-stone-600 dark:text-stone-300 mb-1">Catatan / Bukti Referensi Transaksi</label>
-          <input type="text" id="editInCatatan" class="w-full px-3 py-2 text-sm rounded-xl border border-stone-300 dark:border-stone-700 bg-stone-50 dark:bg-stone-800 focus:ring-2 focus:ring-brand-caramel outline-none">
-        </div>
-
-        <div class="pt-2 flex justify-end space-x-2">
-          <button type="button" onclick="tutupModalEditPemasukan()" class="px-4 py-2 rounded-xl text-xs font-medium text-stone-600 dark:text-stone-400 hover:bg-stone-100 dark:hover:bg-stone-800">
-            Batal
-          </button>
-          <button type="submit" id="btnSubmitEditPemasukan" class="px-4 py-2 rounded-xl bg-brand-coffee text-white dark:bg-brand-caramel text-xs font-semibold shadow-sm hover:opacity-90 transition">
-            Simpan Perubahan
-          </button>
-        </div>
-      </form>
-    </div>
-  </div>
-
-  <!-- ================= MODAL EDIT PENGAJUAN DANA ================= -->
-  <div id="modalEditPengajuan" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm hidden">
-    <div class="bg-white dark:bg-brand-darkCard rounded-2xl max-w-md w-full p-6 shadow-2xl border border-stone-200 dark:border-brand-darkBorder relative max-h-[90vh] overflow-y-auto">
-      <button onclick="tutupModalEditPengajuan()" class="absolute top-4 right-4 text-stone-400 hover:text-stone-600 dark:hover:text-stone-200">
-        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
-      </button>
-
-      <h3 class="text-base font-bold text-stone-900 dark:text-white mb-1">Edit Pengajuan Dana</h3>
-      <p class="text-xs text-stone-500 mb-4" id="modalEditPengajuanSubjudul"></p>
-
-      <form id="formEditPengajuan" onsubmit="handleSimpanEditPengajuan(event)" class="space-y-3">
-        <input type="hidden" id="editAjuId">
-        <div>
-          <label class="block text-xs font-semibold text-stone-600 dark:text-stone-300 mb-1">Nama Kebutuhan / Pengadaan *</label>
-          <input type="text" id="editAjuNama" required class="w-full px-3 py-2 text-sm rounded-xl border border-stone-300 dark:border-stone-700 bg-stone-50 dark:bg-stone-800 focus:ring-2 focus:ring-brand-caramel outline-none">
-        </div>
-        <div>
-          <label class="block text-xs font-semibold text-stone-600 dark:text-stone-300 mb-1">Nominal yang Diajukan (Rp) *</label>
-          <input type="number" id="editAjuNominal" required min="1000" class="w-full px-3 py-2 text-sm rounded-xl border border-stone-300 dark:border-stone-700 bg-stone-50 dark:bg-stone-800 focus:ring-2 focus:ring-brand-caramel outline-none">
-        </div>
-        <div>
-          <label class="block text-xs font-semibold text-stone-600 dark:text-stone-300 mb-1">Rincian Barang / Spesifikasi & Estimasi Jumlah</label>
-          <textarea id="editAjuRincian" rows="3" class="w-full px-3 py-2 text-sm rounded-xl border border-stone-300 dark:border-stone-700 bg-stone-50 dark:bg-stone-800 focus:ring-2 focus:ring-brand-caramel outline-none"></textarea>
-        </div>
-
-        <div class="pt-2 flex justify-end space-x-2">
-          <button type="button" onclick="tutupModalEditPengajuan()" class="px-4 py-2 rounded-xl text-xs font-medium text-stone-600 dark:text-stone-400 hover:bg-stone-100 dark:hover:bg-stone-800">
-            Batal
-          </button>
-          <button type="submit" id="btnSubmitEditPengajuan" class="px-4 py-2 rounded-xl bg-brand-coffee text-white dark:bg-brand-caramel text-xs font-semibold shadow-sm hover:opacity-90 transition">
-            Simpan Perubahan
-          </button>
-        </div>
-      </form>
-    </div>
-  </div>
-
-  <!-- ================= MODAL EDIT LAPORAN REALISASI BELANJA ================= -->
+  <!-- ================= MODAL EDIT CATATAN PENGELUARAN (BENDAHARA) ================= -->
   <div id="modalEditPengeluaran" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm hidden">
     <div class="bg-white dark:bg-brand-darkCard rounded-2xl max-w-md w-full p-6 shadow-2xl border border-stone-200 dark:border-brand-darkBorder relative max-h-[90vh] overflow-y-auto">
       <button onclick="tutupModalEditPengeluaran()" class="absolute top-4 right-4 text-stone-400 hover:text-stone-600 dark:hover:text-stone-200">
         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
       </button>
 
-      <h3 class="text-base font-bold text-stone-900 dark:text-white mb-1">Edit Laporan Realisasi Belanja</h3>
+      <h3 class="text-base font-bold text-stone-900 dark:text-white mb-1">Edit Catatan Pengeluaran</h3>
       <p class="text-xs text-stone-500 mb-4" id="modalEditPengeluaranSubjudul"></p>
 
       <form id="formEditPengeluaran" onsubmit="handleSimpanEditPengeluaran(event)" class="space-y-3">
         <input type="hidden" id="editOutId">
+
         <div>
-          <label class="block text-xs font-semibold text-stone-600 dark:text-stone-300 mb-1">Relasi Kode Pengajuan (Jika Ada)</label>
-          <select id="editOutAjuan" class="w-full px-3 py-2 text-sm rounded-xl border border-stone-300 dark:border-stone-700 bg-stone-50 dark:bg-stone-800 focus:ring-2 focus:ring-brand-caramel outline-none"></select>
-        </div>
-        <div>
-          <label class="block text-xs font-semibold text-stone-600 dark:text-stone-300 mb-1">Tanggal Nota Pembayaran *</label>
+          <label class="block text-xs font-semibold text-stone-600 dark:text-stone-300 mb-1">Tanggal Pengeluaran *</label>
           <input type="date" id="editOutTanggal" required class="w-full px-3 py-2 text-sm rounded-xl border border-stone-300 dark:border-stone-700 bg-stone-50 dark:bg-stone-800 focus:ring-2 focus:ring-brand-caramel outline-none">
         </div>
+
         <div>
-          <label class="block text-xs font-semibold text-stone-600 dark:text-stone-300 mb-1">Nominal Riil Belanja (Rp) *</label>
+          <label class="block text-xs font-semibold text-stone-600 dark:text-stone-300 mb-1">Divisi / Pos Penerima *</label>
+          <input type="text" id="editOutDivisi" required list="daftarDivisiAdmin" class="w-full px-3 py-2 text-sm rounded-xl border border-stone-300 dark:border-stone-700 bg-stone-50 dark:bg-stone-800 focus:ring-2 focus:ring-brand-caramel outline-none">
+        </div>
+
+        <div>
+          <label class="block text-xs font-semibold text-stone-600 dark:text-stone-300 mb-1">Nominal Pengeluaran (Rp) *</label>
           <input type="number" id="editOutNominal" required min="100" class="w-full px-3 py-2 text-sm rounded-xl border border-stone-300 dark:border-stone-700 bg-stone-50 dark:bg-stone-800 focus:ring-2 focus:ring-brand-caramel outline-none">
         </div>
+
         <div>
-          <label class="block text-xs font-semibold text-stone-600 dark:text-stone-300 mb-1">Deskripsi Rincian Belanja *</label>
+          <label class="block text-xs font-semibold text-stone-600 dark:text-stone-300 mb-1">Deskripsi Pengeluaran *</label>
           <textarea id="editOutDeskripsi" required rows="2" class="w-full px-3 py-2 text-sm rounded-xl border border-stone-300 dark:border-stone-700 bg-stone-50 dark:bg-stone-800 focus:ring-2 focus:ring-brand-caramel outline-none"></textarea>
         </div>
+
         <div>
           <label class="block text-xs font-semibold text-stone-600 dark:text-stone-300 mb-1">Ganti Berkas Nota (Opsional)</label>
-          <input type="file" id="editOutFile" accept=".jpg,.jpeg,.png,.pdf,.doc,.docx" onchange="previewFileEditPengeluaran(event)" class="w-full text-xs text-stone-500 file:mr-3 file:py-2 file:px-3 file:rounded-xl file:border-0 file:text-xs file:font-semibold file:bg-brand-creamDark file:text-brand-coffee hover:file:opacity-80">
+          <input type="file" id="editOutFile" accept=".jpg,.jpeg,.png,.pdf,.doc,.docx" onchange="handlePilihBerkasEditPengeluaran(event)" class="w-full text-xs text-stone-500 file:mr-3 file:py-2 file:px-3 file:rounded-xl file:border-0 file:text-xs file:font-semibold file:bg-brand-creamDark file:text-brand-coffee hover:file:opacity-80">
           <span id="editOutFileInfo" class="text-[11px] text-emerald-600 dark:text-emerald-400 mt-1 block"></span>
-          <span class="text-[11px] text-stone-400 mt-0.5 block">Kosongkan jika nota lama tetap dipakai.</span>
+          <span id="editOutBuktiSaatIni" class="text-[11px] text-stone-400 mt-0.5 block"></span>
         </div>
 
         <div class="pt-2 flex justify-end space-x-2">
@@ -1201,43 +1131,6 @@
           </button>
           <button type="submit" id="btnSubmitEditPengeluaran" class="px-4 py-2 rounded-xl bg-brand-coffee text-white dark:bg-brand-caramel text-xs font-semibold shadow-sm hover:opacity-90 transition">
             Simpan Perubahan
-          </button>
-        </div>
-      </form>
-    </div>
-  </div>
-
-  <!-- ================= MODAL EDIT AKUN PANITIA ================= -->
-  <div id="modalEditUser" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm hidden">
-    <div class="bg-white dark:bg-brand-darkCard rounded-2xl max-w-md w-full p-6 shadow-2xl border border-stone-200 dark:border-brand-darkBorder relative max-h-[90vh] overflow-y-auto">
-      <button onclick="tutupModalEditUser()" class="absolute top-4 right-4 text-stone-400 hover:text-stone-600 dark:hover:text-stone-200">
-        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
-      </button>
-
-      <h3 class="text-base font-bold text-stone-900 dark:text-white mb-1">Edit Akun Panitia</h3>
-      <p class="text-xs text-stone-500 mb-4" id="modalEditUserSubjudul"></p>
-
-      <form id="formEditUser" onsubmit="handleSimpanEditUser(event)" class="space-y-3">
-        <input type="hidden" id="editUserId">
-        <div>
-          <label class="block text-xs font-semibold text-stone-600 dark:text-stone-300 mb-1">Username Login *</label>
-          <input type="text" id="editUserUsername" required class="w-full px-3 py-2 text-sm rounded-xl border border-stone-300 dark:border-stone-700 bg-stone-50 dark:bg-stone-800 focus:ring-2 focus:ring-brand-caramel outline-none">
-        </div>
-        <div>
-          <label class="block text-xs font-semibold text-stone-600 dark:text-stone-300 mb-1">Nama Divisi *</label>
-          <input type="text" id="editUserDivisi" required class="w-full px-3 py-2 text-sm rounded-xl border border-stone-300 dark:border-stone-700 bg-stone-50 dark:bg-stone-800 focus:ring-2 focus:ring-brand-caramel outline-none">
-        </div>
-        <div>
-          <label class="block text-xs font-semibold text-stone-600 dark:text-stone-300 mb-1">Kata Sandi Baru (Opsional)</label>
-          <input type="text" id="editUserPass" placeholder="Kosongkan jika tidak diubah" autocomplete="off" class="w-full px-3 py-2 text-sm rounded-xl border border-stone-300 dark:border-stone-700 bg-stone-50 dark:bg-stone-800 focus:ring-2 focus:ring-brand-caramel outline-none"><span class="text-[11px] text-stone-400 mt-0.5 block">Minimal 6 karakter. Mengubah nama divisi akan ikut memperbarui data RAB, pengajuan & belanja divisi tersebut.</span>
-        </div>
-
-        <div class="pt-2 flex justify-end space-x-2">
-          <button type="button" onclick="tutupModalEditUser()" class="px-4 py-2 rounded-xl text-xs font-medium text-stone-600 dark:text-stone-400 hover:bg-stone-100 dark:hover:bg-stone-800">
-            Batal
-          </button>
-          <button type="submit" id="btnSubmitEditUser" class="px-4 py-2 rounded-xl bg-brand-coffee text-white dark:bg-brand-caramel text-xs font-semibold shadow-sm hover:opacity-90 transition">
-            Simpan Perubahan Akun
           </button>
         </div>
       </form>
@@ -1286,10 +1179,12 @@
       rabCache: [],
       usersCache: [],
       arusKasAdminCache: [],
+      pengeluaranAdminCache: [],
+      pendingFileAdmin: null,
+      pendingFileEdit: null,
+      publikSnapshot: '',
+      publikTimer: null,
       pendingCompressedFile: null,
-      pendingEditFile: null,
-      pemasukanAdminCache: [],
-      pengajuanAdminCache: [],
       konfirmasiCallback: null
     };
 
@@ -1299,6 +1194,7 @@
       pulihkanSesiLogin();
       if (STATE.apiUrl) {
         muatDataDashboardPublik();
+        mulaiAutoRefreshPublik();
       }
     });
 
@@ -1518,13 +1414,11 @@
         muatDataRABDivisi();
       } else if (sub === 'rekap') {
         muatDataRekapDivisi();
-      } else if (sub === 'lapor') {
-        muatDataLaporDivisi();
       }
     }
 
     function gantiSubTabAdmin(sub) {
-      const tabs = ['rekapKas', 'verifikasi', 'pemasukan', 'rab', 'users', 'profil'];
+      const tabs = ['rekapKas', 'verifikasi', 'pemasukan', 'pengeluaran', 'rab', 'users', 'profil'];
       tabs.forEach(t => {
         const el = document.getElementById('adminContent' + t.charAt(0).toUpperCase() + t.slice(1));
         if (el) el.classList.add('hidden');
@@ -1534,6 +1428,7 @@
         rekapKas: 'adminSubRekapKasBtn',
         verifikasi: 'adminSubVerifBtn',
         pemasukan: 'adminSubInBtn',
+        pengeluaran: 'adminSubOutBtn',
         rab: 'adminSubRabBtn',
         users: 'adminSubUsersBtn',
         profil: 'adminSubProfilBtn'
@@ -1562,8 +1457,8 @@
         muatDataRABAdmin();
       } else if (sub === 'verifikasi') {
         muatDataPengajuanAdmin();
-      } else if (sub === 'pemasukan') {
-        muatDataPemasukanAdmin();
+      } else if (sub === 'pengeluaran') {
+        muatDataPengeluaranAdmin();
       }
     }
 
@@ -1575,28 +1470,57 @@
       if (!STATE.apiUrl) return;
 
       try {
-        const response = await fetch(`${STATE.apiUrl}?action=getPublicDashboard&ts=${Date.now()}`);
+        // Refresh manual meminta server menghitung ulang langsung dari Spreadsheet (tanpa cache)
+        const response = await fetch(`${STATE.apiUrl}?action=getPublicDashboard${force ? '&fresh=1' : ''}&ts=${Date.now()}`);
         const res = await response.json();
 
         if (res.success) {
-          document.getElementById('cardSaldoKas').innerText = formatRupiah(res.sisaSaldoKas);
-          document.getElementById('cardTotalPemasukan').innerText = formatRupiah(res.totalPemasukan);
-          document.getElementById('cardTotalPengeluaran').innerText = formatRupiah(res.totalPengeluaran);
+          const snapshot = JSON.stringify(res);
 
-          const kasDivisiEl = document.getElementById('divisiKasTersedia');
-          if (kasDivisiEl) kasDivisiEl.innerText = formatRupiah(res.sisaSaldoKas);
+          // Render ulang hanya bila data berubah (atau diminta manual) agar grafik tidak berkedip
+          if (force || snapshot !== STATE.publikSnapshot) {
+            STATE.publikSnapshot = snapshot;
 
-          renderDonutChart(res.pengeluaranPerDivisi || {});
-          renderBarChart(res.rabPerDivisi || {}, res.pengeluaranPerDivisi || {});
+            document.getElementById('cardSaldoKas').innerText = formatRupiah(res.sisaSaldoKas);
+            document.getElementById('cardTotalPemasukan').innerText = formatRupiah(res.totalPemasukan);
+            document.getElementById('cardTotalPengeluaran').innerText = formatRupiah(res.totalPengeluaran);
 
-          STATE.transaksiCache = res.riwayatTransaksi || [];
-          renderTabelPublik(STATE.transaksiCache);
+            const kasDivisiEl = document.getElementById('divisiKasTersedia');
+            if (kasDivisiEl) kasDivisiEl.innerText = formatRupiah(res.sisaSaldoKas);
+
+            renderDonutChart(res.pengeluaranPerDivisi || {});
+            renderBarChart(res.rabPerDivisi || {}, res.pengeluaranPerDivisi || {});
+
+            STATE.transaksiCache = res.riwayatTransaksi || [];
+            filterTabelPublik();
+          }
 
           if (force) tampilkanToast('Data kas diperbarui!', 'success');
+        } else if (force) {
+          tampilkanToast(res.error || 'Gagal memperbarui data kas.', 'error');
         }
       } catch (err) {
         console.error('Gagal mengambil data dashboard:', err);
+        if (force) tampilkanToast('Gagal memperbarui data kas: ' + err.message, 'error');
       }
+    }
+
+    // Sinkronisasi otomatis: dashboard publik diperbarui berkala selama halaman terbuka
+    function mulaiAutoRefreshPublik() {
+      if (STATE.publikTimer) clearInterval(STATE.publikTimer);
+
+      const publikTerlihat = () => {
+        const view = document.getElementById('viewPublik');
+        return !document.hidden && view && !view.classList.contains('hidden');
+      };
+
+      STATE.publikTimer = setInterval(() => {
+        if (publikTerlihat()) muatDataDashboardPublik();
+      }, 30000);
+
+      document.addEventListener('visibilitychange', () => {
+        if (publikTerlihat()) muatDataDashboardPublik();
+      });
     }
 
     function renderDonutChart(dataDivisi) {
@@ -1810,7 +1734,7 @@
     function renderTabelPengajuanDivisi(list) {
       const tbody = document.getElementById('tabelPengajuanDivisiBody');
       if (!list || list.length === 0) {
-        tbody.innerHTML = `<tr><td colspan="7" class="py-4 text-center text-stone-400">Belum ada pengajuan dana dari divisi Anda.</td></tr>`;
+        tbody.innerHTML = `<tr><td colspan="6" class="py-4 text-center text-stone-400">Belum ada pengajuan dana dari divisi Anda.</td></tr>`;
         return;
       }
 
@@ -1822,12 +1746,6 @@
           badge = `<span class="badge-soft bg-rose-100 text-rose-800 dark:bg-rose-950/60 dark:text-rose-400">Ditolak</span>`;
         }
 
-        // Edit/Hapus hanya selama masih Menunggu tanggapan Bendahara
-        const aksi = item.Status === 'Menunggu'
-          ? `<button onclick="bukaModalEditPengajuan('${item.ID_Pengajuan}')" class="px-2 py-1 rounded bg-stone-100 dark:bg-stone-800 hover:bg-brand-creamDark text-brand-caramel font-semibold text-xs transition mr-1">Edit</button>
-             <button onclick="konfirmasiHapusPengajuan('${item.ID_Pengajuan}')" class="px-2 py-1 rounded bg-rose-50 dark:bg-rose-950/40 hover:bg-rose-100 text-rose-600 font-semibold text-xs transition">Hapus</button>`
-          : `<span class="text-xs text-stone-400 italic" title="Pengajuan yang sudah ditanggapi Bendahara tidak dapat diubah">Terkunci</span>`;
-
         return `
           <tr class="hover:bg-stone-50/60 dark:hover:bg-stone-800/40 transition">
             <td class="py-2.5 px-3 font-mono text-xs text-stone-500">${item.ID_Pengajuan}</td>
@@ -1836,7 +1754,6 @@
             <td class="py-2.5 px-3 text-right font-bold text-stone-900 dark:text-white">${formatRupiah(item.Nominal_Ajuan_Rp)}</td>
             <td class="py-2.5 px-3 text-center">${badge}</td>
             <td class="py-2.5 px-3 text-xs text-stone-600 dark:text-stone-300 max-w-xs truncate">${escapeHTML(item.Catatan_Bendahara || '-')}</td>
-            <td class="py-2.5 px-3 text-center whitespace-nowrap">${aksi}</td>
           </tr>
         `;
       }).join('');
@@ -1950,7 +1867,6 @@
           document.getElementById('fileCompressInfo').innerText = '';
           muatDataDashboardPublik();
           muatDataRekapDivisi();
-          muatDataLaporDivisi();
         } else {
           tampilkanToast(res.error || 'Gagal menyimpan pengeluaran.', 'error');
         }
@@ -2120,8 +2036,7 @@
         muatDataArusKasAdmin(),
         muatDataRABAdmin(),
         muatDataPengajuanAdmin(),
-        muatDataPenggunaAdmin(),
-        muatDataPemasukanAdmin()
+        muatDataPenggunaAdmin()
       ]);
     }
 
@@ -2437,7 +2352,6 @@
     }
 
     function renderTabelAdminPengajuan(list) {
-      STATE.pengajuanAdminCache = list || [];
       const tbody = document.getElementById('tabelAdminPengajuanBody');
       if (!list || list.length === 0) {
         tbody.innerHTML = `<tr><td colspan="7" class="py-6 text-center text-stone-400">Belum ada pengajuan dana yang diajukan divisi.</td></tr>`;
@@ -2452,33 +2366,19 @@
           badge = `<span class="badge-soft bg-rose-100 text-rose-800 dark:bg-rose-950/60 dark:text-rose-400">Ditolak</span>`;
         }
 
-        const btnHapus = `<button onclick="konfirmasiHapusPengajuan('${item.ID_Pengajuan}')" class="px-2 py-1 rounded bg-rose-50 dark:bg-rose-950/40 hover:bg-rose-100 text-rose-600 font-semibold text-xs transition">Hapus</button>`;
+        let aksiBtn = `
+          <div class="flex items-center justify-center space-x-1.5">
+            <button onclick="bukaModalRespon('${item.ID_Pengajuan}', 'Disetujui', '${escapeHTML(item.Nama_Kebutuhan)}', ${item.Nominal_Ajuan_Rp})" class="px-2 py-1 rounded bg-emerald-600 text-white font-semibold text-xs hover:bg-emerald-700 transition">
+              Setujui
+            </button>
+            <button onclick="bukaModalRespon('${item.ID_Pengajuan}', 'Ditolak', '${escapeHTML(item.Nama_Kebutuhan)}', ${item.Nominal_Ajuan_Rp})" class="px-2 py-1 rounded bg-rose-600 text-white font-semibold text-xs hover:bg-rose-700 transition">
+              Tolak
+            </button>
+          </div>
+        `;
 
-        let aksiBtn;
-        if (item.Status === 'Menunggu') {
-          aksiBtn = `
-            <div class="flex flex-wrap items-center justify-center gap-1.5">
-              <button onclick="bukaModalRespon('${item.ID_Pengajuan}', 'Disetujui', '${escapeHTML(item.Nama_Kebutuhan)}', ${item.Nominal_Ajuan_Rp})" class="px-2 py-1 rounded bg-emerald-600 text-white font-semibold text-xs hover:bg-emerald-700 transition">
-                Setujui
-              </button>
-              <button onclick="bukaModalRespon('${item.ID_Pengajuan}', 'Ditolak', '${escapeHTML(item.Nama_Kebutuhan)}', ${item.Nominal_Ajuan_Rp})" class="px-2 py-1 rounded bg-rose-600 text-white font-semibold text-xs hover:bg-rose-700 transition">
-                Tolak
-              </button>
-              ${btnHapus}
-            </div>
-          `;
-        } else {
-          aksiBtn = `
-            <div class="flex flex-col items-center gap-1.5">
-              <span class="text-xs text-stone-400 italic">Selesai (${item.Tanggal_Respon || '-'})</span>
-              <div class="flex items-center gap-1.5">
-                <button onclick="bukaModalEditAksi('${item.ID_Pengajuan}')" class="px-2 py-1 rounded bg-stone-100 dark:bg-stone-800 hover:bg-brand-creamDark text-brand-caramel font-semibold text-xs transition">
-                  Edit Aksi
-                </button>
-                ${btnHapus}
-              </div>
-            </div>
-          `;
+        if (item.Status !== 'Menunggu') {
+          aksiBtn = `<span class="text-xs text-stone-400 italic">Selesai (${item.Tanggal_Respon || '-'})</span>`;
         }
 
         return `
@@ -2514,8 +2414,6 @@
       }
 
       document.getElementById('modalResponCatatan').value = '';
-      document.getElementById('modalResponMode').value = 'baru';
-      document.getElementById('modalResponStatusWrap').classList.add('hidden');
       document.getElementById('modalResponPengajuan').classList.remove('hidden');
     }
 
@@ -2525,13 +2423,10 @@
 
     async function handleKirimResponPengajuan() {
       const idPengajuan = document.getElementById('modalResponIdPengajuan').value;
-      const modeRespon = document.getElementById('modalResponMode').value;
-      const status = (modeRespon === 'edit')
-        ? document.getElementById('modalResponStatus').value
-        : document.getElementById('modalResponTipeAksi').value;
+      const status = document.getElementById('modalResponTipeAksi').value;
       const catatan = document.getElementById('modalResponCatatan').value.trim();
 
-      if (!catatan && status !== 'Menunggu') {
+      if (!catatan) {
         tampilkanToast('Catatan Bendahara wajib diisi.', 'error');
         return;
       }
@@ -2593,7 +2488,6 @@
           document.getElementById('formPemasukanAdmin').reset();
           muatDataDashboardPublik();
           muatDataArusKasAdmin();
-          muatDataPemasukanAdmin();
         } else {
           tampilkanToast(res.error || 'Gagal menyimpan dana masuk.', 'error');
         }
@@ -2602,6 +2496,297 @@
       } finally {
         btn.disabled = false;
       }
+    }
+
+    // =========================================================================
+    // Catatan Pengeluaran Bendahara (Tambah, Edit, Hapus)
+    // =========================================================================
+
+    // Siapkan berkas nota (foto dikompres di sisi klien) lalu serahkan ke callback
+    function siapkanBerkasNota(file, infoEl, simpan) {
+      if (!file) {
+        simpan(null);
+        if (infoEl) infoEl.innerText = '';
+        return;
+      }
+
+      const reader = new FileReader();
+      reader.onload = function(evt) {
+        if (file.type.startsWith('image/')) {
+          infoEl.innerText = 'Mengompres foto nota agar upload cepat...';
+          const img = new Image();
+          img.onload = function() {
+            const canvas = document.createElement('canvas');
+            const MAX = 1280;
+            let width = img.width;
+            let height = img.height;
+
+            if (width > height) {
+              if (width > MAX) { height *= MAX / width; width = MAX; }
+            } else {
+              if (height > MAX) { width *= MAX / height; height = MAX; }
+            }
+
+            canvas.width = width;
+            canvas.height = height;
+            canvas.getContext('2d').drawImage(img, 0, 0, width, height);
+
+            const base64Data = canvas.toDataURL('image/jpeg', 0.75).split(',')[1];
+            simpan({
+              fileName: file.name.replace(/\.[^/.]+$/, '') + '.jpg',
+              mimeType: 'image/jpeg',
+              base64: base64Data
+            });
+
+            const origKb = Math.round(file.size / 1024);
+            const compKb = Math.round(base64Data.length * 0.75 / 1024);
+            infoEl.innerText = `✓ Foto dioptimalkan: ${origKb} KB → ~${compKb} KB (Siap diunggah)`;
+          };
+          img.src = evt.target.result;
+        } else {
+          simpan({
+            fileName: file.name,
+            mimeType: file.type || 'application/octet-stream',
+            base64: evt.target.result.split(',')[1]
+          });
+          infoEl.innerText = `✓ Berkas siap: ${file.name} (${Math.round(file.size / 1024)} KB)`;
+        }
+      };
+      reader.readAsDataURL(file);
+    }
+
+    function handlePilihBerkasPengeluaran(e) {
+      siapkanBerkasNota(e.target.files[0], document.getElementById('outFileInfo'), f => { STATE.pendingFileAdmin = f; });
+    }
+
+    function handlePilihBerkasEditPengeluaran(e) {
+      siapkanBerkasNota(e.target.files[0], document.getElementById('editOutFileInfo'), f => { STATE.pendingFileEdit = f; });
+    }
+
+    async function muatDataPengeluaranAdmin(force = false) {
+      if (!STATE.apiUrl || !STATE.session || STATE.session.user.peran !== 'Admin') return;
+      try {
+        const response = await fetch(`${STATE.apiUrl}?action=getDataPengeluaran&ts=${Date.now()}`);
+        const res = await response.json();
+
+        if (res.success) {
+          const list = (res.data || []).slice();
+          list.sort((a, b) => {
+            const ta = Date.parse(formatTanggal(a.Tanggal_Nota)) || 0;
+            const tb = Date.parse(formatTanggal(b.Tanggal_Nota)) || 0;
+            if (tb !== ta) return tb - ta;
+            return String(b.ID_Pengeluaran).localeCompare(String(a.ID_Pengeluaran));
+          });
+          STATE.pengeluaranAdminCache = list;
+
+          // Saran nama divisi untuk kolom isian
+          const namaDivisi = new Set();
+          (STATE.usersCache || []).forEach(u => { if (u.Nama_Divisi) namaDivisi.add(u.Nama_Divisi); });
+          (STATE.rabCache || []).forEach(r => { if (r.Divisi) namaDivisi.add(r.Divisi); });
+          list.forEach(r => { if (r.Divisi) namaDivisi.add(r.Divisi); });
+          document.getElementById('daftarDivisiAdmin').innerHTML =
+            Array.from(namaDivisi).map(d => `<option value="${escapeHTML(d)}"></option>`).join('');
+
+          filterTabelPengeluaranAdmin();
+          if (force) tampilkanToast('Daftar pengeluaran diperbarui!', 'success');
+        } else {
+          tampilkanToast(res.error || 'Gagal memuat catatan pengeluaran.', 'error');
+        }
+      } catch (err) {
+        console.error('Gagal mengambil catatan pengeluaran admin:', err);
+      }
+    }
+
+    function renderTabelAdminPengeluaran(list) {
+      const tbody = document.getElementById('tabelAdminPengeluaranBody');
+      if (!list || list.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="7" class="py-6 text-center text-stone-400">Belum ada catatan pengeluaran yang cocok.</td></tr>`;
+        return;
+      }
+
+      tbody.innerHTML = list.map(item => {
+        const linkNota = item.Link_Bukti_Drive
+          ? `<a href="${escapeHTML(item.Link_Bukti_Drive)}" target="_blank" rel="noopener" class="inline-flex items-center px-2 py-1 rounded bg-stone-100 dark:bg-stone-800 hover:bg-brand-creamDark text-brand-caramel text-xs font-semibold">
+              <svg class="w-3.5 h-3.5 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg> Lihat Nota
+             </a>`
+          : `<span class="text-stone-400 text-xs">-</span>`;
+
+        return `
+          <tr class="hover:bg-stone-50/60 dark:hover:bg-stone-800/40 transition">
+            <td class="py-2.5 px-3 font-mono text-xs text-stone-500 whitespace-nowrap">${escapeHTML(item.ID_Pengeluaran)}</td>
+            <td class="py-2.5 px-3 text-stone-600 dark:text-stone-300 whitespace-nowrap">${formatTanggal(item.Tanggal_Nota)}</td>
+            <td class="py-2.5 px-3 font-semibold text-stone-800 dark:text-stone-100">${escapeHTML(item.Divisi)}</td>
+            <td class="py-2.5 px-3 text-stone-600 dark:text-stone-300 max-w-xs truncate">${escapeHTML(item.Deskripsi_Belanja)}</td>
+            <td class="py-2.5 px-3 text-right font-bold text-stone-900 dark:text-white whitespace-nowrap">${formatRupiah(item.Nominal_Riil_Rp)}</td>
+            <td class="py-2.5 px-3 text-center whitespace-nowrap">${linkNota}</td>
+            <td class="py-2.5 px-3 text-center whitespace-nowrap">
+              <button onclick="bukaModalEditPengeluaran('${escapeHTML(item.ID_Pengeluaran)}')" class="px-2 py-1 rounded bg-stone-100 dark:bg-stone-800 hover:bg-stone-200 dark:hover:bg-stone-700 text-stone-700 dark:text-stone-200 font-semibold text-xs transition">
+                Edit
+              </button>
+              <button onclick="konfirmasiHapusPengeluaran('${escapeHTML(item.ID_Pengeluaran)}')" class="px-2 py-1 rounded bg-rose-50 dark:bg-rose-950/40 hover:bg-rose-100 text-rose-600 font-semibold text-xs transition">
+                Hapus
+              </button>
+            </td>
+          </tr>
+        `;
+      }).join('');
+    }
+
+    function filterTabelPengeluaranAdmin() {
+      const q = (document.getElementById('cariPengeluaranAdmin').value || '').toLowerCase().trim();
+      const filtered = STATE.pengeluaranAdminCache.filter(item =>
+        (item.Divisi || '').toLowerCase().includes(q) ||
+        (item.Deskripsi_Belanja || '').toLowerCase().includes(q) ||
+        String(item.ID_Pengeluaran || '').toLowerCase().includes(q)
+      );
+      renderTabelAdminPengeluaran(filtered);
+    }
+
+    async function handleKirimPengeluaranAdmin(e) {
+      e.preventDefault();
+      const btn = document.getElementById('btnSubmitPengeluaranAdmin');
+      btn.disabled = true;
+
+      const payload = {
+        action: 'tambahPengeluaranAdmin',
+        token: STATE.session.token,
+        tanggalNota: document.getElementById('outTanggal').value,
+        divisi: document.getElementById('outDivisi').value.trim(),
+        nominalRiil: Number(document.getElementById('outNominal').value),
+        deskripsiBelanja: document.getElementById('outDeskripsi').value.trim()
+      };
+
+      if (STATE.pendingFileAdmin) {
+        payload.fileBase64 = STATE.pendingFileAdmin.base64;
+        payload.fileName = STATE.pendingFileAdmin.fileName;
+        payload.mimeType = STATE.pendingFileAdmin.mimeType;
+      }
+
+      try {
+        const response = await fetch(STATE.apiUrl, {
+          method: 'POST',
+          body: JSON.stringify(payload)
+        });
+        const res = await response.json();
+
+        if (res.success) {
+          tampilkanToast(res.message, 'success');
+          document.getElementById('formPengeluaranAdmin').reset();
+          STATE.pendingFileAdmin = null;
+          document.getElementById('outFileInfo').innerText = '';
+          muatDataPengeluaranAdmin();
+          muatDataArusKasAdmin();
+          muatDataDashboardPublik();
+        } else {
+          tampilkanToast(res.error || 'Gagal menyimpan pengeluaran.', 'error');
+        }
+      } catch (err) {
+        tampilkanToast('Gangguan komunikasi: ' + err.message, 'error');
+      } finally {
+        btn.disabled = false;
+      }
+    }
+
+    function bukaModalEditPengeluaran(idPengeluaran) {
+      const item = STATE.pengeluaranAdminCache.find(x => x.ID_Pengeluaran === idPengeluaran);
+      if (!item) {
+        tampilkanToast('Data pengeluaran tidak ditemukan. Silakan refresh daftar.', 'error');
+        return;
+      }
+
+      document.getElementById('editOutId').value = item.ID_Pengeluaran;
+      document.getElementById('editOutTanggal').value = formatTanggal(item.Tanggal_Nota);
+      document.getElementById('editOutDivisi').value = item.Divisi || '';
+      document.getElementById('editOutNominal').value = Number(item.Nominal_Riil_Rp) || 0;
+      document.getElementById('editOutDeskripsi').value = item.Deskripsi_Belanja || '';
+      document.getElementById('editOutFile').value = '';
+      document.getElementById('editOutFileInfo').innerText = '';
+      document.getElementById('editOutBuktiSaatIni').innerText = item.Link_Bukti_Drive
+        ? `Nota saat ini: ${item.Nama_File_Bukti || 'tersimpan di Drive'} (kosongkan jika tidak diganti)`
+        : 'Belum ada nota terlampir.';
+      document.getElementById('modalEditPengeluaranSubjudul').innerText = `Kode: ${item.ID_Pengeluaran}`;
+      STATE.pendingFileEdit = null;
+
+      document.getElementById('modalEditPengeluaran').classList.remove('hidden');
+    }
+
+    function tutupModalEditPengeluaran() {
+      document.getElementById('modalEditPengeluaran').classList.add('hidden');
+      STATE.pendingFileEdit = null;
+    }
+
+    async function handleSimpanEditPengeluaran(e) {
+      e.preventDefault();
+      const btn = document.getElementById('btnSubmitEditPengeluaran');
+      btn.disabled = true;
+
+      const payload = {
+        action: 'updatePengeluaran',
+        token: STATE.session.token,
+        idPengeluaran: document.getElementById('editOutId').value,
+        tanggalNota: document.getElementById('editOutTanggal').value,
+        divisi: document.getElementById('editOutDivisi').value.trim(),
+        nominalRiil: Number(document.getElementById('editOutNominal').value),
+        deskripsiBelanja: document.getElementById('editOutDeskripsi').value.trim()
+      };
+
+      if (STATE.pendingFileEdit) {
+        payload.fileBase64 = STATE.pendingFileEdit.base64;
+        payload.fileName = STATE.pendingFileEdit.fileName;
+        payload.mimeType = STATE.pendingFileEdit.mimeType;
+      }
+
+      try {
+        const response = await fetch(STATE.apiUrl, {
+          method: 'POST',
+          body: JSON.stringify(payload)
+        });
+        const res = await response.json();
+
+        if (res.success) {
+          tampilkanToast(res.message, 'success');
+          tutupModalEditPengeluaran();
+          muatDataPengeluaranAdmin();
+          muatDataArusKasAdmin();
+          muatDataDashboardPublik();
+        } else {
+          tampilkanToast(res.error || 'Gagal memperbarui pengeluaran.', 'error');
+        }
+      } catch (err) {
+        tampilkanToast('Gangguan komunikasi: ' + err.message, 'error');
+      } finally {
+        btn.disabled = false;
+      }
+    }
+
+    function konfirmasiHapusPengeluaran(idPengeluaran) {
+      const item = STATE.pengeluaranAdminCache.find(x => x.ID_Pengeluaran === idPengeluaran);
+      const rincian = item ? ` — ${item.Deskripsi_Belanja} (${formatRupiah(item.Nominal_Riil_Rp)})` : '';
+
+      bukaModalKonfirmasi(`Hapus catatan pengeluaran ${idPengeluaran}${rincian}? Saldo kas dan dashboard publik akan ikut berubah.`, async () => {
+        try {
+          const response = await fetch(STATE.apiUrl, {
+            method: 'POST',
+            body: JSON.stringify({
+              action: 'hapusPengeluaran',
+              token: STATE.session.token,
+              idPengeluaran: idPengeluaran
+            })
+          });
+          const res = await response.json();
+
+          if (res.success) {
+            tampilkanToast(res.message, 'success');
+            muatDataPengeluaranAdmin();
+            muatDataArusKasAdmin();
+            muatDataDashboardPublik();
+          } else {
+            tampilkanToast(res.error || 'Gagal menghapus pengeluaran.', 'error');
+          }
+        } catch (err) {
+          tampilkanToast('Gangguan komunikasi: ' + err.message, 'error');
+        }
+      });
     }
 
     // Kelola Akun Panitia Divisi
@@ -2662,11 +2847,9 @@
     function renderTabelAdminUsers(list) {
       const tbody = document.getElementById('tabelAdminUsersBody');
       if (!list || list.length === 0) {
-        tbody.innerHTML = `<tr><td colspan="7" class="py-4 text-center text-stone-400">Belum ada data pengguna terdaftar.</td></tr>`;
+        tbody.innerHTML = `<tr><td colspan="6" class="py-4 text-center text-stone-400">Belum ada data pengguna terdaftar.</td></tr>`;
         return;
       }
-
-      const eyeIcon = `<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg>`;
 
       tbody.innerHTML = list.map(u => {
         const isAktif = u.Status === 'Aktif';
@@ -2674,24 +2857,10 @@
           ? `<span class="badge-soft bg-emerald-100 text-emerald-800 dark:bg-emerald-950/60 dark:text-emerald-400">Aktif</span>`
           : `<span class="badge-soft bg-rose-100 text-rose-800 dark:bg-rose-950/60 dark:text-rose-400">Nonaktif</span>`;
 
-        // Kolom kata sandi: hanya akun divisi (Admin tidak ditampilkan)
-        let kolomSandi = `<span class="text-xs text-stone-400">-</span>`;
-        if (u.Peran !== 'Admin') {
-          kolomSandi = u.Password_Teks
-            ? `<div class="flex items-center space-x-1.5">
-                 <span id="pw-${u.ID_User}" data-tampil="0" class="font-mono text-xs text-stone-700 dark:text-stone-300">••••••••</span>
-                 <button onclick="togglePasswordUser('${u.ID_User}')" title="Lihat / sembunyikan kata sandi" class="p-1 rounded hover:bg-stone-100 dark:hover:bg-stone-800 text-stone-500 transition">${eyeIcon}</button>
-               </div>`
-            : `<span class="text-[11px] italic text-stone-400" title="Akan terisi otomatis saat akun login, atau ubah kata sandinya lewat Edit">Belum tersimpan</span>`;
-        }
-
-        const btnEdit = `<button onclick="bukaModalEditUser('${u.ID_User}')" class="px-2 py-1 rounded bg-stone-100 dark:bg-stone-800 hover:bg-brand-creamDark text-brand-caramel font-semibold text-xs transition">Edit</button>`;
-
-        let actionBtn;
+        let actionBtn = '-';
         if (u.Peran !== 'Admin') {
           actionBtn = `
-            <div class="flex flex-wrap items-center justify-center gap-1.5">
-              ${btnEdit}
+            <div class="flex items-center justify-center space-x-1.5">
               <button onclick="handleToggleStatusUser('${u.ID_User}', '${isAktif ? 'Nonaktif' : 'Aktif'}')" class="px-2 py-1 rounded text-xs font-semibold ${isAktif ? 'bg-amber-100 text-amber-900 hover:bg-amber-200' : 'bg-emerald-100 text-emerald-900 hover:bg-emerald-200'} transition">
                 ${isAktif ? 'Nonaktifkan' : 'Aktifkan'}
               </button>
@@ -2701,12 +2870,7 @@
             </div>
           `;
         } else {
-          actionBtn = `
-            <div class="flex items-center justify-center gap-1.5">
-              ${btnEdit}
-              <span class="text-xs text-stone-400 italic">Akun Utama</span>
-            </div>
-          `;
+          actionBtn = `<span class="text-xs text-stone-400 italic">Akun Utama</span>`;
         }
 
         return `
@@ -2714,7 +2878,6 @@
             <td class="py-2.5 px-3 font-mono text-xs text-stone-500">${u.ID_User}</td>
             <td class="py-2.5 px-3 font-semibold text-stone-800 dark:text-stone-100">@${escapeHTML(u.Username)}</td>
             <td class="py-2.5 px-3 text-stone-700 dark:text-stone-300">${escapeHTML(u.Nama_Divisi)}</td>
-            <td class="py-2.5 px-3">${kolomSandi}</td>
             <td class="py-2.5 px-3"><span class="px-2 py-0.5 rounded text-[11px] font-semibold ${u.Peran === 'Admin' ? 'bg-brand-creamDark text-brand-coffee' : 'bg-stone-100 text-stone-700 dark:bg-stone-800 dark:text-stone-300'}">${u.Peran}</span></td>
             <td class="py-2.5 px-3 text-center">${badgeStatus}</td>
             <td class="py-2.5 px-3 text-center">${actionBtn}</td>
@@ -2865,491 +3028,16 @@
       }
     }
 
-    // =========================================================================
-    // 6B. REVISI: EDIT & HAPUS (PEMASUKAN, PENGAJUAN, LAPORAN BELANJA, AKUN)
-    // =========================================================================
-
-    // Helper POST dengan token sesi otomatis
-    async function panggilApiPost(payload) {
-      const response = await fetch(STATE.apiUrl, {
-        method: 'POST',
-        body: JSON.stringify(Object.assign({ token: STATE.session.token }, payload))
-      });
-      return await response.json();
-    }
-
-    const CLS_BTN_EDIT = 'px-2 py-1 rounded bg-stone-100 dark:bg-stone-800 hover:bg-brand-creamDark text-brand-caramel font-semibold text-xs transition';
-    const CLS_BTN_HAPUS = 'px-2 py-1 rounded bg-rose-50 dark:bg-rose-950/40 hover:bg-rose-100 text-rose-600 font-semibold text-xs transition';
-
-    // ---------- Rekap Pemasukan (Bendahara) ----------
-
-    async function muatDataPemasukanAdmin(force = false) {
-      if (!STATE.apiUrl || !STATE.session || STATE.session.user.peran !== 'Admin') return;
-      try {
-        const response = await fetch(`${STATE.apiUrl}?action=getDataPemasukan&ts=${Date.now()}`);
-        const res = await response.json();
-
-        if (res.success) {
-          STATE.pemasukanAdminCache = (res.data || []).slice().sort((a, b) => {
-            const sel = formatTanggal(b.Tanggal).localeCompare(formatTanggal(a.Tanggal));
-            return sel !== 0 ? sel : String(b.ID_Pemasukan).localeCompare(String(a.ID_Pemasukan));
-          });
-          filterTabelPemasukanAdmin();
-          if (force) tampilkanToast('Rekap pemasukan diperbarui!', 'success');
-        }
-      } catch (err) {
-        console.error('Gagal mengambil data pemasukan admin:', err);
-      }
-    }
-
-    function filterTabelPemasukanAdmin() {
-      const el = document.getElementById('cariPemasukanAdmin');
-      const q = el ? el.value.toLowerCase().trim() : '';
-      const filtered = STATE.pemasukanAdminCache.filter(item =>
-        String(item.Sumber_Dana || '').toLowerCase().includes(q) ||
-        String(item.Catatan_Keterangan || '').toLowerCase().includes(q) ||
-        String(item.ID_Pemasukan || '').toLowerCase().includes(q)
-      );
-      renderTabelAdminPemasukan(filtered);
-    }
-
-    function renderTabelAdminPemasukan(list) {
-      const tbody = document.getElementById('tabelAdminPemasukanBody');
-      if (!list || list.length === 0) {
-        tbody.innerHTML = `<tr><td colspan="6" class="py-6 text-center text-stone-400">Belum ada catatan pemasukan.</td></tr>`;
-        return;
-      }
-
-      tbody.innerHTML = list.map(item => `
-        <tr class="hover:bg-stone-50/60 dark:hover:bg-stone-800/40 transition">
-          <td class="py-2.5 px-3 font-mono text-xs text-stone-500 whitespace-nowrap">${escapeHTML(item.ID_Pemasukan)}</td>
-          <td class="py-2.5 px-3 text-stone-600 dark:text-stone-300 whitespace-nowrap">${formatTanggal(item.Tanggal)}</td>
-          <td class="py-2.5 px-3 font-semibold text-stone-800 dark:text-stone-100">${escapeHTML(item.Sumber_Dana)}</td>
-          <td class="py-2.5 px-3 text-xs text-stone-500 max-w-xs truncate">${escapeHTML(item.Catatan_Keterangan || '-')}</td>
-          <td class="py-2.5 px-3 text-right font-bold text-emerald-600 dark:text-emerald-400">+ ${formatRupiah(item.Nominal_Rp)}</td>
-          <td class="py-2.5 px-3 text-center whitespace-nowrap">
-            <button onclick="bukaModalEditPemasukan('${item.ID_Pemasukan}')" class="${CLS_BTN_EDIT} mr-1">Edit</button>
-            <button onclick="konfirmasiHapusPemasukan('${item.ID_Pemasukan}')" class="${CLS_BTN_HAPUS}">Hapus</button>
-          </td>
-        </tr>
-      `).join('');
-    }
-
-    function bukaModalEditPemasukan(id) {
-      const item = STATE.pemasukanAdminCache.find(x => x.ID_Pemasukan === id);
-      if (!item) return;
-      document.getElementById('editInId').value = id;
-      document.getElementById('editInTanggal').value = formatTanggal(item.Tanggal);
-      document.getElementById('editInSumber').value = item.Sumber_Dana || '';
-      document.getElementById('editInNominal').value = Number(item.Nominal_Rp) || 0;
-      document.getElementById('editInCatatan').value = item.Catatan_Keterangan || '';
-      document.getElementById('modalEditPemasukanSubjudul').innerText = `Kode: ${id}`;
-      document.getElementById('modalEditPemasukan').classList.remove('hidden');
-    }
-
-    function tutupModalEditPemasukan() {
-      document.getElementById('modalEditPemasukan').classList.add('hidden');
-    }
-
-    async function handleSimpanEditPemasukan(e) {
-      e.preventDefault();
-      const btn = document.getElementById('btnSubmitEditPemasukan');
-      btn.disabled = true;
-
-      try {
-        const res = await panggilApiPost({
-          action: 'updatePemasukan',
-          idPemasukan: document.getElementById('editInId').value,
-          tanggal: document.getElementById('editInTanggal').value,
-          sumberDana: document.getElementById('editInSumber').value.trim(),
-          nominal: Number(document.getElementById('editInNominal').value),
-          catatan: document.getElementById('editInCatatan').value.trim()
-        });
-
-        if (res.success) {
-          tampilkanToast(res.message, 'success');
-          tutupModalEditPemasukan();
-          muatDataPemasukanAdmin();
-          muatDataArusKasAdmin();
-          muatDataDashboardPublik();
-        } else {
-          tampilkanToast(res.error || 'Gagal memperbarui pemasukan.', 'error');
-        }
-      } catch (err) {
-        tampilkanToast('Gangguan komunikasi: ' + err.message, 'error');
-      } finally {
-        btn.disabled = false;
-      }
-    }
-
-    function konfirmasiHapusPemasukan(id) {
-      const item = STATE.pemasukanAdminCache.find(x => x.ID_Pemasukan === id);
-      const label = item ? `${item.Sumber_Dana} (${formatRupiah(item.Nominal_Rp)})` : id;
-      bukaModalKonfirmasi(`Hapus catatan pemasukan ${label} [${id}] secara permanen?`, async () => {
-        try {
-          const res = await panggilApiPost({ action: 'hapusPemasukan', idPemasukan: id });
-          if (res.success) {
-            tampilkanToast(res.message, 'success');
-            muatDataPemasukanAdmin();
-            muatDataArusKasAdmin();
-            muatDataDashboardPublik();
-          } else {
-            tampilkanToast(res.error || 'Gagal menghapus pemasukan.', 'error');
-          }
-        } catch (err) {
-          tampilkanToast('Gangguan komunikasi: ' + err.message, 'error');
-        }
-      });
-    }
-
-    // ---------- Antrean Persetujuan: Edit Aksi & Hapus (Bendahara) ----------
-
-    function bukaModalEditAksi(id) {
-      const item = STATE.pengajuanAdminCache.find(x => x.ID_Pengajuan === id);
-      if (!item) return;
-
-      document.getElementById('modalResponIdPengajuan').value = id;
-      document.getElementById('modalResponTipeAksi').value = item.Status;
-      document.getElementById('modalResponMode').value = 'edit';
-      document.getElementById('modalResponStatus').value = item.Status;
-      document.getElementById('modalResponStatusWrap').classList.remove('hidden');
-      document.getElementById('modalResponJudul').innerText = `Edit Aksi Pengajuan [${id}]`;
-      document.getElementById('modalResponSubjudul').innerText = `${item.Nama_Kebutuhan} • ${formatRupiah(item.Nominal_Ajuan_Rp)}`;
-      document.getElementById('modalResponCatatan').value = item.Catatan_Bendahara || '';
-
-      const submitBtn = document.getElementById('modalResponBtnSubmit');
-      submitBtn.className = 'px-4 py-2 rounded-xl text-white text-xs font-semibold shadow-sm bg-brand-coffee dark:bg-brand-caramel hover:opacity-90 transition';
-      submitBtn.innerText = 'Simpan Perubahan';
-
-      document.getElementById('modalResponPengajuan').classList.remove('hidden');
-    }
-
-    // Hapus pengajuan (dipakai Bendahara & Divisi)
-    function konfirmasiHapusPengajuan(idPengajuan) {
-      bukaModalKonfirmasi(`Hapus pengajuan dana [${idPengajuan}] secara permanen?`, async () => {
-        try {
-          const res = await panggilApiPost({ action: 'hapusPengajuan', idPengajuan: idPengajuan });
-          if (res.success) {
-            tampilkanToast(res.message, 'success');
-            if (STATE.session.user.peran === 'Admin') {
-              muatDataPengajuanAdmin();
-            } else {
-              muatDataDivisi();
-            }
-          } else {
-            tampilkanToast(res.error || 'Gagal menghapus pengajuan.', 'error');
-          }
-        } catch (err) {
-          tampilkanToast('Gangguan komunikasi: ' + err.message, 'error');
-        }
-      });
-    }
-
-    // ---------- Pengajuan Dana: Edit (Divisi) ----------
-
-    function bukaModalEditPengajuan(id) {
-      const item = STATE.pengajuanDivisiCache.find(x => x.ID_Pengajuan === id);
-      if (!item) return;
-      document.getElementById('editAjuId').value = id;
-      document.getElementById('editAjuNama').value = item.Nama_Kebutuhan || '';
-      document.getElementById('editAjuNominal').value = Number(item.Nominal_Ajuan_Rp) || 0;
-      document.getElementById('editAjuRincian').value = (item.Rincian && item.Rincian !== '-') ? item.Rincian : '';
-      document.getElementById('modalEditPengajuanSubjudul').innerText = `Kode: ${id}`;
-      document.getElementById('modalEditPengajuan').classList.remove('hidden');
-    }
-
-    function tutupModalEditPengajuan() {
-      document.getElementById('modalEditPengajuan').classList.add('hidden');
-    }
-
-    async function handleSimpanEditPengajuan(e) {
-      e.preventDefault();
-      const btn = document.getElementById('btnSubmitEditPengajuan');
-      btn.disabled = true;
-
-      try {
-        const res = await panggilApiPost({
-          action: 'updatePengajuan',
-          idPengajuan: document.getElementById('editAjuId').value,
-          namaKebutuhan: document.getElementById('editAjuNama').value.trim(),
-          nominal: Number(document.getElementById('editAjuNominal').value),
-          rincian: document.getElementById('editAjuRincian').value.trim()
-        });
-
-        if (res.success) {
-          tampilkanToast(res.message, 'success');
-          tutupModalEditPengajuan();
-          muatDataDivisi();
-        } else {
-          tampilkanToast(res.error || 'Gagal memperbarui pengajuan.', 'error');
-        }
-      } catch (err) {
-        tampilkanToast('Gangguan komunikasi: ' + err.message, 'error');
-      } finally {
-        btn.disabled = false;
-      }
-    }
-
-    // ---------- Laporan Realisasi Belanja: Daftar, Edit & Hapus (Divisi) ----------
-
-    async function muatDataLaporDivisi(force = false) {
-      if (!STATE.apiUrl || !STATE.session || STATE.session.user.peran !== 'Divisi') return;
-      try {
-        const response = await fetch(`${STATE.apiUrl}?action=getDataPengeluaran&ts=${Date.now()}`);
-        const res = await response.json();
-
-        if (res.success) {
-          const namaDivisi = STATE.session.user.namaDivisi;
-          STATE.pengeluaranDivisiCache = (res.data || []).filter(r => r.Divisi === namaDivisi);
-          renderTabelLaporDivisi(STATE.pengeluaranDivisiCache);
-          if (force) tampilkanToast('Daftar laporan belanja diperbarui!', 'success');
-        }
-      } catch (err) {
-        console.error('Gagal mengambil laporan belanja divisi:', err);
-      }
-    }
-
-    function renderTabelLaporDivisi(list) {
-      const tbody = document.getElementById('tabelLaporDivisiBody');
-      if (!list || list.length === 0) {
-        tbody.innerHTML = `<tr><td colspan="7" class="py-6 text-center text-stone-400">Belum ada laporan belanja dari divisi Anda.</td></tr>`;
-        return;
-      }
-
-      tbody.innerHTML = list.map(item => {
-        const linkBukti = item.Link_Bukti_Drive
-          ? `<a href="${item.Link_Bukti_Drive}" target="_blank" rel="noopener" class="inline-flex items-center px-2 py-1 rounded bg-stone-100 dark:bg-stone-800 hover:bg-brand-creamDark text-brand-caramel text-xs font-semibold">Lihat Nota</a>`
-          : `<span class="text-stone-400">-</span>`;
-
-        return `
-          <tr class="hover:bg-stone-50/60 dark:hover:bg-stone-800/40 transition">
-            <td class="py-2.5 px-3 font-mono text-xs text-stone-500">${escapeHTML(item.ID_Pengeluaran)}</td>
-            <td class="py-2.5 px-3 text-stone-600 dark:text-stone-300 whitespace-nowrap">${formatTanggal(item.Tanggal_Nota)}</td>
-            <td class="py-2.5 px-3 font-medium text-stone-800 dark:text-stone-100">${escapeHTML(item.Deskripsi_Belanja)}</td>
-            <td class="py-2.5 px-3 font-mono text-xs text-stone-500">${escapeHTML(item.ID_Pengajuan || '-')}</td>
-            <td class="py-2.5 px-3 text-right font-bold text-stone-900 dark:text-white">${formatRupiah(item.Nominal_Riil_Rp)}</td>
-            <td class="py-2.5 px-3 text-center whitespace-nowrap">${linkBukti}</td>
-            <td class="py-2.5 px-3 text-center whitespace-nowrap">
-              <button onclick="bukaModalEditPengeluaran('${item.ID_Pengeluaran}')" class="${CLS_BTN_EDIT} mr-1">Edit</button>
-              <button onclick="konfirmasiHapusPengeluaran('${item.ID_Pengeluaran}')" class="${CLS_BTN_HAPUS}">Hapus</button>
-            </td>
-          </tr>
-        `;
-      }).join('');
-    }
-
-    function bukaModalEditPengeluaran(id) {
-      const item = STATE.pengeluaranDivisiCache.find(x => x.ID_Pengeluaran === id);
-      if (!item) return;
-
-      const idAjuanSaatIni = (item.ID_Pengajuan && item.ID_Pengajuan !== '-') ? item.ID_Pengajuan : '';
-      const select = document.getElementById('editOutAjuan');
-      let opts = '<option value="">-- Tanpa Relasi Pengajuan (Langsung) --</option>';
-      let ditemukan = !idAjuanSaatIni;
-      STATE.pengajuanDivisiCache.forEach(a => {
-        if (a.ID_Pengajuan === idAjuanSaatIni) ditemukan = true;
-        opts += `<option value="${escapeHTML(a.ID_Pengajuan)}">[${escapeHTML(a.ID_Pengajuan)}] ${escapeHTML(a.Nama_Kebutuhan)} (Rp ${Number(a.Nominal_Ajuan_Rp).toLocaleString('id-ID')})</option>`;
-      });
-      if (!ditemukan) {
-        opts += `<option value="${escapeHTML(idAjuanSaatIni)}">[${escapeHTML(idAjuanSaatIni)}] (pengajuan sudah tidak ada)</option>`;
-      }
-      select.innerHTML = opts;
-      select.value = idAjuanSaatIni;
-
-      document.getElementById('editOutId').value = id;
-      document.getElementById('editOutTanggal').value = formatTanggal(item.Tanggal_Nota);
-      document.getElementById('editOutNominal').value = Number(item.Nominal_Riil_Rp) || 0;
-      document.getElementById('editOutDeskripsi').value = item.Deskripsi_Belanja || '';
-      document.getElementById('editOutFile').value = '';
-      document.getElementById('editOutFileInfo').innerText = '';
-      STATE.pendingEditFile = null;
-      document.getElementById('modalEditPengeluaranSubjudul').innerText = `Kode: ${id}`;
-      document.getElementById('modalEditPengeluaran').classList.remove('hidden');
-    }
-
-    function tutupModalEditPengeluaran() {
-      document.getElementById('modalEditPengeluaran').classList.add('hidden');
-      STATE.pendingEditFile = null;
-    }
-
-    // Kompresi foto nota untuk form edit (logika sama dengan form lapor)
-    function previewFileEditPengeluaran(e) {
-      const file = e.target.files[0];
-      const infoEl = document.getElementById('editOutFileInfo');
-      STATE.pendingEditFile = null;
-      if (!file) { infoEl.innerText = ''; return; }
-
-      const reader = new FileReader();
-      if (file.type.startsWith('image/')) {
-        infoEl.innerText = 'Mengompres foto nota agar upload cepat...';
-        reader.onload = function(evt) {
-          const img = new Image();
-          img.onload = function() {
-            const MAX = 1280;
-            let width = img.width;
-            let height = img.height;
-            if (width > height) {
-              if (width > MAX) { height *= MAX / width; width = MAX; }
-            } else if (height > MAX) {
-              width *= MAX / height; height = MAX;
-            }
-            const canvas = document.createElement('canvas');
-            canvas.width = width;
-            canvas.height = height;
-            canvas.getContext('2d').drawImage(img, 0, 0, width, height);
-            const base64Data = canvas.toDataURL('image/jpeg', 0.75).split(',')[1];
-
-            STATE.pendingEditFile = {
-              fileName: file.name.replace(/\.[^/.]+$/, '') + '.jpg',
-              mimeType: 'image/jpeg',
-              base64: base64Data
-            };
-            infoEl.innerText = `✓ Foto dioptimalkan: ${Math.round(file.size / 1024)} KB → ~${Math.round(base64Data.length * 0.75 / 1024)} KB (Siap diunggah)`;
-          };
-          img.src = evt.target.result;
-        };
-      } else {
-        reader.onload = function(evt) {
-          STATE.pendingEditFile = {
-            fileName: file.name,
-            mimeType: file.type || 'application/octet-stream',
-            base64: evt.target.result.split(',')[1]
-          };
-          infoEl.innerText = `✓ Berkas siap: ${file.name} (${Math.round(file.size / 1024)} KB)`;
-        };
-      }
-      reader.readAsDataURL(file);
-    }
-
-    async function handleSimpanEditPengeluaran(e) {
-      e.preventDefault();
-      const btn = document.getElementById('btnSubmitEditPengeluaran');
-      btn.disabled = true;
-
-      const payload = {
-        action: 'updatePengeluaran',
-        idPengeluaran: document.getElementById('editOutId').value,
-        idPengajuan: document.getElementById('editOutAjuan').value,
-        tanggalNota: document.getElementById('editOutTanggal').value,
-        nominalRiil: Number(document.getElementById('editOutNominal').value),
-        deskripsiBelanja: document.getElementById('editOutDeskripsi').value.trim()
-      };
-      if (STATE.pendingEditFile) {
-        payload.fileBase64 = STATE.pendingEditFile.base64;
-        payload.fileName = STATE.pendingEditFile.fileName;
-        payload.mimeType = STATE.pendingEditFile.mimeType;
-        btn.innerText = 'Mengunggah nota...';
-      }
-
-      try {
-        const res = await panggilApiPost(payload);
-
-        if (res.success) {
-          tampilkanToast(res.message, 'success');
-          tutupModalEditPengeluaran();
-          muatDataLaporDivisi();
-          muatDataRekapDivisi();
-          muatDataDashboardPublik();
-        } else {
-          tampilkanToast(res.error || 'Gagal memperbarui laporan belanja.', 'error');
-        }
-      } catch (err) {
-        tampilkanToast('Gangguan komunikasi: ' + err.message, 'error');
-      } finally {
-        btn.disabled = false;
-        btn.innerText = 'Simpan Perubahan';
-      }
-    }
-
-    function konfirmasiHapusPengeluaran(id) {
-      bukaModalKonfirmasi(`Hapus laporan belanja [${id}] beserta berkas notanya?`, async () => {
-        try {
-          const res = await panggilApiPost({ action: 'hapusPengeluaran', idPengeluaran: id });
-          if (res.success) {
-            tampilkanToast(res.message, 'success');
-            muatDataLaporDivisi();
-            muatDataRekapDivisi();
-            muatDataDashboardPublik();
-          } else {
-            tampilkanToast(res.error || 'Gagal menghapus laporan belanja.', 'error');
-          }
-        } catch (err) {
-          tampilkanToast('Gangguan komunikasi: ' + err.message, 'error');
-        }
-      });
-    }
-
-    // ---------- Kelola Akun: Lihat Kata Sandi & Edit (Bendahara) ----------
-
-    function togglePasswordUser(userId) {
-      const el = document.getElementById('pw-' + userId);
-      const u = STATE.usersCache.find(x => x.ID_User === userId);
-      if (!el || !u) return;
-      const sedangTampil = el.dataset.tampil === '1';
-      el.dataset.tampil = sedangTampil ? '0' : '1';
-      el.textContent = sedangTampil ? '••••••••' : u.Password_Teks;
-    }
-
-    function bukaModalEditUser(userId) {
-      const u = STATE.usersCache.find(x => x.ID_User === userId);
-      if (!u) return;
-      document.getElementById('editUserId').value = userId;
-      document.getElementById('editUserUsername').value = u.Username || '';
-      document.getElementById('editUserDivisi').value = u.Nama_Divisi || '';
-      document.getElementById('editUserPass').value = '';
-      document.getElementById('modalEditUserSubjudul').innerText = `ID: ${userId} • Peran: ${u.Peran}`;
-      document.getElementById('modalEditUser').classList.remove('hidden');
-    }
-
-    function tutupModalEditUser() {
-      document.getElementById('modalEditUser').classList.add('hidden');
-    }
-
-    async function handleSimpanEditUser(e) {
-      e.preventDefault();
-      const btn = document.getElementById('btnSubmitEditUser');
-      btn.disabled = true;
-
-      try {
-        const res = await panggilApiPost({
-          action: 'kelolaPengguna',
-          subAction: 'editUser',
-          userId: document.getElementById('editUserId').value,
-          username: document.getElementById('editUserUsername').value.trim(),
-          namaDivisi: document.getElementById('editUserDivisi').value.trim(),
-          password: document.getElementById('editUserPass').value
-        });
-
-        if (res.success) {
-          tampilkanToast(res.message, 'success');
-          tutupModalEditUser();
-          if (res.user) {
-            // Akun Bendahara sendiri yang diedit -> perbarui sesi di browser
-            STATE.session.user = res.user;
-            localStorage.setItem('AUDERE24_SESSION', JSON.stringify(STATE.session));
-            pulihkanSesiLogin();
-          }
-          muatDataPenggunaAdmin();
-          muatDataAdmin();
-        } else {
-          tampilkanToast(res.error || 'Gagal memperbarui akun.', 'error');
-        }
-      } catch (err) {
-        tampilkanToast('Gangguan komunikasi: ' + err.message, 'error');
-      } finally {
-        btn.disabled = false;
-      }
-    }
-
     // Modal Konfirmasi Aksi Kustom (Pengganti window.confirm)
     function bukaModalKonfirmasi(pesan, callback) {
       document.getElementById('modalKonfirmasiPesan').innerText = pesan;
       STATE.konfirmasiCallback = callback;
       const btn = document.getElementById('btnEksekusiKonfirmasi');
       btn.onclick = async () => {
+        const aksi = STATE.konfirmasiCallback;
         tutupModalKonfirmasi();
-        if (typeof STATE.konfirmasiCallback === 'function') {
-          await STATE.konfirmasiCallback();
+        if (typeof aksi === 'function') {
+          await aksi();
         }
       };
       document.getElementById('modalKonfirmasiAksi').classList.remove('hidden');

@@ -274,6 +274,9 @@
         <button onclick="gantiSubTabDivisi('lapor')" id="subTabLaporBtn" class="py-2.5 px-1 border-b-2 border-transparent text-stone-500 hover:text-stone-800 dark:hover:text-stone-200 font-semibold text-sm">
           2. Lapor Realisasi Belanja & Nota
         </button>
+        <button onclick="gantiSubTabDivisi('rab')" id="subTabRabDivisiBtn" class="py-2.5 px-1 border-b-2 border-transparent text-stone-500 hover:text-stone-800 dark:hover:text-stone-200 font-semibold text-sm">
+          3. Pagu & Penyesuaian RAB Divisi
+        </button>
       </div>
 
       <!-- Konten SubTab 1: Pengajuan Dana -->
@@ -373,6 +376,62 @@
               </button>
             </div>
           </form>
+        </div>
+      </div>
+
+      <!-- Konten SubTab 3: Penyesuaian RAB Divisi -->
+      <div id="subTabRabContent" class="hidden space-y-6">
+        <!-- Form Tambah Pos RAB oleh Divisi -->
+        <div class="p-5 rounded-2xl bg-white dark:bg-brand-darkCard border border-stone-200 dark:border-brand-darkBorder shadow-sm">
+          <h3 class="font-bold text-stone-900 dark:text-white text-base mb-1">Usulkan / Tambah Pos Pagu Anggaran RAB</h3>
+          <p class="text-xs text-stone-500 mb-4">Pos anggaran ini otomatis dialokasikan untuk divisi Anda.</p>
+
+          <form id="formRABDivisi" onsubmit="handleKirimRABDivisi(event)" class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+            <div>
+              <label class="block text-xs font-semibold text-stone-600 dark:text-stone-300 mb-1">Nama Pos Kebutuhan *</label>
+              <input type="text" id="rabPosDivisi" required placeholder="Contoh: Transportasi & Bahan Perlengkapan" class="w-full px-3 py-2 text-sm rounded-xl border border-stone-300 dark:border-stone-700 bg-stone-50 dark:bg-stone-800 focus:ring-2 focus:ring-brand-caramel outline-none">
+            </div>
+
+            <div>
+              <label class="block text-xs font-semibold text-stone-600 dark:text-stone-300 mb-1">Alokasi Pagu Anggaran (Rp) *</label>
+              <input type="number" id="rabPaguDivisi" required min="1000" placeholder="Contoh: 1500000" class="w-full px-3 py-2 text-sm rounded-xl border border-stone-300 dark:border-stone-700 bg-stone-50 dark:bg-stone-800 focus:ring-2 focus:ring-brand-caramel outline-none">
+            </div>
+
+            <div>
+              <label class="block text-xs font-semibold text-stone-600 dark:text-stone-300 mb-1">Catatan Tambahan (Opsional)</label>
+              <input type="text" id="rabCatatanDivisi" placeholder="Contoh: Rencana sewa sound & mikrofon" class="w-full px-3 py-2 text-sm rounded-xl border border-stone-300 dark:border-stone-700 bg-stone-50 dark:bg-stone-800 focus:ring-2 focus:ring-brand-caramel outline-none">
+            </div>
+
+            <div class="sm:col-span-3 flex justify-end">
+              <button type="submit" id="btnSubmitRABDivisi" class="px-5 py-2.5 rounded-xl bg-brand-coffee text-white dark:bg-brand-caramel font-semibold text-sm hover:opacity-90 transition flex items-center shadow-sm">
+                <svg class="w-4 h-4 mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"/></svg>
+                Tambah Pos Anggaran Divisi
+              </button>
+            </div>
+          </form>
+        </div>
+
+        <!-- Tabel Pos RAB Divisi -->
+        <div class="p-5 rounded-2xl bg-white dark:bg-brand-darkCard border border-stone-200 dark:border-brand-darkBorder shadow-sm">
+          <h3 class="font-bold text-stone-900 dark:text-white text-base mb-1">Daftar Pagu Anggaran Pos Divisi Anda</h3>
+          <p class="text-xs text-stone-500 mb-4">Anda dapat menyesuaikan nama pos atau nominal pagu sesuai perkembangan kebutuhan kepanitiaan.</p>
+
+          <div class="overflow-x-auto">
+            <table class="w-full text-left text-xs sm:text-sm">
+              <thead class="bg-stone-50 dark:bg-stone-800/60 text-stone-500 uppercase font-semibold text-[11px] border-b border-stone-200 dark:border-stone-800">
+                <tr>
+                  <th class="py-2.5 px-3">Kode</th>
+                  <th class="py-2.5 px-3">Nama Pos Kebutuhan</th>
+                  <th class="py-2.5 px-3 text-right">Pagu Anggaran</th>
+                  <th class="py-2.5 px-3">Catatan</th>
+                  <th class="py-2.5 px-3 text-center">Aksi</th>
+                </tr>
+              </thead>
+              <tbody id="tabelRABDivisiBody" class="divide-y divide-stone-100 dark:divide-stone-800/60">
+                <tr><td colspan="5" class="py-4 text-center text-stone-400">Memuat pos anggaran divisi...</td></tr>
+              </tbody>
+            </table>
+          </div>
         </div>
       </div>
     </section>
@@ -515,6 +574,37 @@
             </div>
           </form>
         </div>
+
+        <!-- Tabel Rekapitulasi Seluruh Pagu RAB Semua Divisi -->
+        <div class="p-5 rounded-2xl bg-white dark:bg-brand-darkCard border border-stone-200 dark:border-brand-darkBorder shadow-sm">
+          <div class="sm:flex sm:items-center sm:justify-between mb-4">
+            <div>
+              <h3 class="font-bold text-stone-900 dark:text-white text-base">Seluruh Pos Anggaran RAB Kegiatan</h3>
+              <p class="text-xs text-stone-500">Rekapitulasi pagu alokasi belanja seluruh divisi kepanitiaan.</p>
+            </div>
+            <div class="mt-2 sm:mt-0">
+              <input type="text" id="cariRABAdmin" oninput="filterTabelRABAdmin()" placeholder="Cari divisi / pos kebutuhan..." class="px-3 py-1.5 rounded-xl border border-stone-300 dark:border-stone-700 bg-stone-50 dark:bg-stone-800 text-xs focus:ring-2 focus:ring-brand-caramel outline-none w-56">
+            </div>
+          </div>
+
+          <div class="overflow-x-auto">
+            <table class="w-full text-left text-xs sm:text-sm">
+              <thead class="bg-stone-50 dark:bg-stone-800/60 text-stone-500 uppercase font-semibold text-[11px] border-b border-stone-200 dark:border-stone-800">
+                <tr>
+                  <th class="py-2.5 px-3">Kode</th>
+                  <th class="py-2.5 px-3">Divisi</th>
+                  <th class="py-2.5 px-3">Nama Pos Kebutuhan</th>
+                  <th class="py-2.5 px-3 text-right">Pagu Anggaran</th>
+                  <th class="py-2.5 px-3">Catatan</th>
+                  <th class="py-2.5 px-3 text-center">Aksi Bendahara</th>
+                </tr>
+              </thead>
+              <tbody id="tabelAdminRABBody" class="divide-y divide-stone-100 dark:divide-stone-800/60">
+                <tr><td colspan="6" class="py-4 text-center text-stone-400">Memuat pos anggaran...</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
       </div>
 
       <!-- Konten Admin 4: Kelola Akun Panitia Divisi -->
@@ -554,6 +644,37 @@
               </button>
             </div>
           </form>
+        </div>
+
+        <!-- Tabel Daftar Seluruh Akun Panitia Divisi -->
+        <div class="p-5 rounded-2xl bg-white dark:bg-brand-darkCard border border-stone-200 dark:border-brand-darkBorder shadow-sm">
+          <div class="flex items-center justify-between mb-4">
+            <div>
+              <h3 class="font-bold text-stone-900 dark:text-white text-base">Data Seluruh Akun Panitia Divisi</h3>
+              <p class="text-xs text-stone-500">Kelola status aktif atau nonaktifkan akses akun panitia.</p>
+            </div>
+            <button onclick="muatDataPenggunaAdmin(true)" class="p-1.5 rounded-xl border border-stone-300 dark:border-stone-700 hover:bg-stone-100 dark:hover:bg-stone-800 text-stone-600 dark:text-stone-300 transition" title="Muat Ulang Data">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>
+            </button>
+          </div>
+
+          <div class="overflow-x-auto">
+            <table class="w-full text-left text-xs sm:text-sm">
+              <thead class="bg-stone-50 dark:bg-stone-800/60 text-stone-500 uppercase font-semibold text-[11px] border-b border-stone-200 dark:border-stone-800">
+                <tr>
+                  <th class="py-2.5 px-3">ID Pengguna</th>
+                  <th class="py-2.5 px-3">Username</th>
+                  <th class="py-2.5 px-3">Nama Divisi</th>
+                  <th class="py-2.5 px-3">Peran</th>
+                  <th class="py-2.5 px-3 text-center">Status</th>
+                  <th class="py-2.5 px-3 text-center">Aksi</th>
+                </tr>
+              </thead>
+              <tbody id="tabelAdminUsersBody" class="divide-y divide-stone-100 dark:divide-stone-800/60">
+                <tr><td colspan="6" class="py-4 text-center text-stone-400">Memuat data pengguna...</td></tr>
+              </tbody>
+            </table>
+          </div>
         </div>
       </div>
 
@@ -697,6 +818,51 @@
     </div>
   </div>
 
+  <!-- ================= MODAL EDIT POS RAB (REUSABLE DIVISI & ADMIN) ================= -->
+  <div id="modalEditRAB" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm hidden">
+    <div class="bg-white dark:bg-brand-darkCard rounded-2xl max-w-md w-full p-6 shadow-2xl border border-stone-200 dark:border-brand-darkBorder relative">
+      <button onclick="tutupModalEditRAB()" class="absolute top-4 right-4 text-stone-400 hover:text-stone-600 dark:hover:text-stone-200">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+      </button>
+
+      <h3 class="text-base font-bold text-stone-900 dark:text-white mb-1">Sesuaikan Pos Anggaran RAB</h3>
+      <p class="text-xs text-stone-500 mb-4" id="modalEditRABSubjudul"></p>
+
+      <form id="formEditRAB" onsubmit="handleSimpanEditRAB(event)" class="space-y-3">
+        <input type="hidden" id="editRABId">
+
+        <div id="modalEditRABDivisiContainer">
+          <label class="block text-xs font-semibold text-stone-600 dark:text-stone-300 mb-1">Divisi</label>
+          <input type="text" id="editRABDivisi" required class="w-full px-3 py-2 text-sm rounded-xl border border-stone-300 dark:border-stone-700 bg-stone-50 dark:bg-stone-800 focus:ring-2 focus:ring-brand-caramel outline-none">
+        </div>
+
+        <div>
+          <label class="block text-xs font-semibold text-stone-600 dark:text-stone-300 mb-1">Nama Pos Kebutuhan *</label>
+          <input type="text" id="editRABPos" required class="w-full px-3 py-2 text-sm rounded-xl border border-stone-300 dark:border-stone-700 bg-stone-50 dark:bg-stone-800 focus:ring-2 focus:ring-brand-caramel outline-none">
+        </div>
+
+        <div>
+          <label class="block text-xs font-semibold text-stone-600 dark:text-stone-300 mb-1">Pagu Anggaran (Rp) *</label>
+          <input type="number" id="editRABPagu" required min="1000" class="w-full px-3 py-2 text-sm rounded-xl border border-stone-300 dark:border-stone-700 bg-stone-50 dark:bg-stone-800 focus:ring-2 focus:ring-brand-caramel outline-none">
+        </div>
+
+        <div>
+          <label class="block text-xs font-semibold text-stone-600 dark:text-stone-300 mb-1">Catatan Keterangan</label>
+          <input type="text" id="editRABCatatan" class="w-full px-3 py-2 text-sm rounded-xl border border-stone-300 dark:border-stone-700 bg-stone-50 dark:bg-stone-800 focus:ring-2 focus:ring-brand-caramel outline-none">
+        </div>
+
+        <div class="pt-2 flex justify-end space-x-2">
+          <button type="button" onclick="tutupModalEditRAB()" class="px-4 py-2 rounded-xl text-xs font-medium text-stone-600 dark:text-stone-400 hover:bg-stone-100 dark:hover:bg-stone-800">
+            Batal
+          </button>
+          <button type="submit" id="btnSubmitEditRAB" class="px-4 py-2 rounded-xl bg-brand-coffee text-white dark:bg-brand-caramel text-xs font-semibold shadow-sm hover:opacity-90 transition">
+            Simpan Perubahan Pos
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
   <!-- ================= JAVASCRIPT LOGIC ================= -->
   <script>
     // =========================================================================
@@ -715,6 +881,8 @@
       barChart: null,
       transaksiCache: [],
       pengajuanDivisiCache: [],
+      rabCache: [],
+      usersCache: [],
       pendingCompressedFile: null
     };
 
@@ -834,12 +1002,13 @@
         labelUser.innerText = `${u.username} (${u.peran})`;
 
         if (u.peran === 'Admin') {
+          // Khusus Admin Bendahara: Tampilkan tab Bendahara, Sembunyikan mutlak tab Divisi
           tabBtnAdmin.classList.remove('hidden');
           tabBtnDivisi.classList.add('hidden');
-          // Isi username admin saat ini di form pengaturan akun
           const adminUserInput = document.getElementById('adminNewUsername');
           if (adminUserInput) adminUserInput.value = u.username;
         } else {
+          // Khusus Panitia Divisi: Tampilkan tab Divisi, Sembunyikan mutlak tab Bendahara
           tabBtnDivisi.classList.remove('hidden');
           tabBtnAdmin.classList.add('hidden');
           document.getElementById('divisiBannerNama').innerText = u.namaDivisi;
@@ -871,6 +1040,21 @@
     // =========================================================================
 
     function gantiTab(tab) {
+      // Isolasi Akses Peran: Cegah pembukaan panel yang tidak sesuai hak akses
+      if (tab === 'admin') {
+        if (!STATE.session || STATE.session.user.peran !== 'Admin') {
+          tampilkanToast('Akses ditolak: Panel ini hanya untuk Bendahara Utama.', 'error');
+          gantiTab(STATE.session ? 'divisi' : 'publik');
+          return;
+        }
+      } else if (tab === 'divisi') {
+        if (!STATE.session || STATE.session.user.peran !== 'Divisi') {
+          tampilkanToast('Akses ditolak: Panel ini khusus untuk Panitia Divisi.', 'error');
+          gantiTab(STATE.session ? 'admin' : 'publik');
+          return;
+        }
+      }
+
       const views = ['viewPublik', 'viewDivisi', 'viewAdmin'];
       views.forEach(v => document.getElementById(v).classList.add('hidden'));
 
@@ -896,6 +1080,71 @@
         const b = document.getElementById('tabBtnAdmin');
         if (b) b.className = 'px-3 py-1.5 rounded-lg font-medium transition bg-white dark:bg-brand-darkCard text-brand-coffee dark:text-brand-lightCaramel shadow-sm';
         muatDataAdmin();
+      }
+    }
+
+    function gantiSubTabDivisi(sub) {
+      const btn1 = document.getElementById('subTabPengajuanBtn');
+      const btn2 = document.getElementById('subTabLaporBtn');
+      const btn3 = document.getElementById('subTabRabDivisiBtn');
+      const c1 = document.getElementById('subTabPengajuanContent');
+      const c2 = document.getElementById('subTabLaporContent');
+      const c3 = document.getElementById('subTabRabContent');
+
+      [btn1, btn2, btn3].forEach(b => {
+        if (b) b.className = 'py-2.5 px-1 border-b-2 border-transparent text-stone-500 hover:text-stone-800 dark:hover:text-stone-200 font-semibold text-sm';
+      });
+      [c1, c2, c3].forEach(c => {
+        if (c) c.classList.add('hidden');
+      });
+
+      if (sub === 'pengajuan') {
+        btn1.className = 'py-2.5 px-1 border-b-2 border-brand-coffee dark:border-brand-caramel text-brand-coffee dark:text-brand-lightCaramel font-semibold text-sm';
+        c1.classList.remove('hidden');
+      } else if (sub === 'lapor') {
+        btn2.className = 'py-2.5 px-1 border-b-2 border-brand-coffee dark:border-brand-caramel text-brand-coffee dark:text-brand-lightCaramel font-semibold text-sm';
+        c2.classList.remove('hidden');
+      } else if (sub === 'rab') {
+        btn3.className = 'py-2.5 px-1 border-b-2 border-brand-coffee dark:border-brand-caramel text-brand-coffee dark:text-brand-lightCaramel font-semibold text-sm';
+        c3.classList.remove('hidden');
+        muatDataRABDivisi();
+      }
+    }
+
+    function gantiSubTabAdmin(sub) {
+      const tabs = ['verifikasi', 'pemasukan', 'rab', 'users', 'profil'];
+      tabs.forEach(t => {
+        const el = document.getElementById('adminContent' + t.charAt(0).toUpperCase() + t.slice(1));
+        if (el) el.classList.add('hidden');
+      });
+
+      const buttons = {
+        verifikasi: 'adminSubVerifBtn',
+        pemasukan: 'adminSubInBtn',
+        rab: 'adminSubRabBtn',
+        users: 'adminSubUsersBtn',
+        profil: 'adminSubProfilBtn'
+      };
+
+      Object.keys(buttons).forEach(key => {
+        const el = document.getElementById(buttons[key]);
+        if (el) {
+          el.className = 'py-2 px-1 border-b-2 border-transparent text-stone-500 hover:text-stone-800 dark:hover:text-stone-200 font-semibold text-xs sm:text-sm whitespace-nowrap';
+        }
+      });
+
+      const activeBtn = document.getElementById(buttons[sub]);
+      if (activeBtn) {
+        activeBtn.className = 'py-2 px-1 border-b-2 border-brand-coffee dark:border-brand-caramel text-brand-coffee dark:text-brand-lightCaramel font-semibold text-xs sm:text-sm whitespace-nowrap';
+      }
+
+      const activeContent = document.getElementById('adminContent' + sub.charAt(0).toUpperCase() + sub.slice(1));
+      if (activeContent) activeContent.classList.remove('hidden');
+
+      if (sub === 'users') {
+        muatDataPenggunaAdmin();
+      } else if (sub === 'rab') {
+        muatDataRABAdmin();
       }
     }
 
@@ -1155,366 +1404,58 @@
       }
     }
 
-    function renderTabelPengajuanDivisi(list) {
-      const tbody = document.getElementById('tabelPengajuanDivisiBody');
+    async function muatDataRABDivisi() {
+      if (!STATE.apiUrl || !STATE.session) return;
+      try {
+        const response = await fetch(`${STATE.apiUrl}?action=getDataRAB`);
+        const res = await response.json();
+
+        if (res.success) {
+          const divisiNama = STATE.session.user.namaDivisi;
+          const listDivisi = (res.data || []).filter(item => item.Divisi === divisiNama);
+          renderTabelRABDivisi(listDivisi);
+        }
+      } catch (err) {
+        console.error('Gagal mengambil data RAB divisi:', err);
+      }
+    }
+
+    function renderTabelRABDivisi(list) {
+      const tbody = document.getElementById('tabelRABDivisiBody');
       if (!list || list.length === 0) {
-        tbody.innerHTML = `<tr><td colspan="6" class="py-6 text-center text-stone-400">Belum ada pengajuan dana dari divisi Anda.</td></tr>`;
+        tbody.innerHTML = `<tr><td colspan="5" class="py-4 text-center text-stone-400">Belum ada pos anggaran untuk divisi Anda. Silakan tambahkan melalui form di atas.</td></tr>`;
         return;
       }
 
-      tbody.innerHTML = list.map(item => {
-        let badge = '';
-        if (item.Status === 'Disetujui') {
-          badge = `<span class="badge-soft bg-emerald-100 text-emerald-800 dark:bg-emerald-950/60 dark:text-emerald-400">Disetujui</span>`;
-        } else if (item.Status === 'Ditolak') {
-          badge = `<span class="badge-soft bg-rose-100 text-rose-800 dark:bg-rose-950/60 dark:text-rose-400">Ditolak</span>`;
-        } else {
-          badge = `<span class="badge-soft bg-amber-100 text-amber-800 dark:bg-amber-950/60 dark:text-amber-400">Menunggu</span>`;
-        }
-
-        return `
-          <tr class="hover:bg-stone-50/60 dark:hover:bg-stone-800/40 transition">
-            <td class="py-2.5 px-3 font-mono font-medium text-xs text-stone-500">${item.ID_Pengajuan}</td>
-            <td class="py-2.5 px-3 text-stone-600 dark:text-stone-300 whitespace-nowrap">${item.Tanggal_Ajuan}</td>
-            <td class="py-2.5 px-3 font-semibold text-stone-800 dark:text-stone-100">${escapeHTML(item.Nama_Kebutuhan)}</td>
-            <td class="py-2.5 px-3 text-right font-bold text-stone-900 dark:text-white">${formatRupiah(item.Nominal_Ajuan_Rp)}</td>
-            <td class="py-2.5 px-3 text-center">${badge}</td>
-            <td class="py-2.5 px-3 text-xs text-stone-500 max-w-xs italic">${escapeHTML(item.Catatan_Bendahara || '-')}</td>
-          </tr>
-        `;
-      }).join('');
+      tbody.innerHTML = list.map(item => `
+        <tr class="hover:bg-stone-50/60 dark:hover:bg-stone-800/40 transition">
+          <td class="py-2.5 px-3 font-mono text-xs text-stone-500">${item.ID_RAB}</td>
+          <td class="py-2.5 px-3 font-semibold text-stone-800 dark:text-stone-100">${escapeHTML(item.Nama_Pos_Kebutuhan)}</td>
+          <td class="py-2.5 px-3 text-right font-bold text-stone-900 dark:text-white">${formatRupiah(item.Pagu_Anggaran_Rp)}</td>
+          <td class="py-2.5 px-3 text-xs text-stone-500 max-w-xs truncate">${escapeHTML(item.Catatan || '-')}</td>
+          <td class="py-2.5 px-3 text-center whitespace-nowrap">
+            <button onclick="bukaModalEditRAB('${item.ID_RAB}', '${escapeHTML(item.Divisi)}', '${escapeHTML(item.Nama_Pos_Kebutuhan)}', ${item.Pagu_Anggaran_Rp}, '${escapeHTML(item.Catatan || '')}')" class="px-2 py-1 rounded bg-stone-100 dark:bg-stone-800 hover:bg-brand-creamDark text-brand-caramel font-semibold text-xs transition mr-1">
+              Edit
+            </button>
+            <button onclick="handleHapusPosRAB('${item.ID_RAB}', '${escapeHTML(item.Nama_Pos_Kebutuhan)}')" class="px-2 py-1 rounded bg-rose-50 dark:bg-rose-950/40 hover:bg-rose-100 text-rose-600 font-semibold text-xs transition">
+              Hapus
+            </button>
+          </td>
+        </tr>
+      `).join('');
     }
 
-    async function handleKirimPengajuan(e) {
+    async function handleKirimRABDivisi(e) {
       e.preventDefault();
-      const btn = document.getElementById('btnSubmitAjuan');
-      btn.disabled = true;
-      btn.innerHTML = 'Mengirim...';
-
-      const payload = {
-        action: 'ajukanDana',
-        token: STATE.session.token,
-        namaKebutuhan: document.getElementById('ajuNama').value.trim(),
-        nominal: Number(document.getElementById('ajuNominal').value),
-        rincian: document.getElementById('ajuRincian').value.trim()
-      };
-
-      try {
-        const response = await fetch(STATE.apiUrl, {
-          method: 'POST',
-          body: JSON.stringify(payload)
-        });
-        const res = await response.json();
-
-        if (res.success) {
-          tampilkanToast(res.message, 'success');
-          document.getElementById('formAjukanDana').reset();
-          muatDataDivisi();
-        } else {
-          tampilkanToast(res.error || 'Gagal mengirim pengajuan', 'error');
-        }
-      } catch (err) {
-        tampilkanToast('Gangguan jaringan: ' + err.message, 'error');
-      } finally {
-        btn.disabled = false;
-        btn.innerHTML = `<svg class="w-4 h-4 mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"/></svg> Kirim Pengajuan`;
-      }
-    }
-
-    function previewDanKompresFile(event) {
-      const file = event.target.files[0];
-      const infoEl = document.getElementById('fileCompressInfo');
-      if (!file) {
-        STATE.pendingCompressedFile = null;
-        infoEl.innerText = '';
-        return;
-      }
-
-      if (file.type.startsWith('image/')) {
-        infoEl.innerText = `Mengompresi gambar dari ${(file.size / 1024 / 1024).toFixed(2)} MB...`;
-        const reader = new FileReader();
-        reader.onload = function(e) {
-          const img = new Image();
-          img.onload = function() {
-            const canvas = document.createElement('canvas');
-            let width = img.width;
-            let height = img.height;
-            const maxDimension = 1600;
-
-            if (width > maxDimension || height > maxDimension) {
-              if (width > height) {
-                height = Math.round((height * maxDimension) / width);
-                width = maxDimension;
-              } else {
-                width = Math.round((width * maxDimension) / height);
-                height = maxDimension;
-              }
-            }
-
-            canvas.width = width;
-            canvas.height = height;
-            const ctx = canvas.getContext('2d');
-            ctx.drawImage(img, 0, 0, width, height);
-
-            const dataUrl = canvas.toDataURL('image/jpeg', 0.75);
-            const base64Data = dataUrl.split(',')[1];
-
-            STATE.pendingCompressedFile = {
-              base64: base64Data,
-              name: file.name.replace(/\.[^/.]+$/, "") + ".jpg",
-              mime: 'image/jpeg'
-            };
-
-            const finalSizeKb = Math.round((base64Data.length * 3 / 4) / 1024);
-            infoEl.innerText = `✅ Foto teroptimasi (~${finalSizeKb} KB)`;
-          };
-          img.src = e.target.result;
-        };
-        reader.readAsDataURL(file);
-
-      } else {
-        if (file.size > 9 * 1024 * 1024) {
-          tampilkanToast('Ukuran berkas dokumen melebihi 9 MB!', 'error');
-          event.target.value = '';
-          return;
-        }
-
-        const reader = new FileReader();
-        reader.onload = function(e) {
-          const base64Data = e.target.result.split(',')[1];
-          STATE.pendingCompressedFile = {
-            base64: base64Data,
-            name: file.name,
-            mime: file.type || 'application/octet-stream'
-          };
-          infoEl.innerText = `📄 Dokumen siap diunggah: ${(file.size / 1024).toFixed(1)} KB`;
-        };
-        reader.readAsDataURL(file);
-      }
-    }
-
-    async function handleKirimPengeluaran(e) {
-      e.preventDefault();
-      if (!STATE.pendingCompressedFile) {
-        tampilkanToast('Lampirkan berkas bukti nota terlebih dahulu!', 'error');
-        return;
-      }
-
-      const btn = document.getElementById('btnSubmitBelanja');
-      btn.disabled = true;
-      btn.innerHTML = 'Mengunggah & Menyimpan...';
-
-      const payload = {
-        action: 'laporPengeluaran',
-        token: STATE.session.token,
-        idPengajuan: document.getElementById('laporIdAjuan').value,
-        tanggalNota: document.getElementById('laporTanggal').value,
-        nominalRiil: Number(document.getElementById('laporNominal').value),
-        deskripsiBelanja: document.getElementById('laporDeskripsi').value.trim(),
-        fileBase64: STATE.pendingCompressedFile.base64,
-        fileName: STATE.pendingCompressedFile.name,
-        mimeType: STATE.pendingCompressedFile.mime
-      };
-
-      try {
-        const response = await fetch(STATE.apiUrl, {
-          method: 'POST',
-          body: JSON.stringify(payload)
-        });
-        const res = await response.json();
-
-        if (res.success) {
-          tampilkanToast(res.message, 'success');
-          document.getElementById('formLaporBelanja').reset();
-          document.getElementById('fileCompressInfo').innerText = '';
-          STATE.pendingCompressedFile = null;
-          muatDataDashboardPublik();
-        } else {
-          tampilkanToast(res.error || 'Gagal menyimpan pengeluaran', 'error');
-        }
-      } catch (err) {
-        tampilkanToast('Gangguan upload: ' + err.message, 'error');
-      } finally {
-        btn.disabled = false;
-        btn.innerHTML = `<svg class="w-4 h-4 mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg> Laporkan & Simpan Nota`;
-      }
-    }
-
-    // =========================================================================
-    // 6. FITUR ADMIN / BENDAHARA (APPROVAL, PEMASUKAN, RAB, USERS, UBAH KREDENSIAL)
-    // =========================================================================
-
-    async function muatDataAdmin() {
-      if (!STATE.apiUrl || !STATE.session || STATE.session.user.peran !== 'Admin') return;
-      try {
-        const response = await fetch(`${STATE.apiUrl}?action=getDataPengajuan`);
-        const res = await response.json();
-
-        if (res.success) {
-          renderTabelAdminPengajuan(res.data || []);
-        }
-      } catch (err) {
-        console.error('Gagal mengambil data pengajuan admin:', err);
-      }
-    }
-
-    function renderTabelAdminPengajuan(list) {
-      const tbody = document.getElementById('tabelAdminPengajuanBody');
-      if (!list || list.length === 0) {
-        tbody.innerHTML = `<tr><td colspan="7" class="py-6 text-center text-stone-400">Belum ada data pengajuan dana.</td></tr>`;
-        return;
-      }
-
-      tbody.innerHTML = list.map(item => {
-        let badge = '';
-        let aksiButtons = '';
-
-        if (item.Status === 'Disetujui') {
-          badge = `<span class="badge-soft bg-emerald-100 text-emerald-800 dark:bg-emerald-950/60 dark:text-emerald-400">Disetujui</span>`;
-          aksiButtons = `<span class="text-xs text-stone-400">Selesai Diverifikasi</span>`;
-        } else if (item.Status === 'Ditolak') {
-          badge = `<span class="badge-soft bg-rose-100 text-rose-800 dark:bg-rose-950/60 dark:text-rose-400">Ditolak</span>`;
-          aksiButtons = `<span class="text-xs text-stone-400">Ditolak</span>`;
-        } else {
-          badge = `<span class="badge-soft bg-amber-100 text-amber-800 dark:bg-amber-950/60 dark:text-amber-400">Menunggu</span>`;
-          aksiButtons = `
-            <div class="flex items-center justify-center space-x-1.5">
-              <button onclick="bukaModalTindakLanjut('${item.ID_Pengajuan}', 'Disetujui', '${escapeHTML(item.Nama_Kebutuhan)}', '${formatRupiah(item.Nominal_Ajuan_Rp)}')" class="px-2.5 py-1 rounded-lg bg-emerald-700 text-white hover:bg-emerald-800 text-xs font-semibold shadow-xs transition">
-                Setujui
-              </button>
-              <button onclick="bukaModalTindakLanjut('${item.ID_Pengajuan}', 'Ditolak', '${escapeHTML(item.Nama_Kebutuhan)}', '${formatRupiah(item.Nominal_Ajuan_Rp)}')" class="px-2.5 py-1 rounded-lg bg-rose-600 text-white hover:bg-rose-700 text-xs font-semibold shadow-xs transition">
-                Tolak
-              </button>
-            </div>
-          `;
-        }
-
-        return `
-          <tr class="hover:bg-stone-50/60 dark:hover:bg-stone-800/40 transition">
-            <td class="py-3 px-3 font-mono font-medium text-xs text-stone-500">${item.ID_Pengajuan}</td>
-            <td class="py-3 px-3 text-stone-600 dark:text-stone-300 whitespace-nowrap">${item.Tanggal_Ajuan}</td>
-            <td class="py-3 px-3 font-semibold text-stone-800 dark:text-stone-100">${escapeHTML(item.Divisi)}</td>
-            <td class="py-3 px-3 text-stone-600 dark:text-stone-300">${escapeHTML(item.Nama_Kebutuhan)}</td>
-            <td class="py-3 px-3 text-right font-bold text-stone-900 dark:text-white">${formatRupiah(item.Nominal_Ajuan_Rp)}</td>
-            <td class="py-3 px-3 text-center">${badge}</td>
-            <td class="py-3 px-3 text-center">${aksiButtons}</td>
-          </tr>
-        `;
-      }).join('');
-    }
-
-    function bukaModalTindakLanjut(id, aksi, namaKebutuhan, nominalStr) {
-      document.getElementById('modalResponIdPengajuan').value = id;
-      document.getElementById('modalResponTipeAksi').value = aksi;
-      document.getElementById('modalResponJudul').innerText = aksi === 'Disetujui' ? 'Setujui Pengajuan Dana' : 'Tolak & Minta Revisi Pengajuan';
-      document.getElementById('modalResponSubjudul').innerText = `[${id}] ${namaKebutuhan} • ${nominalStr}`;
-      
-      const btn = document.getElementById('modalResponBtnSubmit');
-      if (aksi === 'Disetujui') {
-        btn.className = 'px-4 py-2 rounded-xl text-white text-xs font-semibold shadow-sm transition bg-emerald-700 hover:bg-emerald-800';
-        btn.innerText = 'Konfirmasi Persetujuan';
-        document.getElementById('modalResponCatatan').placeholder = 'Instruksi: Dana dapat dicairkan melalui bendahara.';
-      } else {
-        btn.className = 'px-4 py-2 rounded-xl text-white text-xs font-semibold shadow-sm transition bg-rose-600 hover:bg-rose-700';
-        btn.innerText = 'Konfirmasi Penolakan';
-        document.getElementById('modalResponCatatan').placeholder = 'Tulis alasan penolakan secara jelas agar divisi dapat merevisi rincian belanja.';
-      }
-
-      document.getElementById('modalResponCatatan').value = '';
-      document.getElementById('modalResponPengajuan').classList.remove('hidden');
-    }
-
-    function tutupModalRespon() {
-      document.getElementById('modalResponPengajuan').classList.add('hidden');
-    }
-
-    async function handleKirimResponPengajuan() {
-      const id = document.getElementById('modalResponIdPengajuan').value;
-      const status = document.getElementById('modalResponTipeAksi').value;
-      const catatan = document.getElementById('modalResponCatatan').value.trim();
-
-      if (!catatan) {
-        tampilkanToast('Catatan Bendahara wajib diisi!', 'error');
-        return;
-      }
-
-      const btn = document.getElementById('modalResponBtnSubmit');
-      btn.disabled = true;
-
-      try {
-        const response = await fetch(STATE.apiUrl, {
-          method: 'POST',
-          body: JSON.stringify({
-            action: 'responPengajuan',
-            token: STATE.session.token,
-            idPengajuan: id,
-            status: status,
-            catatan: catatan
-          })
-        });
-        const res = await response.json();
-
-        if (res.success) {
-          tampilkanToast(res.message, 'success');
-          tutupModalRespon();
-          muatDataAdmin();
-          muatDataDashboardPublik();
-        } else {
-          tampilkanToast(res.error || 'Gagal memperbarui status pengajuan.', 'error');
-        }
-      } catch (err) {
-        tampilkanToast('Gangguan komunikasi: ' + err.message, 'error');
-      } finally {
-        btn.disabled = false;
-      }
-    }
-
-    async function handleKirimPemasukan(e) {
-      e.preventDefault();
-      const btn = document.getElementById('btnSubmitPemasukan');
-      btn.disabled = true;
-
-      const payload = {
-        action: 'tambahPemasukan',
-        token: STATE.session.token,
-        tanggal: document.getElementById('inTanggal').value,
-        sumberDana: document.getElementById('inSumber').value.trim(),
-        nominal: Number(document.getElementById('inNominal').value),
-        catatan: document.getElementById('inCatatan').value.trim()
-      };
-
-      try {
-        const response = await fetch(STATE.apiUrl, {
-          method: 'POST',
-          body: JSON.stringify(payload)
-        });
-        const res = await response.json();
-
-        if (res.success) {
-          tampilkanToast(res.message, 'success');
-          document.getElementById('formPemasukanAdmin').reset();
-          muatDataDashboardPublik();
-        } else {
-          tampilkanToast(res.error || 'Gagal mencatat dana masuk.', 'error');
-        }
-      } catch (err) {
-        tampilkanToast('Gangguan jaringan: ' + err.message, 'error');
-      } finally {
-        btn.disabled = false;
-      }
-    }
-
-    async function handleKirimRAB(e) {
-      e.preventDefault();
-      const btn = document.getElementById('btnSubmitRAB');
+      const btn = document.getElementById('btnSubmitRABDivisi');
       btn.disabled = true;
 
       const payload = {
         action: 'tambahRAB',
         token: STATE.session.token,
-        divisi: document.getElementById('rabDivisi').value.trim(),
-        namaPos: document.getElementById('rabPos').value.trim(),
-        paguAnggaran: Number(document.getElementById('rabPagu').value)
+        namaPos: document.getElementById('rabPosDivisi').value.trim(),
+        paguAnggaran: Number(document.getElementById('rabPaguDivisi').value),
+        catatan: document.getElementById('rabCatatanDivisi').value.trim()
       };
 
       try {
@@ -1526,7 +1467,8 @@
 
         if (res.success) {
           tampilkanToast(res.message, 'success');
-          document.getElementById('formRABAdmin').reset();
+          document.getElementById('formRABDivisi').reset();
+          muatDataRABDivisi();
           muatDataDashboardPublik();
         } else {
           tampilkanToast(res.error || 'Gagal menambahkan pos anggaran.', 'error');
@@ -1574,40 +1516,110 @@
     }
 
     // =========================================================================
-    // FITUR EDIT USERNAME & PASSWORD ADMIN BENDAHARA
+    // 6. FITUR ADMIN / BENDAHARA (APPROVAL, PEMASUKAN, RAB, USERS, UBAH KREDENSIAL)
     // =========================================================================
-    async function handleUpdateProfilAdmin(e) {
-      e.preventDefault();
-      const usernameBaru = document.getElementById('adminNewUsername').value.trim();
-      const passBaru = document.getElementById('adminNewPass').value;
-      const passConfirm = document.getElementById('adminNewPassConfirm').value;
 
-      if (!usernameBaru) {
-        tampilkanToast('Username tidak boleh kosong!', 'error');
+    async function muatDataAdmin() {
+      if (!STATE.apiUrl || !STATE.session || STATE.session.user.peran !== 'Admin') return;
+      try {
+        const response = await fetch(`${STATE.apiUrl}?action=getDataPengajuan`);
+        const res = await response.json();
+
+        if (res.success) {
+          renderTabelAdminPengajuan(res.data || []);
+        }
+      } catch (err) {
+        console.error('Gagal mengambil data pengajuan admin:', err);
+      }
+    }
+
+    async function muatDataRABAdmin() {
+      if (!STATE.apiUrl || !STATE.session || STATE.session.user.peran !== 'Admin') return;
+      try {
+        const response = await fetch(`${STATE.apiUrl}?action=getDataRAB`);
+        const res = await response.json();
+
+        if (res.success) {
+          STATE.rabCache = res.data || [];
+          renderTabelAdminRAB(STATE.rabCache);
+        }
+      } catch (err) {
+        console.error('Gagal mengambil data RAB admin:', err);
+      }
+    }
+
+    function renderTabelAdminRAB(list) {
+      const tbody = document.getElementById('tabelAdminRABBody');
+      if (!list || list.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="6" class="py-4 text-center text-stone-400">Belum ada pos anggaran tercatat.</td></tr>`;
         return;
       }
 
-      if (passBaru) {
-        if (passBaru.length < 6) {
-          tampilkanToast('Kata sandi baru minimal 6 karakter!', 'error');
-          return;
-        }
-        if (passBaru !== passConfirm) {
-          tampilkanToast('Konfirmasi kata sandi tidak cocok!', 'error');
-          return;
-        }
+      tbody.innerHTML = list.map(item => `
+        <tr class="hover:bg-stone-50/60 dark:hover:bg-stone-800/40 transition">
+          <td class="py-2.5 px-3 font-mono text-xs text-stone-500">${item.ID_RAB}</td>
+          <td class="py-2.5 px-3 font-semibold text-stone-800 dark:text-stone-100">${escapeHTML(item.Divisi)}</td>
+          <td class="py-2.5 px-3 text-stone-700 dark:text-stone-300">${escapeHTML(item.Nama_Pos_Kebutuhan)}</td>
+          <td class="py-2.5 px-3 text-right font-bold text-stone-900 dark:text-white">${formatRupiah(item.Pagu_Anggaran_Rp)}</td>
+          <td class="py-2.5 px-3 text-xs text-stone-500 max-w-xs truncate">${escapeHTML(item.Catatan || '-')}</td>
+          <td class="py-2.5 px-3 text-center whitespace-nowrap">
+            <button onclick="bukaModalEditRAB('${item.ID_RAB}', '${escapeHTML(item.Divisi)}', '${escapeHTML(item.Nama_Pos_Kebutuhan)}', ${item.Pagu_Anggaran_Rp}, '${escapeHTML(item.Catatan || '')}')" class="px-2 py-1 rounded bg-stone-100 dark:bg-stone-800 hover:bg-brand-creamDark text-brand-caramel font-semibold text-xs transition mr-1">
+              Edit
+            </button>
+            <button onclick="handleHapusPosRAB('${item.ID_RAB}', '${escapeHTML(item.Nama_Pos_Kebutuhan)}')" class="px-2 py-1 rounded bg-rose-50 dark:bg-rose-950/40 hover:bg-rose-100 text-rose-600 font-semibold text-xs transition">
+              Hapus
+            </button>
+          </td>
+        </tr>
+      `).join('');
+    }
+
+    function filterTabelRABAdmin() {
+      const q = document.getElementById('cariRABAdmin').value.toLowerCase();
+      const filtered = STATE.rabCache.filter(item => 
+        (item.Divisi || '').toLowerCase().includes(q) || 
+        (item.Nama_Pos_Kebutuhan || '').toLowerCase().includes(q)
+      );
+      renderTabelAdminRAB(filtered);
+    }
+
+    // Modal & Aksi Edit RAB (Reusable)
+    function bukaModalEditRAB(idRAB, divisi, pos, pagu, catatan) {
+      document.getElementById('editRABId').value = idRAB;
+      document.getElementById('editRABDivisi').value = divisi;
+      document.getElementById('editRABPos').value = pos;
+      document.getElementById('editRABPagu').value = pagu;
+      document.getElementById('editRABCatatan').value = catatan;
+      document.getElementById('modalEditRABSubjudul').innerText = `Kode: ${idRAB} • Divisi: ${divisi}`;
+
+      const divisiContainer = document.getElementById('modalEditRABDivisiContainer');
+      const isDivisiRole = STATE.session && STATE.session.user.peran === 'Divisi';
+      if (isDivisiRole) {
+        document.getElementById('editRABDivisi').readOnly = true;
+      } else {
+        document.getElementById('editRABDivisi').readOnly = false;
       }
 
-      const btn = document.getElementById('btnSubmitProfilAdmin');
+      document.getElementById('modalEditRAB').classList.remove('hidden');
+    }
+
+    function tutupModalEditRAB() {
+      document.getElementById('modalEditRAB').classList.add('hidden');
+    }
+
+    async function handleSimpanEditRAB(e) {
+      e.preventDefault();
+      const btn = document.getElementById('btnSubmitEditRAB');
       btn.disabled = true;
-      btn.innerHTML = 'Menyimpan...';
 
       const payload = {
-        action: 'kelolaPengguna',
-        subAction: 'updateProfilAdmin',
+        action: 'updateRAB',
         token: STATE.session.token,
-        usernameBaru: usernameBaru,
-        passwordBaru: passBaru || null
+        idRAB: document.getElementById('editRABId').value,
+        divisi: document.getElementById('editRABDivisi').value.trim(),
+        namaPos: document.getElementById('editRABPos').value.trim(),
+        paguAnggaran: Number(document.getElementById('editRABPagu').value),
+        catatan: document.getElementById('editRABCatatan').value.trim()
       };
 
       try {
@@ -1619,21 +1631,165 @@
 
         if (res.success) {
           tampilkanToast(res.message, 'success');
-          if (res.user) {
-            STATE.session.user = res.user;
-            localStorage.setItem('AUDERE24_SESSION', JSON.stringify(STATE.session));
-            document.getElementById('labelUserAktif').innerText = `${res.user.username} (${res.user.peran})`;
+          tutupModalEditRAB();
+          if (STATE.session.user.peran === 'Admin') {
+            muatDataRABAdmin();
+          } else {
+            muatDataRABDivisi();
           }
-          document.getElementById('adminNewPass').value = '';
-          document.getElementById('adminNewPassConfirm').value = '';
+          muatDataDashboardPublik();
         } else {
-          tampilkanToast(res.error || 'Gagal memperbarui profil.', 'error');
+          tampilkanToast(res.error || 'Gagal mengubah pos anggaran.', 'error');
         }
       } catch (err) {
         tampilkanToast('Gangguan komunikasi: ' + err.message, 'error');
       } finally {
         btn.disabled = false;
-        btn.innerHTML = `<svg class="w-4 h-4 mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg> Simpan Perubahan Akun`;
+      }
+    }
+
+    async function handleHapusPosRAB(idRAB, namaPos) {
+      if (!window.confirm(`Yakin ingin menghapus pos anggaran "${namaPos}" (${idRAB})?`)) return;
+
+      try {
+        const response = await fetch(STATE.apiUrl, {
+          method: 'POST',
+          body: JSON.stringify({
+            action: 'hapusRAB',
+            token: STATE.session.token,
+            idRAB: idRAB
+          })
+        });
+        const res = await response.json();
+
+        if (res.success) {
+          tampilkanToast(res.message, 'success');
+          if (STATE.session.user.peran === 'Admin') {
+            muatDataRABAdmin();
+          } else {
+            muatDataRABDivisi();
+          }
+          muatDataDashboardPublik();
+        } else {
+          tampilkanToast(res.error || 'Gagal menghapus pos RAB.', 'error');
+        }
+      } catch (err) {
+        tampilkanToast('Gangguan komunikasi: ' + err.message, 'error');
+      }
+    }
+
+    // =========================================================================
+    // FITUR KELOLA PENGGUNA & DAFTAR AKUN DIVISI (ADMIN)
+    // =========================================================================
+
+    async function muatDataPenggunaAdmin(force = false) {
+      if (!STATE.apiUrl || !STATE.session || STATE.session.user.peran !== 'Admin') return;
+      try {
+        const response = await fetch(`${STATE.apiUrl}?action=getUsers&token=${encodeURIComponent(STATE.session.token)}&ts=${Date.now()}`);
+        const res = await response.json();
+
+        if (res.success) {
+          STATE.usersCache = res.data || [];
+          renderTabelAdminUsers(STATE.usersCache);
+          if (force) tampilkanToast('Data pengguna diperbarui.', 'success');
+        } else {
+          tampilkanToast(res.error || 'Gagal mengambil data akun.', 'error');
+        }
+      } catch (err) {
+        console.error('Gagal mengambil data akun panitia:', err);
+      }
+    }
+
+    function renderTabelAdminUsers(list) {
+      const tbody = document.getElementById('tabelAdminUsersBody');
+      if (!list || list.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="6" class="py-4 text-center text-stone-400">Belum ada data pengguna terdaftar.</td></tr>`;
+        return;
+      }
+
+      tbody.innerHTML = list.map(u => {
+        const isAktif = u.Status === 'Aktif';
+        const badgeStatus = isAktif
+          ? `<span class="badge-soft bg-emerald-100 text-emerald-800 dark:bg-emerald-950/60 dark:text-emerald-400">Aktif</span>`
+          : `<span class="badge-soft bg-rose-100 text-rose-800 dark:bg-rose-950/60 dark:text-rose-400">Nonaktif</span>`;
+
+        let actionBtn = '-';
+        if (u.Peran !== 'Admin') {
+          actionBtn = `
+            <div class="flex items-center justify-center space-x-1.5">
+              <button onclick="handleToggleStatusUser('${u.ID_User}', '${isAktif ? 'Nonaktif' : 'Aktif'}')" class="px-2 py-1 rounded text-xs font-semibold ${isAktif ? 'bg-amber-100 text-amber-900 hover:bg-amber-200' : 'bg-emerald-100 text-emerald-900 hover:bg-emerald-200'} transition">
+                ${isAktif ? 'Nonaktifkan' : 'Aktifkan'}
+              </button>
+              <button onclick="handleHapusUser('${u.ID_User}', '${escapeHTML(u.Username)}')" class="px-2 py-1 rounded bg-rose-50 hover:bg-rose-100 text-rose-600 font-semibold text-xs transition">
+                Hapus
+              </button>
+            </div>
+          `;
+        } else {
+          actionBtn = `<span class="text-xs text-stone-400 italic">Akun Utama</span>`;
+        }
+
+        return `
+          <tr class="hover:bg-stone-50/60 dark:hover:bg-stone-800/40 transition">
+            <td class="py-2.5 px-3 font-mono text-xs text-stone-500">${u.ID_User}</td>
+            <td class="py-2.5 px-3 font-semibold text-stone-800 dark:text-stone-100">@${escapeHTML(u.Username)}</td>
+            <td class="py-2.5 px-3 text-stone-700 dark:text-stone-300">${escapeHTML(u.Nama_Divisi)}</td>
+            <td class="py-2.5 px-3"><span class="px-2 py-0.5 rounded text-[11px] font-semibold ${u.Peran === 'Admin' ? 'bg-brand-creamDark text-brand-coffee' : 'bg-stone-100 text-stone-700 dark:bg-stone-800 dark:text-stone-300'}">${u.Peran}</span></td>
+            <td class="py-2.5 px-3 text-center">${badgeStatus}</td>
+            <td class="py-2.5 px-3 text-center">${actionBtn}</td>
+          </tr>
+        `;
+      }).join('');
+    }
+
+    async function handleToggleStatusUser(userId, statusBaru) {
+      try {
+        const response = await fetch(STATE.apiUrl, {
+          method: 'POST',
+          body: JSON.stringify({
+            action: 'kelolaPengguna',
+            subAction: 'toggleStatus',
+            token: STATE.session.token,
+            userId: userId,
+            status: statusBaru
+          })
+        });
+        const res = await response.json();
+
+        if (res.success) {
+          tampilkanToast(res.message, 'success');
+          muatDataPenggunaAdmin();
+        } else {
+          tampilkanToast(res.error || 'Gagal mengubah status akun.', 'error');
+        }
+      } catch (err) {
+        tampilkanToast('Gangguan komunikasi: ' + err.message, 'error');
+      }
+    }
+
+    async function handleHapusUser(userId, username) {
+      if (!window.confirm(`Yakin ingin menghapus akun @${username} (${userId})?`)) return;
+
+      try {
+        const response = await fetch(STATE.apiUrl, {
+          method: 'POST',
+          body: JSON.stringify({
+            action: 'kelolaPengguna',
+            subAction: 'hapusUser',
+            token: STATE.session.token,
+            userId: userId
+          })
+        });
+        const res = await response.json();
+
+        if (res.success) {
+          tampilkanToast(res.message, 'success');
+          muatDataPenggunaAdmin();
+        } else {
+          tampilkanToast(res.error || 'Gagal menghapus pengguna.', 'error');
+        }
+      } catch (err) {
+        tampilkanToast('Gangguan komunikasi: ' + err.message, 'error');
       }
     }
 
@@ -1650,7 +1806,10 @@
         const res = await response.json();
         if (res.success) {
           tampilkanToast(res.message, 'success');
-          muatDataDashboardPublik(true);
+          document.getElementById('formUserBaru').reset();
+          muatDataPenggunaAdmin();
+        } else {
+          tampilkanToast(res.error || 'Gagal membuat akun.', 'error');
         }
       } catch (e) {
         tampilkanToast('Gagal bersihkan cache: ' + e.message, 'error');

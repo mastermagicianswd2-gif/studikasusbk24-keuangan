@@ -277,6 +277,9 @@
         <button onclick="gantiSubTabDivisi('rab')" id="subTabRabDivisiBtn" class="py-2.5 px-1 border-b-2 border-transparent text-stone-500 hover:text-stone-800 dark:hover:text-stone-200 font-semibold text-sm">
           3. Pagu & Penyesuaian RAB Divisi
         </button>
+        <button onclick="gantiSubTabDivisi('rekap')" id="subTabRekapDivisiBtn" class="py-2.5 px-1 border-b-2 border-transparent text-stone-500 hover:text-stone-800 dark:hover:text-stone-200 font-semibold text-sm">
+          4. Rekap Belanja & Sisa Pagu Divisi
+        </button>
       </div>
 
       <!-- Konten SubTab 1: Pengajuan Dana -->
@@ -434,6 +437,61 @@
           </div>
         </div>
       </div>
+
+      <!-- Konten SubTab 4: Rekap Belanja & Sisa Pagu Divisi -->
+      <div id="subTabRekapContent" class="hidden space-y-6">
+        <!-- Kartu Metrik Anggaran Divisi -->
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+          <div class="p-4 rounded-xl bg-white dark:bg-brand-darkCard border border-stone-200 dark:border-brand-darkBorder shadow-sm">
+            <span class="text-xs uppercase font-semibold text-stone-400">Total Pagu Anggaran Divisi</span>
+            <div id="divisiRekapPagu" class="text-xl sm:text-2xl font-extrabold text-brand-coffee dark:text-brand-lightCaramel mt-1">Rp 0</div>
+            <p class="text-[11px] text-stone-500 mt-0.5">Alokasi pagu disepakati di RAB</p>
+          </div>
+
+          <div class="p-4 rounded-xl bg-white dark:bg-brand-darkCard border border-stone-200 dark:border-brand-darkBorder shadow-sm">
+            <span class="text-xs uppercase font-semibold text-stone-400">Total Realisasi Belanja</span>
+            <div id="divisiRekapBelanja" class="text-xl sm:text-2xl font-extrabold text-rose-600 dark:text-rose-400 mt-1">Rp 0</div>
+            <p class="text-[11px] text-stone-500 mt-0.5">Total pengeluaran dengan bukti nota</p>
+          </div>
+
+          <div class="p-4 rounded-xl bg-white dark:bg-brand-darkCard border border-stone-200 dark:border-brand-darkBorder shadow-sm">
+            <span class="text-xs uppercase font-semibold text-stone-400">Sisa Pagu Anggaran Divisi</span>
+            <div id="divisiRekapSisa" class="text-xl sm:text-2xl font-extrabold text-emerald-600 dark:text-emerald-400 mt-1">Rp 0</div>
+            <p class="text-[11px] text-stone-500 mt-0.5">Pagu RAB dikurangi total belanja</p>
+          </div>
+        </div>
+
+        <!-- Tabel Riwayat Belanja Divisi Sendiri -->
+        <div class="p-5 rounded-2xl bg-white dark:bg-brand-darkCard border border-stone-200 dark:border-brand-darkBorder shadow-sm">
+          <div class="flex items-center justify-between mb-4">
+            <div>
+              <h3 class="font-bold text-stone-900 dark:text-white text-base">Riwayat Realisasi Belanja Divisi Anda</h3>
+              <p class="text-xs text-stone-500">Daftar transaksi belanja yang telah dilaporkan ke Bendahara beserta berkas nota bukti</p>
+            </div>
+            <button onclick="muatDataRekapDivisi(true)" class="p-1.5 rounded-xl border border-stone-300 dark:border-stone-700 hover:bg-stone-100 dark:hover:bg-stone-800 text-stone-600 dark:text-stone-300 transition" title="Refresh Data">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>
+            </button>
+          </div>
+
+          <div class="overflow-x-auto">
+            <table class="w-full text-left text-xs sm:text-sm">
+              <thead class="bg-stone-50 dark:bg-stone-800/60 text-stone-500 uppercase font-semibold text-[11px] border-b border-stone-200 dark:border-stone-800">
+                <tr>
+                  <th class="py-2.5 px-3">ID Nota</th>
+                  <th class="py-2.5 px-3">Tanggal Nota</th>
+                  <th class="py-2.5 px-3">Deskripsi Belanja</th>
+                  <th class="py-2.5 px-3">Kode Pengajuan</th>
+                  <th class="py-2.5 px-3 text-right">Nominal Riil</th>
+                  <th class="py-2.5 px-3 text-center">Berkas Bukti</th>
+                </tr>
+              </thead>
+              <tbody id="tabelRekapDivisiBody" class="divide-y divide-stone-100 dark:divide-stone-800/60">
+                <tr><td colspan="6" class="py-6 text-center text-stone-400">Memuat rekapan pengeluaran...</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
     </section>
 
     <!-- 3. VIEW: PANEL BENDAHARA (ADMIN) -->
@@ -463,7 +521,10 @@
 
       <!-- Tab Manajemen Admin -->
       <div class="flex border-b border-stone-200 dark:border-stone-800 overflow-x-auto space-x-4">
-        <button onclick="gantiSubTabAdmin('verifikasi')" id="adminSubVerifBtn" class="py-2 px-1 border-b-2 border-brand-coffee dark:border-brand-caramel text-brand-coffee dark:text-brand-lightCaramel font-semibold text-xs sm:text-sm whitespace-nowrap">
+        <button onclick="gantiSubTabAdmin('rekapKas')" id="adminSubRekapKasBtn" class="py-2 px-1 border-b-2 border-brand-coffee dark:border-brand-caramel text-brand-coffee dark:text-brand-lightCaramel font-semibold text-xs sm:text-sm whitespace-nowrap">
+          📋 Rekap Arus Kas (Semua Divisi)
+        </button>
+        <button onclick="gantiSubTabAdmin('verifikasi')" id="adminSubVerifBtn" class="py-2 px-1 border-b-2 border-transparent text-stone-500 hover:text-stone-800 dark:hover:text-stone-200 font-semibold text-xs sm:text-sm whitespace-nowrap">
           Antrean Persetujuan Dana
         </button>
         <button onclick="gantiSubTabAdmin('pemasukan')" id="adminSubInBtn" class="py-2 px-1 border-b-2 border-transparent text-stone-500 hover:text-stone-800 dark:hover:text-stone-200 font-semibold text-xs sm:text-sm whitespace-nowrap">
@@ -480,110 +541,51 @@
         </button>
       </div>
 
-      <!-- Konten Admin 1: Antrean Verifikasi Pengajuan Dana -->
-      <div id="adminContentVerifikasi" class="space-y-4">
-        <div class="p-5 rounded-2xl bg-white dark:bg-brand-darkCard border border-stone-200 dark:border-brand-darkBorder shadow-sm">
-          <h3 class="font-bold text-stone-900 dark:text-white text-base mb-1">Daftar Pengajuan Dana dari Seluruh Divisi</h3>
-          <p class="text-xs text-stone-500 mb-4">Setujui untuk proses pencairan dana, atau tolak disertai catatan revisi yang jelas.</p>
-
-          <div class="overflow-x-auto">
-            <table class="w-full text-left text-xs sm:text-sm">
-              <thead class="bg-stone-50 dark:bg-stone-800/60 text-stone-500 uppercase font-semibold text-[11px] border-b border-stone-200 dark:border-stone-800">
-                <tr>
-                  <th class="py-3 px-3">Kode</th>
-                  <th class="py-3 px-3">Tanggal</th>
-                  <th class="py-3 px-3">Divisi</th>
-                  <th class="py-3 px-3">Nama Kebutuhan</th>
-                  <th class="py-3 px-3 text-right">Nominal</th>
-                  <th class="py-3 px-3 text-center">Status</th>
-                  <th class="py-3 px-3 text-center">Aksi Bendahara</th>
-                </tr>
-              </thead>
-              <tbody id="tabelAdminPengajuanBody" class="divide-y divide-stone-100 dark:divide-stone-800/60">
-                <tr><td colspan="7" class="py-6 text-center text-stone-400">Memuat pengajuan...</td></tr>
-              </tbody>
-            </table>
+      <!-- Konten Admin 0: Rekap Kas Masuk & Keluar Semua Divisi (Fitur Baru) -->
+      <div id="adminContentRekapKas" class="space-y-4">
+        <!-- 3 Kartu Metrik Admin -->
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+          <div class="p-4 rounded-xl bg-white dark:bg-brand-darkCard border border-stone-200 dark:border-brand-darkBorder shadow-sm">
+            <span class="text-xs uppercase font-semibold text-stone-400">Total Kas Masuk Terkumpul</span>
+            <div id="adminRekapIn" class="text-xl sm:text-2xl font-extrabold text-emerald-600 dark:text-emerald-400 mt-1">Rp 0</div>
+            <p class="text-[11px] text-stone-500 mt-0.5">Dari sponsor, kampus, & donasi</p>
+          </div>
+          <div class="p-4 rounded-xl bg-white dark:bg-brand-darkCard border border-stone-200 dark:border-brand-darkBorder shadow-sm">
+            <span class="text-xs uppercase font-semibold text-stone-400">Total Belanja Seluruh Divisi</span>
+            <div id="adminRekapOut" class="text-xl sm:text-2xl font-extrabold text-rose-600 dark:text-rose-400 mt-1">Rp 0</div>
+            <p class="text-[11px] text-stone-500 mt-0.5">Realisasi nota dari semua divisi</p>
+          </div>
+          <div class="p-4 rounded-xl bg-white dark:bg-brand-darkCard border border-stone-200 dark:border-brand-darkBorder shadow-sm">
+            <span class="text-xs uppercase font-semibold text-stone-400">Sisa Saldo Kas Bersih</span>
+            <div id="adminRekapSaldo" class="text-xl sm:text-2xl font-extrabold text-brand-coffee dark:text-brand-lightCaramel mt-1">Rp 0</div>
+            <p class="text-[11px] text-stone-500 mt-0.5">Saldo kas kegiatan yang siap digunakan</p>
           </div>
         </div>
-      </div>
 
-      <!-- Konten Admin 2: Catat Pemasukan Fleksibel -->
-      <div id="adminContentPemasukan" class="hidden space-y-4">
+        <!-- Tabel Transaksi Seluruh Divisi & Filter Interaktif -->
         <div class="p-5 rounded-2xl bg-white dark:bg-brand-darkCard border border-stone-200 dark:border-brand-darkBorder shadow-sm">
-          <h3 class="font-bold text-stone-900 dark:text-white text-base mb-1">Catat Sumber Dana Masuk</h3>
-          <p class="text-xs text-stone-500 mb-4">Pemasukan dari sponsor, fakultas, penjualan tiket, donasi, atau sumber lainnya.</p>
-
-          <form id="formPemasukanAdmin" onsubmit="handleKirimPemasukan(event)" class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+          <div class="flex flex-col md:flex-row md:items-center justify-between gap-3 mb-4">
             <div>
-              <label class="block text-xs font-semibold text-stone-600 dark:text-stone-300 mb-1">Tanggal Terima *</label>
-              <input type="date" id="inTanggal" required class="w-full px-3 py-2 text-sm rounded-xl border border-stone-300 dark:border-stone-700 bg-stone-50 dark:bg-stone-800 focus:ring-2 focus:ring-brand-caramel outline-none">
+              <h3 class="font-bold text-stone-900 dark:text-white text-base">Rekapitulasi Arus Kas Masuk & Keluar</h3>
+              <p class="text-xs text-stone-500">Pantau seluruh sirkulasi dana, bukti transaksi, dan penggunaan anggaran antardivisi.</p>
             </div>
+            
+            <div class="flex flex-wrap items-center gap-2">
+              <select id="adminFilterJenis" onchange="filterTabelArusKasAdmin()" class="px-2.5 py-1.5 rounded-xl border border-stone-300 dark:border-stone-700 bg-stone-50 dark:bg-stone-800 text-xs focus:ring-2 focus:ring-brand-caramel outline-none">
+                <option value="SEMUA">Semua Jenis (Masuk & Keluar)</option>
+                <option value="Pemasukan">Khusus Pemasukan</option>
+                <option value="Pengeluaran">Khusus Pengeluaran Divisi</option>
+              </select>
 
-            <div>
-              <label class="block text-xs font-semibold text-stone-600 dark:text-stone-300 mb-1">Sumber Dana *</label>
-              <input type="text" id="inSumber" required placeholder="Contoh: Sponsor Bank Mandiri / Kas Fakultas" class="w-full px-3 py-2 text-sm rounded-xl border border-stone-300 dark:border-stone-700 bg-stone-50 dark:bg-stone-800 focus:ring-2 focus:ring-brand-caramel outline-none">
-            </div>
+              <select id="adminFilterDivisi" onchange="filterTabelArusKasAdmin()" class="px-2.5 py-1.5 rounded-xl border border-stone-300 dark:border-stone-700 bg-stone-50 dark:bg-stone-800 text-xs focus:ring-2 focus:ring-brand-caramel outline-none">
+                <option value="SEMUA">Semua Divisi / Sumber</option>
+              </select>
 
-            <div>
-              <label class="block text-xs font-semibold text-stone-600 dark:text-stone-300 mb-1">Nominal (Rp) *</label>
-              <input type="number" id="inNominal" required min="1000" placeholder="Contoh: 5000000" class="w-full px-3 py-2 text-sm rounded-xl border border-stone-300 dark:border-stone-700 bg-stone-50 dark:bg-stone-800 focus:ring-2 focus:ring-brand-caramel outline-none">
-            </div>
+              <input type="text" id="adminFilterCari" oninput="filterTabelArusKasAdmin()" placeholder="Cari keterangan..." class="px-3 py-1.5 rounded-xl border border-stone-300 dark:border-stone-700 bg-stone-50 dark:bg-stone-800 text-xs focus:ring-2 focus:ring-brand-caramel outline-none w-36 sm:w-44">
 
-            <div class="sm:col-span-3">
-              <label class="block text-xs font-semibold text-stone-600 dark:text-stone-300 mb-1">Catatan / No. Transaksi Bank</label>
-              <input type="text" id="inCatatan" placeholder="Contoh: Transfer via Rekening BNI Bendahara ref #998273" class="w-full px-3 py-2 text-sm rounded-xl border border-stone-300 dark:border-stone-700 bg-stone-50 dark:bg-stone-800 focus:ring-2 focus:ring-brand-caramel outline-none">
-            </div>
-
-            <div class="sm:col-span-3 flex justify-end">
-              <button type="submit" id="btnSubmitPemasukan" class="px-5 py-2.5 rounded-xl bg-emerald-700 text-white font-semibold text-sm hover:bg-emerald-800 transition flex items-center shadow-sm">
-                <svg class="w-4 h-4 mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
-                Simpan Dana Masuk
+              <button onclick="muatDataArusKasAdmin(true)" class="p-1.5 rounded-xl border border-stone-300 dark:border-stone-700 hover:bg-stone-100 dark:hover:bg-stone-800 text-stone-600 dark:text-stone-300 transition" title="Refresh">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>
               </button>
-            </div>
-          </form>
-        </div>
-      </div>
-
-      <!-- Konten Admin 3: Pagu Anggaran RAB -->
-      <div id="adminContentRAB" class="hidden space-y-4">
-        <div class="p-5 rounded-2xl bg-white dark:bg-brand-darkCard border border-stone-200 dark:border-brand-darkBorder shadow-sm">
-          <h3 class="font-bold text-stone-900 dark:text-white text-base mb-1">Tambah Pagu Rencana Anggaran Biaya (RAB)</h3>
-          <p class="text-xs text-stone-500 mb-4">Tentukan pagu batas anggaran maksimal per divisi dan pos kebutuhan.</p>
-
-          <form id="formRABAdmin" onsubmit="handleKirimRAB(event)" class="grid grid-cols-1 sm:grid-cols-3 gap-4">
-            <div>
-              <label class="block text-xs font-semibold text-stone-600 dark:text-stone-300 mb-1">Divisi Penerima *</label>
-              <input type="text" id="rabDivisi" required placeholder="Contoh: Divisi Konsumsi" class="w-full px-3 py-2 text-sm rounded-xl border border-stone-300 dark:border-stone-700 bg-stone-50 dark:bg-stone-800 focus:ring-2 focus:ring-brand-caramel outline-none">
-            </div>
-
-            <div>
-              <label class="block text-xs font-semibold text-stone-600 dark:text-stone-300 mb-1">Nama Pos Kebutuhan *</label>
-              <input type="text" id="rabPos" required placeholder="Contoh: Konsumsi Peserta & Panitia" class="w-full px-3 py-2 text-sm rounded-xl border border-stone-300 dark:border-stone-700 bg-stone-50 dark:bg-stone-800 focus:ring-2 focus:ring-brand-caramel outline-none">
-            </div>
-
-            <div>
-              <label class="block text-xs font-semibold text-stone-600 dark:text-stone-300 mb-1">Pagu Anggaran (Rp) *</label>
-              <input type="number" id="rabPagu" required min="1000" placeholder="Contoh: 2500000" class="w-full px-3 py-2 text-sm rounded-xl border border-stone-300 dark:border-stone-700 bg-stone-50 dark:bg-stone-800 focus:ring-2 focus:ring-brand-caramel outline-none">
-            </div>
-
-            <div class="sm:col-span-3 flex justify-end">
-              <button type="submit" id="btnSubmitRAB" class="px-5 py-2.5 rounded-xl bg-brand-coffee text-white dark:bg-brand-caramel font-semibold text-sm hover:opacity-90 transition flex items-center shadow-sm">
-                <svg class="w-4 h-4 mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"/></svg>
-                Tambah Pos Anggaran
-              </button>
-            </div>
-          </form>
-        </div>
-
-        <!-- Tabel Rekapitulasi Seluruh Pagu RAB Semua Divisi -->
-        <div class="p-5 rounded-2xl bg-white dark:bg-brand-darkCard border border-stone-200 dark:border-brand-darkBorder shadow-sm">
-          <div class="sm:flex sm:items-center sm:justify-between mb-4">
-            <div>
-              <h3 class="font-bold text-stone-900 dark:text-white text-base">Seluruh Pos Anggaran RAB Kegiatan</h3>
-              <p class="text-xs text-stone-500">Rekapitulasi pagu alokasi belanja seluruh divisi kepanitiaan.</p>
-            </div>
-            <div class="mt-2 sm:mt-0">
-              <input type="text" id="cariRABAdmin" oninput="filterTabelRABAdmin()" placeholder="Cari divisi / pos kebutuhan..." class="px-3 py-1.5 rounded-xl border border-stone-300 dark:border-stone-700 bg-stone-50 dark:bg-stone-800 text-xs focus:ring-2 focus:ring-brand-caramel outline-none w-56">
             </div>
           </div>
 
@@ -592,23 +594,24 @@
               <thead class="bg-stone-50 dark:bg-stone-800/60 text-stone-500 uppercase font-semibold text-[11px] border-b border-stone-200 dark:border-stone-800">
                 <tr>
                   <th class="py-2.5 px-3">Kode</th>
-                  <th class="py-2.5 px-3">Divisi</th>
-                  <th class="py-2.5 px-3">Nama Pos Kebutuhan</th>
-                  <th class="py-2.5 px-3 text-right">Pagu Anggaran</th>
-                  <th class="py-2.5 px-3">Catatan</th>
-                  <th class="py-2.5 px-3 text-center">Aksi Bendahara</th>
+                  <th class="py-2.5 px-3">Tanggal</th>
+                  <th class="py-2.5 px-3">Jenis</th>
+                  <th class="py-2.5 px-3">Divisi / Pihak</th>
+                  <th class="py-2.5 px-3">Deskripsi Transaksi</th>
+                  <th class="py-2.5 px-3 text-right">Nominal (Rp)</th>
+                  <th class="py-2.5 px-3 text-center">Bukti Nota</th>
                 </tr>
               </thead>
-              <tbody id="tabelAdminRABBody" class="divide-y divide-stone-100 dark:divide-stone-800/60">
-                <tr><td colspan="6" class="py-4 text-center text-stone-400">Memuat pos anggaran...</td></tr>
+              <tbody id="tabelArusKasAdminBody" class="divide-y divide-stone-100 dark:divide-stone-800/60">
+                <tr><td colspan="7" class="py-6 text-center text-stone-400">Memuat rekapitulasi transaksi kas...</td></tr>
               </tbody>
             </table>
           </div>
         </div>
       </div>
 
-      <!-- Konten Admin 4: Kelola Akun Panitia Divisi -->
-      <div id="adminContentUsers" class="hidden space-y-4">
+      <!-- Konten Admin 1: Antrean Verifikasi Pengajuan Dana -->
+      <div id="adminContentVerifikasi" class="hidden space-y-4">
         <div class="p-5 rounded-2xl bg-white dark:bg-brand-darkCard border border-stone-200 dark:border-brand-darkBorder shadow-sm">
           <h3 class="font-bold text-stone-900 dark:text-white text-base mb-1">Buat Akun Panitia Divisi Baru</h3>
           <p class="text-xs text-stone-500 mb-4">Password disimpan aman dalam format hash SHA-256 pada Google Sheets.</p>
@@ -863,6 +866,26 @@
     </div>
   </div>
 
+  <!-- ================= MODAL KONFIRMASI AKSI (PENGGANTI WINDOW.CONFIRM) ================= -->
+  <div id="modalKonfirmasiAksi" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm hidden">
+    <div class="bg-white dark:bg-brand-darkCard rounded-2xl max-w-sm w-full p-6 shadow-2xl border border-stone-200 dark:border-brand-darkBorder text-center">
+      <div class="w-12 h-12 rounded-full bg-rose-100 dark:bg-rose-950/60 text-rose-600 flex items-center justify-center mx-auto mb-3 text-xl font-bold">
+        ⚠️
+      </div>
+      <h3 id="modalKonfirmasiJudul" class="text-base font-bold text-stone-900 dark:text-white">Konfirmasi Tindakan</h3>
+      <p id="modalKonfirmasiPesan" class="text-xs text-stone-500 mt-2 leading-relaxed">Apakah Anda yakin ingin melanjutkan tindakan ini?</p>
+
+      <div class="mt-5 flex justify-center space-x-2">
+        <button onclick="tutupModalKonfirmasi()" class="px-4 py-2 rounded-xl text-xs font-medium text-stone-600 dark:text-stone-400 hover:bg-stone-100 dark:hover:bg-stone-800">
+          Batal
+        </button>
+        <button id="btnEksekusiKonfirmasi" class="px-4 py-2 rounded-xl bg-rose-600 text-white text-xs font-semibold hover:bg-rose-700 shadow-sm transition">
+          Lanjutkan
+        </button>
+      </div>
+    </div>
+  </div>
+
   <!-- ================= JAVASCRIPT LOGIC ================= -->
   <script>
     // =========================================================================
@@ -881,9 +904,12 @@
       barChart: null,
       transaksiCache: [],
       pengajuanDivisiCache: [],
+      pengeluaranDivisiCache: [],
       rabCache: [],
       usersCache: [],
-      pendingCompressedFile: null
+      arusKasAdminCache: [],
+      pendingCompressedFile: null,
+      konfirmasiCallback: null
     };
 
     // Saat Dokumen Siap Dimuat
@@ -1002,13 +1028,11 @@
         labelUser.innerText = `${u.username} (${u.peran})`;
 
         if (u.peran === 'Admin') {
-          // Khusus Admin Bendahara: Tampilkan tab Bendahara, Sembunyikan mutlak tab Divisi
           tabBtnAdmin.classList.remove('hidden');
           tabBtnDivisi.classList.add('hidden');
           const adminUserInput = document.getElementById('adminNewUsername');
           if (adminUserInput) adminUserInput.value = u.username;
         } else {
-          // Khusus Panitia Divisi: Tampilkan tab Divisi, Sembunyikan mutlak tab Bendahara
           tabBtnDivisi.classList.remove('hidden');
           tabBtnAdmin.classList.add('hidden');
           document.getElementById('divisiBannerNama').innerText = u.namaDivisi;
@@ -1040,7 +1064,6 @@
     // =========================================================================
 
     function gantiTab(tab) {
-      // Isolasi Akses Peran: Cegah pembukaan panel yang tidak sesuai hak akses
       if (tab === 'admin') {
         if (!STATE.session || STATE.session.user.peran !== 'Admin') {
           tampilkanToast('Akses ditolak: Panel ini hanya untuk Bendahara Utama.', 'error');
@@ -1084,41 +1107,48 @@
     }
 
     function gantiSubTabDivisi(sub) {
-      const btn1 = document.getElementById('subTabPengajuanBtn');
-      const btn2 = document.getElementById('subTabLaporBtn');
-      const btn3 = document.getElementById('subTabRabDivisiBtn');
-      const c1 = document.getElementById('subTabPengajuanContent');
-      const c2 = document.getElementById('subTabLaporContent');
-      const c3 = document.getElementById('subTabRabContent');
+      const subTabs = ['pengajuan', 'lapor', 'rab', 'rekap'];
+      const btnMap = {
+        pengajuan: 'subTabPengajuanBtn',
+        lapor: 'subTabLaporBtn',
+        rab: 'subTabRabDivisiBtn',
+        rekap: 'subTabRekapDivisiBtn'
+      };
+      const contentMap = {
+        pengajuan: 'subTabPengajuanContent',
+        lapor: 'subTabLaporContent',
+        rab: 'subTabRabContent',
+        rekap: 'subTabRekapContent'
+      };
 
-      [btn1, btn2, btn3].forEach(b => {
-        if (b) b.className = 'py-2.5 px-1 border-b-2 border-transparent text-stone-500 hover:text-stone-800 dark:hover:text-stone-200 font-semibold text-sm';
-      });
-      [c1, c2, c3].forEach(c => {
-        if (c) c.classList.add('hidden');
+      subTabs.forEach(s => {
+        const btn = document.getElementById(btnMap[s]);
+        const content = document.getElementById(contentMap[s]);
+        if (btn) btn.className = 'py-2.5 px-1 border-b-2 border-transparent text-stone-500 hover:text-stone-800 dark:hover:text-stone-200 font-semibold text-sm';
+        if (content) content.classList.add('hidden');
       });
 
-      if (sub === 'pengajuan') {
-        btn1.className = 'py-2.5 px-1 border-b-2 border-brand-coffee dark:border-brand-caramel text-brand-coffee dark:text-brand-lightCaramel font-semibold text-sm';
-        c1.classList.remove('hidden');
-      } else if (sub === 'lapor') {
-        btn2.className = 'py-2.5 px-1 border-b-2 border-brand-coffee dark:border-brand-caramel text-brand-coffee dark:text-brand-lightCaramel font-semibold text-sm';
-        c2.classList.remove('hidden');
-      } else if (sub === 'rab') {
-        btn3.className = 'py-2.5 px-1 border-b-2 border-brand-coffee dark:border-brand-caramel text-brand-coffee dark:text-brand-lightCaramel font-semibold text-sm';
-        c3.classList.remove('hidden');
+      const activeBtn = document.getElementById(btnMap[sub]);
+      const activeContent = document.getElementById(contentMap[sub]);
+      if (activeBtn) activeBtn.className = 'py-2.5 px-1 border-b-2 border-brand-coffee dark:border-brand-caramel text-brand-coffee dark:text-brand-lightCaramel font-semibold text-sm';
+      if (activeContent) activeContent.classList.remove('hidden');
+
+      if (sub === 'rab') {
         muatDataRABDivisi();
+      } else if (sub === 'rekap') {
+        muatDataRekapDivisi();
       }
     }
 
     function gantiSubTabAdmin(sub) {
-      const tabs = ['verifikasi', 'pemasukan', 'rab', 'users', 'profil'];
+      const tabs = ['rekapKas', 'verifikasi', 'pemasukan', 'rab', 'users', 'profil'];
       tabs.forEach(t => {
         const el = document.getElementById('adminContent' + t.charAt(0).toUpperCase() + t.slice(1));
         if (el) el.classList.add('hidden');
       });
 
       const buttons = {
+        rekapKas: 'adminSubRekapKasBtn',
         verifikasi: 'adminSubVerifBtn',
         pemasukan: 'adminSubInBtn',
         rab: 'adminSubRabBtn',
@@ -1141,61 +1171,15 @@
       const activeContent = document.getElementById('adminContent' + sub.charAt(0).toUpperCase() + sub.slice(1));
       if (activeContent) activeContent.classList.remove('hidden');
 
-      if (sub === 'users') {
+      if (sub === 'rekapKas') {
+        muatDataArusKasAdmin();
+      } else if (sub === 'users') {
         muatDataPenggunaAdmin();
       } else if (sub === 'rab') {
         muatDataRABAdmin();
+      } else if (sub === 'verifikasi') {
+        muatDataPengajuanAdmin();
       }
-    }
-
-    function gantiSubTabDivisi(sub) {
-      const btn1 = document.getElementById('subTabPengajuanBtn');
-      const btn2 = document.getElementById('subTabLaporBtn');
-      const c1 = document.getElementById('subTabPengajuanContent');
-      const c2 = document.getElementById('subTabLaporContent');
-
-      if (sub === 'pengajuan') {
-        btn1.className = 'py-2.5 px-1 border-b-2 border-brand-coffee dark:border-brand-caramel text-brand-coffee dark:text-brand-lightCaramel font-semibold text-sm';
-        btn2.className = 'py-2.5 px-1 border-b-2 border-transparent text-stone-500 hover:text-stone-800 dark:hover:text-stone-200 font-semibold text-sm';
-        c1.classList.remove('hidden');
-        c2.classList.add('hidden');
-      } else {
-        btn2.className = 'py-2.5 px-1 border-b-2 border-brand-coffee dark:border-brand-caramel text-brand-coffee dark:text-brand-lightCaramel font-semibold text-sm';
-        btn1.className = 'py-2.5 px-1 border-b-2 border-transparent text-stone-500 hover:text-stone-800 dark:hover:text-stone-200 font-semibold text-sm';
-        c2.classList.remove('hidden');
-        c1.classList.add('hidden');
-      }
-    }
-
-    function gantiSubTabAdmin(sub) {
-      const tabs = ['verifikasi', 'pemasukan', 'rab', 'users', 'profil'];
-      tabs.forEach(t => {
-        const el = document.getElementById('adminContent' + t.charAt(0).toUpperCase() + t.slice(1));
-        if (el) el.classList.add('hidden');
-      });
-
-      const buttons = {
-        verifikasi: 'adminSubVerifBtn',
-        pemasukan: 'adminSubInBtn',
-        rab: 'adminSubRabBtn',
-        users: 'adminSubUsersBtn',
-        profil: 'adminSubProfilBtn'
-      };
-
-      Object.keys(buttons).forEach(key => {
-        const el = document.getElementById(buttons[key]);
-        if (el) {
-          el.className = 'py-2 px-1 border-b-2 border-transparent text-stone-500 hover:text-stone-800 dark:hover:text-stone-200 font-semibold text-xs sm:text-sm whitespace-nowrap';
-        }
-      });
-
-      const activeBtn = document.getElementById(buttons[sub]);
-      if (activeBtn) {
-        activeBtn.className = 'py-2 px-1 border-b-2 border-brand-coffee dark:border-brand-caramel text-brand-coffee dark:text-brand-lightCaramel font-semibold text-xs sm:text-sm whitespace-nowrap';
-      }
-
-      const activeContent = document.getElementById('adminContent' + sub.charAt(0).toUpperCase() + sub.slice(1));
-      if (activeContent) activeContent.classList.remove('hidden');
     }
 
     // =========================================================================
@@ -1217,8 +1201,8 @@
           const kasDivisiEl = document.getElementById('divisiKasTersedia');
           if (kasDivisiEl) kasDivisiEl.innerText = formatRupiah(res.sisaSaldoKas);
 
-          renderDonutChart(res.pengeluaranPerDivisi);
-          renderBarChart(res.rabPerDivisi, res.pengeluaranPerDivisi);
+          renderDonutChart(res.pengeluaranPerDivisi || {});
+          renderBarChart(res.rabPerDivisi || {}, res.pengeluaranPerDivisi || {});
 
           STATE.transaksiCache = res.riwayatTransaksi || [];
           renderTabelPublik(STATE.transaksiCache);
@@ -1379,13 +1363,13 @@
     }
 
     // =========================================================================
-    // 5. FITUR DIVISI (PENGAJUAN & PELAPORAN BELANJA DENGAN KOMPRESI FOTO)
+    // 5. FITUR DIVISI (PENGAJUAN, PELAPORAN BELANJA & REKAP PAGU)
     // =========================================================================
 
     async function muatDataDivisi() {
       if (!STATE.apiUrl || !STATE.session) return;
       try {
-        const response = await fetch(`${STATE.apiUrl}?action=getDataPengajuan`);
+        const response = await fetch(`${STATE.apiUrl}?action=getDataPengajuan&ts=${Date.now()}`);
         const res = await response.json();
 
         if (res.success) {
@@ -1404,10 +1388,194 @@
       }
     }
 
+    async function handleKirimPengajuan(e) {
+      e.preventDefault();
+      const btn = document.getElementById('btnSubmitAjuan');
+      btn.disabled = true;
+
+      const payload = {
+        action: 'ajukanDana',
+        token: STATE.session.token,
+        namaKebutuhan: document.getElementById('ajuNama').value.trim(),
+        nominal: Number(document.getElementById('ajuNominal').value),
+        rincian: document.getElementById('ajuRincian').value.trim()
+      };
+
+      try {
+        const response = await fetch(STATE.apiUrl, {
+          method: 'POST',
+          body: JSON.stringify(payload)
+        });
+        const res = await response.json();
+
+        if (res.success) {
+          tampilkanToast(res.message, 'success');
+          document.getElementById('formAjukanDana').reset();
+          muatDataDivisi();
+        } else {
+          tampilkanToast(res.error || 'Gagal mengirim pengajuan.', 'error');
+        }
+      } catch (err) {
+        tampilkanToast('Gangguan komunikasi: ' + err.message, 'error');
+      } finally {
+        btn.disabled = false;
+      }
+    }
+
+    function renderTabelPengajuanDivisi(list) {
+      const tbody = document.getElementById('tabelPengajuanDivisiBody');
+      if (!list || list.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="6" class="py-4 text-center text-stone-400">Belum ada pengajuan dana dari divisi Anda.</td></tr>`;
+        return;
+      }
+
+      tbody.innerHTML = list.map(item => {
+        let badge = `<span class="badge-soft bg-amber-100 text-amber-800 dark:bg-amber-950/60 dark:text-amber-400">Menunggu</span>`;
+        if (item.Status === 'Disetujui') {
+          badge = `<span class="badge-soft bg-emerald-100 text-emerald-800 dark:bg-emerald-950/60 dark:text-emerald-400">Disetujui</span>`;
+        } else if (item.Status === 'Ditolak') {
+          badge = `<span class="badge-soft bg-rose-100 text-rose-800 dark:bg-rose-950/60 dark:text-rose-400">Ditolak</span>`;
+        }
+
+        return `
+          <tr class="hover:bg-stone-50/60 dark:hover:bg-stone-800/40 transition">
+            <td class="py-2.5 px-3 font-mono text-xs text-stone-500">${item.ID_Pengajuan}</td>
+            <td class="py-2.5 px-3 text-stone-600 dark:text-stone-300 whitespace-nowrap">${item.Tanggal_Ajuan}</td>
+            <td class="py-2.5 px-3 font-semibold text-stone-800 dark:text-stone-100">${escapeHTML(item.Nama_Kebutuhan)}</td>
+            <td class="py-2.5 px-3 text-right font-bold text-stone-900 dark:text-white">${formatRupiah(item.Nominal_Ajuan_Rp)}</td>
+            <td class="py-2.5 px-3 text-center">${badge}</td>
+            <td class="py-2.5 px-3 text-xs text-stone-600 dark:text-stone-300 max-w-xs truncate">${escapeHTML(item.Catatan_Bendahara || '-')}</td>
+          </tr>
+        `;
+      }).join('');
+    }
+
+    // Kompresi Gambar Canvas Sisi Klien untuk Foto Kamera HP
+    function previewDanKompresFile(e) {
+      const file = e.target.files[0];
+      const infoEl = document.getElementById('fileCompressInfo');
+      if (!file) {
+        STATE.pendingCompressedFile = null;
+        if (infoEl) infoEl.innerText = '';
+        return;
+      }
+
+      if (file.type.startsWith('image/')) {
+        infoEl.innerText = 'Mengompres foto nota agar upload cepat...';
+        const reader = new FileReader();
+        reader.onload = function(evt) {
+          const img = new Image();
+          img.onload = function() {
+            const canvas = document.createElement('canvas');
+            const MAX_WIDTH = 1280;
+            const MAX_HEIGHT = 1280;
+            let width = img.width;
+            let height = img.height;
+
+            if (width > height) {
+              if (width > MAX_WIDTH) {
+                height *= MAX_WIDTH / width;
+                width = MAX_WIDTH;
+              }
+            } else {
+              if (height > MAX_HEIGHT) {
+                width *= MAX_HEIGHT / height;
+                height = MAX_HEIGHT;
+              }
+            }
+
+            canvas.width = width;
+            canvas.height = height;
+            const ctx = canvas.getContext('2d');
+            ctx.drawImage(img, 0, 0, width, height);
+
+            const compressedBase64 = canvas.toDataURL('image/jpeg', 0.75);
+            const base64Data = compressedBase64.split(',')[1];
+
+            STATE.pendingCompressedFile = {
+              fileName: file.name.replace(/\.[^/.]+$/, "") + ".jpg",
+              mimeType: 'image/jpeg',
+              base64: base64Data
+            };
+
+            const origKb = Math.round(file.size / 1024);
+            const compKb = Math.round(base64Data.length * 0.75 / 1024);
+            infoEl.innerText = `✓ Foto dioptimalkan: ${origKb} KB → ~${compKb} KB (Siap diunggah)`;
+          };
+          img.src = evt.target.result;
+        };
+        reader.readAsDataURL(file);
+      } else {
+        // Berkas Dokumen (PDF / DOCX)
+        const reader = new FileReader();
+        reader.onload = function(evt) {
+          const b64 = evt.target.result.split(',')[1];
+          STATE.pendingCompressedFile = {
+            fileName: file.name,
+            mimeType: file.type || 'application/octet-stream',
+            base64: b64
+          };
+          infoEl.innerText = `✓ Berkas siap: ${file.name} (${Math.round(file.size / 1024)} KB)`;
+        };
+        reader.readAsDataURL(file);
+      }
+    }
+
+    async function handleKirimPengeluaran(e) {
+      e.preventDefault();
+      if (!STATE.pendingCompressedFile) {
+        tampilkanToast('Silakan pilih berkas nota bukti transaksi terlebih dahulu.', 'error');
+        return;
+      }
+
+      const btn = document.getElementById('btnSubmitBelanja');
+      btn.disabled = true;
+      btn.innerHTML = 'Mengunggah nota & mencatat...';
+
+      const payload = {
+        action: 'laporPengeluaran',
+        token: STATE.session.token,
+        idPengajuan: document.getElementById('laporIdAjuan').value,
+        tanggalNota: document.getElementById('laporTanggal').value,
+        nominalRiil: Number(document.getElementById('laporNominal').value),
+        deskripsiBelanja: document.getElementById('laporDeskripsi').value.trim(),
+        fileBase64: STATE.pendingCompressedFile.base64,
+        fileName: STATE.pendingCompressedFile.fileName,
+        mimeType: STATE.pendingCompressedFile.mimeType
+      };
+
+      try {
+        const response = await fetch(STATE.apiUrl, {
+          method: 'POST',
+          body: JSON.stringify(payload)
+        });
+        const res = await response.json();
+
+        if (res.success) {
+          tampilkanToast(res.message, 'success');
+          document.getElementById('formLaporBelanja').reset();
+          STATE.pendingCompressedFile = null;
+          document.getElementById('fileCompressInfo').innerText = '';
+          muatDataDashboardPublik();
+          muatDataRekapDivisi();
+        } else {
+          tampilkanToast(res.error || 'Gagal menyimpan pengeluaran.', 'error');
+        }
+      } catch (err) {
+        tampilkanToast('Gangguan komunikasi: ' + err.message, 'error');
+      } finally {
+        btn.disabled = false;
+        btn.innerHTML = `
+          <svg class="w-4 h-4 mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+          Laporkan & Simpan Nota
+        `;
+      }
+    }
+
     async function muatDataRABDivisi() {
       if (!STATE.apiUrl || !STATE.session) return;
       try {
-        const response = await fetch(`${STATE.apiUrl}?action=getDataRAB`);
+        const response = await fetch(`${STATE.apiUrl}?action=getDataRAB&ts=${Date.now()}`);
         const res = await response.json();
 
         if (res.success) {
@@ -1437,7 +1605,7 @@
             <button onclick="bukaModalEditRAB('${item.ID_RAB}', '${escapeHTML(item.Divisi)}', '${escapeHTML(item.Nama_Pos_Kebutuhan)}', ${item.Pagu_Anggaran_Rp}, '${escapeHTML(item.Catatan || '')}')" class="px-2 py-1 rounded bg-stone-100 dark:bg-stone-800 hover:bg-brand-creamDark text-brand-caramel font-semibold text-xs transition mr-1">
               Edit
             </button>
-            <button onclick="handleHapusPosRAB('${item.ID_RAB}', '${escapeHTML(item.Nama_Pos_Kebutuhan)}')" class="px-2 py-1 rounded bg-rose-50 dark:bg-rose-950/40 hover:bg-rose-100 text-rose-600 font-semibold text-xs transition">
+            <button onclick="konfirmasiHapusPosRAB('${item.ID_RAB}', '${escapeHTML(item.Nama_Pos_Kebutuhan)}')" class="px-2 py-1 rounded bg-rose-50 dark:bg-rose-950/40 hover:bg-rose-100 text-rose-600 font-semibold text-xs transition">
               Hapus
             </button>
           </td>
@@ -1470,6 +1638,7 @@
           document.getElementById('formRABDivisi').reset();
           muatDataRABDivisi();
           muatDataDashboardPublik();
+          muatDataRekapDivisi();
         } else {
           tampilkanToast(res.error || 'Gagal menambahkan pos anggaran.', 'error');
         }
@@ -1480,63 +1649,211 @@
       }
     }
 
-    async function handleKirimUserBaru(e) {
-      e.preventDefault();
-      const btn = document.getElementById('btnSubmitUser');
-      btn.disabled = true;
-
-      const payload = {
-        action: 'kelolaPengguna',
-        subAction: 'tambah',
-        token: STATE.session.token,
-        username: document.getElementById('userBaruName').value.trim(),
-        password: document.getElementById('userBaruPass').value,
-        namaDivisi: document.getElementById('userBaruDivisi').value.trim(),
-        peran: document.getElementById('userBaruPeran').value
-      };
-
+    // Rekap Khusus Divisi Masing-Masing
+    async function muatDataRekapDivisi(force = false) {
+      if (!STATE.apiUrl || !STATE.session) return;
       try {
-        const response = await fetch(STATE.apiUrl, {
-          method: 'POST',
-          body: JSON.stringify(payload)
-        });
-        const res = await response.json();
+        const [resOut, resRAB] = await Promise.all([
+          fetch(`${STATE.apiUrl}?action=getDataPengeluaran&ts=${Date.now()}`).then(r => r.json()),
+          fetch(`${STATE.apiUrl}?action=getDataRAB&ts=${Date.now()}`).then(r => r.json())
+        ]);
 
-        if (res.success) {
-          tampilkanToast(res.message, 'success');
-          document.getElementById('formUserBaru').reset();
-        } else {
-          tampilkanToast(res.error || 'Gagal membuat akun.', 'error');
+        const namaDivisi = STATE.session.user.namaDivisi;
+
+        let totalPagu = 0;
+        if (resRAB.success && resRAB.data) {
+          resRAB.data
+            .filter(r => r.Divisi === namaDivisi)
+            .forEach(r => totalPagu += (Number(r.Pagu_Anggaran_Rp) || 0));
         }
+
+        let totalBelanja = 0;
+        let listBelanja = [];
+        if (resOut.success && resOut.data) {
+          listBelanja = resOut.data.filter(r => r.Divisi === namaDivisi);
+          listBelanja.forEach(r => totalBelanja += (Number(r.Nominal_Riil_Rp) || 0));
+        }
+
+        const sisaPagu = totalPagu - totalBelanja;
+
+        document.getElementById('divisiRekapPagu').innerText = formatRupiah(totalPagu);
+        document.getElementById('divisiRekapBelanja').innerText = formatRupiah(totalBelanja);
+        const sisaEl = document.getElementById('divisiRekapSisa');
+        sisaEl.innerText = formatRupiah(sisaPagu);
+        sisaEl.className = `text-xl sm:text-2xl font-extrabold mt-1 ${sisaPagu >= 0 ? 'text-emerald-600 dark:text-emerald-400' : 'text-rose-600 dark:text-rose-400'}`;
+
+        renderTabelRekapDivisi(listBelanja);
+        if (force) tampilkanToast('Rekap belanja divisi diperbarui!', 'success');
       } catch (err) {
-        tampilkanToast('Gangguan: ' + err.message, 'error');
-      } finally {
-        btn.disabled = false;
+        console.error('Gagal mengambil data rekap divisi:', err);
       }
     }
 
+    function renderTabelRekapDivisi(list) {
+      const tbody = document.getElementById('tabelRekapDivisiBody');
+      if (!list || list.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="6" class="py-6 text-center text-stone-400">Belum ada pengeluaran yang dilaporkan oleh divisi Anda.</td></tr>`;
+        return;
+      }
+
+      tbody.innerHTML = list.map(item => {
+        const linkBukti = item.Link_Bukti_Drive
+          ? `<a href="${item.Link_Bukti_Drive}" target="_blank" rel="noopener" class="inline-flex items-center px-2 py-1 rounded bg-stone-100 dark:bg-stone-800 hover:bg-brand-creamDark text-brand-caramel text-xs font-semibold">
+              <svg class="w-3.5 h-3.5 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg> Lihat Nota
+             </a>`
+          : `<span class="text-stone-400">-</span>`;
+
+        return `
+          <tr class="hover:bg-stone-50/60 dark:hover:bg-stone-800/40 transition">
+            <td class="py-2.5 px-3 font-mono text-xs text-stone-500">${item.ID_Pengeluaran}</td>
+            <td class="py-2.5 px-3 text-stone-600 dark:text-stone-300 whitespace-nowrap">${item.Tanggal_Nota}</td>
+            <td class="py-2.5 px-3 font-medium text-stone-800 dark:text-stone-100">${escapeHTML(item.Deskripsi_Belanja)}</td>
+            <td class="py-2.5 px-3 font-mono text-xs text-stone-500">${escapeHTML(item.ID_Pengajuan || '-')}</td>
+            <td class="py-2.5 px-3 text-right font-bold text-stone-900 dark:text-white">${formatRupiah(item.Nominal_Riil_Rp)}</td>
+            <td class="py-2.5 px-3 text-center whitespace-nowrap">${linkBukti}</td>
+          </tr>
+        `;
+      }).join('');
+    }
+
     // =========================================================================
-    // 6. FITUR ADMIN / BENDAHARA (APPROVAL, PEMASUKAN, RAB, USERS, UBAH KREDENSIAL)
+    // 6. FITUR ADMIN / BENDAHARA (REKAP KAS, APPROVAL, PEMASUKAN, RAB, USERS)
     // =========================================================================
 
     async function muatDataAdmin() {
       if (!STATE.apiUrl || !STATE.session || STATE.session.user.peran !== 'Admin') return;
-      try {
-        const response = await fetch(`${STATE.apiUrl}?action=getDataPengajuan`);
-        const res = await response.json();
+      // Muat seluruh dataset admin sekaligus saat panel Bendahara pertama kali dibuka
+      await Promise.all([
+        muatDataArusKasAdmin(),
+        muatDataRABAdmin(),
+        muatDataPengajuanAdmin(),
+        muatDataPenggunaAdmin()
+      ]);
+    }
 
-        if (res.success) {
-          renderTabelAdminPengajuan(res.data || []);
+    // Rekapitulasi Arus Kas Keseluruhan Divisi di Panel Admin
+    async function muatDataArusKasAdmin(force = false) {
+      if (!STATE.apiUrl || !STATE.session || STATE.session.user.peran !== 'Admin') return;
+      try {
+        const [resIn, resOut] = await Promise.all([
+          fetch(`${STATE.apiUrl}?action=getDataPemasukan&ts=${Date.now()}`).then(r => r.json()),
+          fetch(`${STATE.apiUrl}?action=getDataPengeluaran&ts=${Date.now()}`).then(r => r.json())
+        ]);
+
+        let listTransaksi = [];
+        let totalIn = 0;
+        let totalOut = 0;
+
+        if (resIn.success && resIn.data) {
+          resIn.data.forEach(item => {
+            const nom = Number(item.Nominal_Rp) || 0;
+            totalIn += nom;
+            listTransaksi.push({
+              id: item.ID_Pemasukan,
+              tanggal: formatTanggal(item.Tanggal),
+              jenis: 'Pemasukan',
+              divisi: item.Sumber_Dana,
+              keterangan: item.Catatan_Keterangan || 'Dana Kas Masuk',
+              nominal: nom,
+              linkBukti: ''
+            });
+          });
         }
+
+        if (resOut.success && resOut.data) {
+          resOut.data.forEach(item => {
+            const nom = Number(item.Nominal_Riil_Rp) || 0;
+            totalOut += nom;
+            listTransaksi.push({
+              id: item.ID_Pengeluaran,
+              tanggal: formatTanggal(item.Tanggal_Nota),
+              jenis: 'Pengeluaran',
+              divisi: item.Divisi,
+              keterangan: item.Deskripsi_Belanja,
+              nominal: nom,
+              linkBukti: item.Link_Bukti_Drive || ''
+            });
+          });
+        }
+
+        listTransaksi.sort((a, b) => new Date(b.tanggal) - new Date(a.tanggal));
+        STATE.arusKasAdminCache = listTransaksi;
+
+        document.getElementById('adminRekapIn').innerText = formatRupiah(totalIn);
+        document.getElementById('adminRekapOut').innerText = formatRupiah(totalOut);
+        document.getElementById('adminRekapSaldo').innerText = formatRupiah(totalIn - totalOut);
+
+        // Isi opsi dropdown filter divisi secara dinamis
+        const filterDivisiSelect = document.getElementById('adminFilterDivisi');
+        const uniqueDivisi = Array.from(new Set(listTransaksi.map(t => t.divisi))).filter(Boolean);
+        let optHtml = '<option value="SEMUA">Semua Divisi / Sumber</option>';
+        uniqueDivisi.forEach(d => {
+          optHtml += `<option value="${escapeHTML(d)}">${escapeHTML(d)}</option>`;
+        });
+        filterDivisiSelect.innerHTML = optHtml;
+
+        renderTabelArusKasAdmin(STATE.arusKasAdminCache);
+        if (force) tampilkanToast('Rekapitulasi kas diperbarui!', 'success');
       } catch (err) {
-        console.error('Gagal mengambil data pengajuan admin:', err);
+        console.error('Gagal memuat rekap arus kas admin:', err);
       }
     }
 
+    function renderTabelArusKasAdmin(list) {
+      const tbody = document.getElementById('tabelArusKasAdminBody');
+      if (!list || list.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="7" class="py-6 text-center text-stone-400">Tidak ada data transaksi yang cocok dengan filter.</td></tr>`;
+        return;
+      }
+
+      tbody.innerHTML = list.map(item => {
+        const isMasuk = item.jenis === 'Pemasukan';
+        const badge = isMasuk
+          ? `<span class="badge-soft bg-emerald-100 text-emerald-800 dark:bg-emerald-950/60 dark:text-emerald-400">Masuk</span>`
+          : `<span class="badge-soft bg-rose-100 text-rose-800 dark:bg-rose-950/60 dark:text-rose-400">Keluar</span>`;
+
+        const linkNota = item.linkBukti
+          ? `<a href="${item.linkBukti}" target="_blank" rel="noopener" class="inline-flex items-center px-2 py-1 rounded bg-stone-100 dark:bg-stone-800 hover:bg-brand-creamDark text-brand-caramel text-xs font-semibold">
+              <svg class="w-3.5 h-3.5 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg> Bukti Nota
+             </a>`
+          : `<span class="text-stone-400 text-xs">-</span>`;
+
+        return `
+          <tr class="hover:bg-stone-50/60 dark:hover:bg-stone-800/40 transition">
+            <td class="py-2.5 px-3 font-mono text-xs text-stone-500 whitespace-nowrap">${item.id}</td>
+            <td class="py-2.5 px-3 text-stone-600 dark:text-stone-300 whitespace-nowrap">${item.tanggal}</td>
+            <td class="py-2.5 px-3">${badge}</td>
+            <td class="py-2.5 px-3 font-semibold text-stone-800 dark:text-stone-100">${escapeHTML(item.divisi)}</td>
+            <td class="py-2.5 px-3 text-stone-600 dark:text-stone-300 max-w-xs truncate">${escapeHTML(item.keterangan)}</td>
+            <td class="py-2.5 px-3 text-right font-bold ${isMasuk ? 'text-emerald-600 dark:text-emerald-400' : 'text-stone-900 dark:text-white'}">
+              ${isMasuk ? '+' : '-'} ${formatRupiah(item.nominal)}
+            </td>
+            <td class="py-2.5 px-3 text-center whitespace-nowrap">${linkNota}</td>
+          </tr>
+        `;
+      }).join('');
+    }
+
+    function filterTabelArusKasAdmin() {
+      const jenis = document.getElementById('adminFilterJenis').value;
+      const divisi = document.getElementById('adminFilterDivisi').value;
+      const q = document.getElementById('adminFilterCari').value.toLowerCase().trim();
+
+      const filtered = STATE.arusKasAdminCache.filter(item => {
+        const matchJenis = (jenis === 'SEMUA') || (item.jenis === jenis);
+        const matchDivisi = (divisi === 'SEMUA') || (item.divisi === divisi);
+        const matchText = (item.keterangan || '').toLowerCase().includes(q) || (item.divisi || '').toLowerCase().includes(q) || item.id.toLowerCase().includes(q);
+        return matchJenis && matchDivisi && matchText;
+      });
+
+      renderTabelArusKasAdmin(filtered);
+    }
+
+    // Pagu RAB Admin
     async function muatDataRABAdmin() {
       if (!STATE.apiUrl || !STATE.session || STATE.session.user.peran !== 'Admin') return;
       try {
-        const response = await fetch(`${STATE.apiUrl}?action=getDataRAB`);
+        const response = await fetch(`${STATE.apiUrl}?action=getDataRAB&ts=${Date.now()}`);
         const res = await response.json();
 
         if (res.success) {
@@ -1551,7 +1868,7 @@
     function renderTabelAdminRAB(list) {
       const tbody = document.getElementById('tabelAdminRABBody');
       if (!list || list.length === 0) {
-        tbody.innerHTML = `<tr><td colspan="6" class="py-4 text-center text-stone-400">Belum ada pos anggaran tercatat.</td></tr>`;
+        tbody.innerHTML = `<tr><td colspan="6" class="py-6 text-center text-stone-400">Belum ada pos anggaran RAB tercatat. Silakan tambah melalui formulir di atas.</td></tr>`;
         return;
       }
 
@@ -1566,7 +1883,7 @@
             <button onclick="bukaModalEditRAB('${item.ID_RAB}', '${escapeHTML(item.Divisi)}', '${escapeHTML(item.Nama_Pos_Kebutuhan)}', ${item.Pagu_Anggaran_Rp}, '${escapeHTML(item.Catatan || '')}')" class="px-2 py-1 rounded bg-stone-100 dark:bg-stone-800 hover:bg-brand-creamDark text-brand-caramel font-semibold text-xs transition mr-1">
               Edit
             </button>
-            <button onclick="handleHapusPosRAB('${item.ID_RAB}', '${escapeHTML(item.Nama_Pos_Kebutuhan)}')" class="px-2 py-1 rounded bg-rose-50 dark:bg-rose-950/40 hover:bg-rose-100 text-rose-600 font-semibold text-xs transition">
+            <button onclick="konfirmasiHapusPosRAB('${item.ID_RAB}', '${escapeHTML(item.Nama_Pos_Kebutuhan)}')" class="px-2 py-1 rounded bg-rose-50 dark:bg-rose-950/40 hover:bg-rose-100 text-rose-600 font-semibold text-xs transition">
               Hapus
             </button>
           </td>
@@ -1583,6 +1900,42 @@
       renderTabelAdminRAB(filtered);
     }
 
+    async function handleKirimRAB(e) {
+      e.preventDefault();
+      const btn = document.getElementById('btnSubmitRAB');
+      btn.disabled = true;
+
+      const payload = {
+        action: 'tambahRAB',
+        token: STATE.session.token,
+        divisi: document.getElementById('rabDivisi').value.trim(),
+        namaPos: document.getElementById('rabPos').value.trim(),
+        paguAnggaran: Number(document.getElementById('rabPagu').value),
+        catatan: ''
+      };
+
+      try {
+        const response = await fetch(STATE.apiUrl, {
+          method: 'POST',
+          body: JSON.stringify(payload)
+        });
+        const res = await response.json();
+
+        if (res.success) {
+          tampilkanToast(res.message, 'success');
+          document.getElementById('formRABAdmin').reset();
+          muatDataRABAdmin();
+          muatDataDashboardPublik();
+        } else {
+          tampilkanToast(res.error || 'Gagal menambahkan pos anggaran.', 'error');
+        }
+      } catch (err) {
+        tampilkanToast('Gangguan: ' + err.message, 'error');
+      } finally {
+        btn.disabled = false;
+      }
+    }
+
     // Modal & Aksi Edit RAB (Reusable)
     function bukaModalEditRAB(idRAB, divisi, pos, pagu, catatan) {
       document.getElementById('editRABId').value = idRAB;
@@ -1592,14 +1945,8 @@
       document.getElementById('editRABCatatan').value = catatan;
       document.getElementById('modalEditRABSubjudul').innerText = `Kode: ${idRAB} • Divisi: ${divisi}`;
 
-      const divisiContainer = document.getElementById('modalEditRABDivisiContainer');
       const isDivisiRole = STATE.session && STATE.session.user.peran === 'Divisi';
-      if (isDivisiRole) {
-        document.getElementById('editRABDivisi').readOnly = true;
-      } else {
-        document.getElementById('editRABDivisi').readOnly = false;
-      }
-
+      document.getElementById('editRABDivisi').readOnly = isDivisiRole;
       document.getElementById('modalEditRAB').classList.remove('hidden');
     }
 
@@ -1636,6 +1983,7 @@
             muatDataRABAdmin();
           } else {
             muatDataRABDivisi();
+            muatDataRekapDivisi();
           }
           muatDataDashboardPublik();
         } else {
@@ -1648,39 +1996,235 @@
       }
     }
 
-    async function handleHapusPosRAB(idRAB, namaPos) {
-      if (!window.confirm(`Yakin ingin menghapus pos anggaran "${namaPos}" (${idRAB})?`)) return;
+    function konfirmasiHapusPosRAB(idRAB, namaPos) {
+      bukaModalKonfirmasi(`Hapus pos anggaran "${namaPos}" (${idRAB})?`, async () => {
+        try {
+          const response = await fetch(STATE.apiUrl, {
+            method: 'POST',
+            body: JSON.stringify({
+              action: 'hapusRAB',
+              token: STATE.session.token,
+              idRAB: idRAB
+            })
+          });
+          const res = await response.json();
+
+          if (res.success) {
+            tampilkanToast(res.message, 'success');
+            if (STATE.session.user.peran === 'Admin') {
+              muatDataRABAdmin();
+            } else {
+              muatDataRABDivisi();
+              muatDataRekapDivisi();
+            }
+            muatDataDashboardPublik();
+          } else {
+            tampilkanToast(res.error || 'Gagal menghapus pos RAB.', 'error');
+          }
+        } catch (err) {
+          tampilkanToast('Gangguan komunikasi: ' + err.message, 'error');
+        }
+      });
+    }
+
+    // Verifikasi Pengajuan Dana oleh Bendahara
+    async function muatDataPengajuanAdmin() {
+      if (!STATE.apiUrl || !STATE.session || STATE.session.user.peran !== 'Admin') return;
+      try {
+        const response = await fetch(`${STATE.apiUrl}?action=getDataPengajuan&ts=${Date.now()}`);
+        const res = await response.json();
+
+        if (res.success) {
+          renderTabelAdminPengajuan(res.data || []);
+        }
+      } catch (err) {
+        console.error('Gagal mengambil data pengajuan admin:', err);
+      }
+    }
+
+    function renderTabelAdminPengajuan(list) {
+      const tbody = document.getElementById('tabelAdminPengajuanBody');
+      if (!list || list.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="7" class="py-6 text-center text-stone-400">Belum ada pengajuan dana yang diajukan divisi.</td></tr>`;
+        return;
+      }
+
+      tbody.innerHTML = list.map(item => {
+        let badge = `<span class="badge-soft bg-amber-100 text-amber-800 dark:bg-amber-950/60 dark:text-amber-400">Menunggu</span>`;
+        if (item.Status === 'Disetujui') {
+          badge = `<span class="badge-soft bg-emerald-100 text-emerald-800 dark:bg-emerald-950/60 dark:text-emerald-400">Disetujui</span>`;
+        } else if (item.Status === 'Ditolak') {
+          badge = `<span class="badge-soft bg-rose-100 text-rose-800 dark:bg-rose-950/60 dark:text-rose-400">Ditolak</span>`;
+        }
+
+        let aksiBtn = `
+          <div class="flex items-center justify-center space-x-1.5">
+            <button onclick="bukaModalRespon('${item.ID_Pengajuan}', 'Disetujui', '${escapeHTML(item.Nama_Kebutuhan)}', ${item.Nominal_Ajuan_Rp})" class="px-2 py-1 rounded bg-emerald-600 text-white font-semibold text-xs hover:bg-emerald-700 transition">
+              Setujui
+            </button>
+            <button onclick="bukaModalRespon('${item.ID_Pengajuan}', 'Ditolak', '${escapeHTML(item.Nama_Kebutuhan)}', ${item.Nominal_Ajuan_Rp})" class="px-2 py-1 rounded bg-rose-600 text-white font-semibold text-xs hover:bg-rose-700 transition">
+              Tolak
+            </button>
+          </div>
+        `;
+
+        if (item.Status !== 'Menunggu') {
+          aksiBtn = `<span class="text-xs text-stone-400 italic">Selesai (${item.Tanggal_Respon || '-'})</span>`;
+        }
+
+        return `
+          <tr class="hover:bg-stone-50/60 dark:hover:bg-stone-800/40 transition">
+            <td class="py-2.5 px-3 font-mono text-xs text-stone-500 whitespace-nowrap">${item.ID_Pengajuan}</td>
+            <td class="py-2.5 px-3 text-stone-600 dark:text-stone-300 whitespace-nowrap">${item.Tanggal_Ajuan}</td>
+            <td class="py-2.5 px-3 font-semibold text-stone-800 dark:text-stone-100">${escapeHTML(item.Divisi)}</td>
+            <td class="py-2.5 px-3 text-stone-700 dark:text-stone-300">
+              <div class="font-medium">${escapeHTML(item.Nama_Kebutuhan)}</div>
+              <div class="text-[11px] text-stone-400">${escapeHTML(item.Rincian || '')}</div>
+            </td>
+            <td class="py-2.5 px-3 text-right font-bold text-stone-900 dark:text-white">${formatRupiah(item.Nominal_Ajuan_Rp)}</td>
+            <td class="py-2.5 px-3 text-center">${badge}</td>
+            <td class="py-2.5 px-3 text-center whitespace-nowrap">${aksiBtn}</td>
+          </tr>
+        `;
+      }).join('');
+    }
+
+    function bukaModalRespon(idPengajuan, tipeAksi, kebutuhan, nominal) {
+      document.getElementById('modalResponIdPengajuan').value = idPengajuan;
+      document.getElementById('modalResponTipeAksi').value = tipeAksi;
+      document.getElementById('modalResponJudul').innerText = `${tipeAksi === 'Disetujui' ? 'Setujui' : 'Tolak'} Pengajuan [${idPengajuan}]`;
+      document.getElementById('modalResponSubjudul').innerText = `${kebutuhan} • ${formatRupiah(nominal)}`;
+      
+      const submitBtn = document.getElementById('modalResponBtnSubmit');
+      if (tipeAksi === 'Disetujui') {
+        submitBtn.className = 'px-4 py-2 rounded-xl text-white text-xs font-semibold shadow-sm bg-emerald-600 hover:bg-emerald-700 transition';
+        submitBtn.innerText = 'Konfirmasi Setujui';
+      } else {
+        submitBtn.className = 'px-4 py-2 rounded-xl text-white text-xs font-semibold shadow-sm bg-rose-600 hover:bg-rose-700 transition';
+        submitBtn.innerText = 'Konfirmasi Tolak';
+      }
+
+      document.getElementById('modalResponCatatan').value = '';
+      document.getElementById('modalResponPengajuan').classList.remove('hidden');
+    }
+
+    function tutupModalRespon() {
+      document.getElementById('modalResponPengajuan').classList.add('hidden');
+    }
+
+    async function handleKirimResponPengajuan() {
+      const idPengajuan = document.getElementById('modalResponIdPengajuan').value;
+      const status = document.getElementById('modalResponTipeAksi').value;
+      const catatan = document.getElementById('modalResponCatatan').value.trim();
+
+      if (!catatan) {
+        tampilkanToast('Catatan Bendahara wajib diisi.', 'error');
+        return;
+      }
+
+      const btn = document.getElementById('modalResponBtnSubmit');
+      btn.disabled = true;
 
       try {
         const response = await fetch(STATE.apiUrl, {
           method: 'POST',
           body: JSON.stringify({
-            action: 'hapusRAB',
+            action: 'responPengajuan',
             token: STATE.session.token,
-            idRAB: idRAB
+            idPengajuan: idPengajuan,
+            status: status,
+            catatan: catatan
           })
         });
         const res = await response.json();
 
         if (res.success) {
           tampilkanToast(res.message, 'success');
-          if (STATE.session.user.peran === 'Admin') {
-            muatDataRABAdmin();
-          } else {
-            muatDataRABDivisi();
-          }
-          muatDataDashboardPublik();
+          tutupModalRespon();
+          muatDataPengajuanAdmin();
         } else {
-          tampilkanToast(res.error || 'Gagal menghapus pos RAB.', 'error');
+          tampilkanToast(res.error || 'Gagal memproses pengajuan.', 'error');
         }
       } catch (err) {
         tampilkanToast('Gangguan komunikasi: ' + err.message, 'error');
+      } finally {
+        btn.disabled = false;
       }
     }
 
-    // =========================================================================
-    // FITUR KELOLA PENGGUNA & DAFTAR AKUN DIVISI (ADMIN)
-    // =========================================================================
+    // Catat Pemasukan Baru
+    async function handleKirimPemasukan(e) {
+      e.preventDefault();
+      const btn = document.getElementById('btnSubmitPemasukan');
+      btn.disabled = true;
+
+      const payload = {
+        action: 'tambahPemasukan',
+        token: STATE.session.token,
+        tanggal: document.getElementById('inTanggal').value,
+        sumberDana: document.getElementById('inSumber').value.trim(),
+        nominal: Number(document.getElementById('inNominal').value),
+        catatan: document.getElementById('inCatatan').value.trim()
+      };
+
+      try {
+        const response = await fetch(STATE.apiUrl, {
+          method: 'POST',
+          body: JSON.stringify(payload)
+        });
+        const res = await response.json();
+
+        if (res.success) {
+          tampilkanToast(res.message, 'success');
+          document.getElementById('formPemasukanAdmin').reset();
+          muatDataDashboardPublik();
+          muatDataArusKasAdmin();
+        } else {
+          tampilkanToast(res.error || 'Gagal menyimpan dana masuk.', 'error');
+        }
+      } catch (err) {
+        tampilkanToast('Gangguan komunikasi: ' + err.message, 'error');
+      } finally {
+        btn.disabled = false;
+      }
+    }
+
+    // Kelola Akun Panitia Divisi
+    async function handleKirimUserBaru(e) {
+      e.preventDefault();
+      const btn = document.getElementById('btnSubmitUser');
+      btn.disabled = true;
+
+      const payload = {
+        action: 'kelolaPengguna',
+        subAction: 'tambah',
+        token: STATE.session.token,
+        username: document.getElementById('userBaruName').value.trim(),
+        password: document.getElementById('userBaruPass').value,
+        namaDivisi: document.getElementById('userBaruDivisi').value.trim(),
+        peran: document.getElementById('userBaruPeran').value
+      };
+
+      try {
+        const response = await fetch(STATE.apiUrl, {
+          method: 'POST',
+          body: JSON.stringify(payload)
+        });
+        const res = await response.json();
+
+        if (res.success) {
+          tampilkanToast(res.message, 'success');
+          document.getElementById('formUserBaru').reset();
+          muatDataPenggunaAdmin();
+        } else {
+          tampilkanToast(res.error || 'Gagal membuat akun.', 'error');
+        }
+      } catch (err) {
+        tampilkanToast('Gangguan: ' + err.message, 'error');
+      } finally {
+        btn.disabled = false;
+      }
+    }
 
     async function muatDataPenggunaAdmin(force = false) {
       if (!STATE.apiUrl || !STATE.session || STATE.session.user.peran !== 'Admin') return;
@@ -1720,7 +2264,7 @@
               <button onclick="handleToggleStatusUser('${u.ID_User}', '${isAktif ? 'Nonaktif' : 'Aktif'}')" class="px-2 py-1 rounded text-xs font-semibold ${isAktif ? 'bg-amber-100 text-amber-900 hover:bg-amber-200' : 'bg-emerald-100 text-emerald-900 hover:bg-emerald-200'} transition">
                 ${isAktif ? 'Nonaktifkan' : 'Aktifkan'}
               </button>
-              <button onclick="handleHapusUser('${u.ID_User}', '${escapeHTML(u.Username)}')" class="px-2 py-1 rounded bg-rose-50 hover:bg-rose-100 text-rose-600 font-semibold text-xs transition">
+              <button onclick="konfirmasiHapusUser('${u.ID_User}', '${escapeHTML(u.Username)}')" class="px-2 py-1 rounded bg-rose-50 hover:bg-rose-100 text-rose-600 font-semibold text-xs transition">
                 Hapus
               </button>
             </div>
@@ -1767,29 +2311,76 @@
       }
     }
 
-    async function handleHapusUser(userId, username) {
-      if (!window.confirm(`Yakin ingin menghapus akun @${username} (${userId})?`)) return;
+    function konfirmasiHapusUser(userId, username) {
+      bukaModalKonfirmasi(`Hapus akun @${username} (${userId}) secara permanen?`, async () => {
+        try {
+          const response = await fetch(STATE.apiUrl, {
+            method: 'POST',
+            body: JSON.stringify({
+              action: 'kelolaPengguna',
+              subAction: 'hapusUser',
+              token: STATE.session.token,
+              userId: userId
+            })
+          });
+          const res = await response.json();
+
+          if (res.success) {
+            tampilkanToast(res.message, 'success');
+            muatDataPenggunaAdmin();
+          } else {
+            tampilkanToast(res.error || 'Gagal menghapus pengguna.', 'error');
+          }
+        } catch (err) {
+          tampilkanToast('Gangguan komunikasi: ' + err.message, 'error');
+        }
+      });
+    }
+
+    // Ubah Kredensial Bendahara
+    async function handleUpdateProfilAdmin(e) {
+      e.preventDefault();
+      const newUsername = document.getElementById('adminNewUsername').value.trim();
+      const newPass = document.getElementById('adminNewPass').value;
+      const newPassConfirm = document.getElementById('adminNewPassConfirm').value;
+
+      if (newPass && newPass !== newPassConfirm) {
+        tampilkanToast('Konfirmasi kata sandi baru tidak sesuai.', 'error');
+        return;
+      }
+
+      const btn = document.getElementById('btnSubmitProfilAdmin');
+      btn.disabled = true;
 
       try {
         const response = await fetch(STATE.apiUrl, {
           method: 'POST',
           body: JSON.stringify({
             action: 'kelolaPengguna',
-            subAction: 'hapusUser',
+            subAction: 'updateProfilAdmin',
             token: STATE.session.token,
-            userId: userId
+            usernameBaru: newUsername,
+            passwordBaru: newPass
           })
         });
         const res = await response.json();
 
         if (res.success) {
           tampilkanToast(res.message, 'success');
-          muatDataPenggunaAdmin();
+          if (res.user) {
+            STATE.session.user = res.user;
+            localStorage.setItem('AUDERE24_SESSION', JSON.stringify(STATE.session));
+            pulihkanSesiLogin();
+          }
+          document.getElementById('adminNewPass').value = '';
+          document.getElementById('adminNewPassConfirm').value = '';
         } else {
-          tampilkanToast(res.error || 'Gagal menghapus pengguna.', 'error');
+          tampilkanToast(res.error || 'Gagal memperbarui profil.', 'error');
         }
       } catch (err) {
         tampilkanToast('Gangguan komunikasi: ' + err.message, 'error');
+      } finally {
+        btn.disabled = false;
       }
     }
 
@@ -1806,10 +2397,10 @@
         const res = await response.json();
         if (res.success) {
           tampilkanToast(res.message, 'success');
-          document.getElementById('formUserBaru').reset();
-          muatDataPenggunaAdmin();
+          muatDataDashboardPublik();
+          muatDataArusKasAdmin();
         } else {
-          tampilkanToast(res.error || 'Gagal membuat akun.', 'error');
+          tampilkanToast(res.error || 'Gagal membersihkan cache.', 'error');
         }
       } catch (e) {
         tampilkanToast('Gagal bersihkan cache: ' + e.message, 'error');
@@ -1837,6 +2428,25 @@
       }
     }
 
+    // Modal Konfirmasi Aksi Kustom (Pengganti window.confirm)
+    function bukaModalKonfirmasi(pesan, callback) {
+      document.getElementById('modalKonfirmasiPesan').innerText = pesan;
+      STATE.konfirmasiCallback = callback;
+      const btn = document.getElementById('btnEksekusiKonfirmasi');
+      btn.onclick = async () => {
+        tutupModalKonfirmasi();
+        if (typeof STATE.konfirmasiCallback === 'function') {
+          await STATE.konfirmasiCallback();
+        }
+      };
+      document.getElementById('modalKonfirmasiAksi').classList.remove('hidden');
+    }
+
+    function tutupModalKonfirmasi() {
+      document.getElementById('modalKonfirmasiAksi').classList.add('hidden');
+      STATE.konfirmasiCallback = null;
+    }
+
     // =========================================================================
     // 7. EKSPOR LAPORAN (PRINT PDF & CSV EXCEL)
     // =========================================================================
@@ -1853,7 +2463,7 @@
       if (!STATE.apiUrl) return;
       try {
         tampilkanToast('Menyiapkan berkas CSV...', 'info');
-        const res = await fetch(`${STATE.apiUrl}?action=getExportData`);
+        const res = await fetch(`${STATE.apiUrl}?action=getExportData&ts=${Date.now()}`);
         const json = await res.json();
 
         if (json.success && json.pengeluaran) {
@@ -1891,6 +2501,14 @@
     function formatRupiah(angka) {
       const num = Number(angka) || 0;
       return 'Rp ' + num.toLocaleString('id-ID');
+    }
+
+    function formatTanggal(rawDate) {
+      if (!rawDate) return '-';
+      if (typeof rawDate === 'string' && rawDate.includes('T')) {
+        return rawDate.split('T')[0];
+      }
+      return String(rawDate).substring(0, 10);
     }
 
     function escapeHTML(str) {

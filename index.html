@@ -156,9 +156,9 @@
       <div class="rounded-2xl p-6 bg-gradient-to-r from-brand-coffee via-brand-caramel to-amber-800 text-white shadow-lg relative overflow-hidden">
         <div class="relative z-10 max-w-2xl">
           <div class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold bg-white/20 text-white mb-2">
-            Kuliah Umum Studi Kasus BK Angkatan 2024
+            Kuliah Umum Studi Kasus BK 2024
           </div>
-          <h2 class="text-2xl sm:text-3xl font-extrabold tracking-tight">Keterbukaan Anggaran Kuliah Umum Studi Kasus</h2>
+          <h2 class="text-2xl sm:text-3xl font-extrabold tracking-tight">Keterbukaan Anggaran Audere 24</h2>
           <p class="mt-2 text-stone-200 text-sm sm:text-base leading-relaxed">
             Sistem akuntabilitas satu pintu untuk memantau pemasukan, alokasi pagu anggaran, dan realisasi belanja divisi secara transparan dan akurat.
           </p>
@@ -312,7 +312,7 @@
       </div>
 
       <!-- Navigasi Tab Internal Divisi -->
-      <div class="flex border-b border-stone-200 dark:border-stone-800 space-x-4">
+      <div class="flex flex-wrap border-b border-stone-200 dark:border-stone-800 gap-x-4">
         <button onclick="gantiSubTabDivisi('pengajuan')" id="subTabPengajuanBtn" class="py-2.5 px-1 border-b-2 border-brand-coffee dark:border-brand-caramel text-brand-coffee dark:text-brand-lightCaramel font-semibold text-sm">
           1. Permohonan Dana (Ajuan)
         </button>
@@ -321,6 +321,9 @@
         </button>
         <button onclick="gantiSubTabDivisi('rab')" id="subTabRabDivisiBtn" class="py-2.5 px-1 border-b-2 border-transparent text-stone-500 hover:text-stone-800 dark:hover:text-stone-200 font-semibold text-sm">
           3. Pagu Dana Divisi (Diatur Bendahara)
+        </button>
+        <button onclick="gantiSubTabDivisi('rabdok')" id="subTabRabDokBtn" class="py-2.5 px-1 border-b-2 border-transparent text-stone-500 hover:text-stone-800 dark:hover:text-stone-200 font-semibold text-sm">
+          5. RAB Divisi (Rencana Anggaran Biaya)
         </button>
         <button onclick="gantiSubTabDivisi('rekap')" id="subTabRekapDivisiBtn" class="py-2.5 px-1 border-b-2 border-transparent text-stone-500 hover:text-stone-800 dark:hover:text-stone-200 font-semibold text-sm">
           4. Rekap Belanja & Sisa Pagu Divisi
@@ -336,7 +339,7 @@
           <form id="formAjukanDana" onsubmit="handleKirimPengajuan(event)" class="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
               <label class="block text-xs font-semibold text-stone-600 dark:text-stone-300 mb-1">Nama Kebutuhan / Pengadaan *</label>
-              <input type="text" id="ajuNama" required placeholder="Contoh: Konsumsi Narasumber Kuliah Tamu" class="w-full px-3 py-2 text-sm rounded-xl border border-stone-300 dark:border-stone-700 bg-stone-50 dark:bg-stone-800 focus:ring-2 focus:ring-brand-caramel outline-none">
+              <input type="text" id="ajuNama" required placeholder="Contoh: Konsumsi Narasumber Kuliah Umum" class="w-full px-3 py-2 text-sm rounded-xl border border-stone-300 dark:border-stone-700 bg-stone-50 dark:bg-stone-800 focus:ring-2 focus:ring-brand-caramel outline-none">
             </div>
 
             <div>
@@ -509,6 +512,64 @@
         </div>
       </div>
 
+      <!-- Konten SubTab 5: RAB Divisi (Rencana Anggaran Biaya berkomponen) -->
+      <div id="subTabRabDokContent" class="hidden space-y-6">
+        <div class="grid grid-cols-2 lg:grid-cols-4 gap-3">
+          <div class="p-4 rounded-xl bg-white dark:bg-brand-darkCard border border-stone-200 dark:border-brand-darkBorder shadow-sm">
+            <span class="text-[11px] uppercase font-semibold text-stone-400">RAB Dibuat</span>
+            <div id="rabDokDivJumlah" class="text-xl font-extrabold text-stone-900 dark:text-white mt-1">0</div>
+            <div id="rabDokDivTotal" class="text-[11px] text-stone-500">Rp 0</div>
+          </div>
+          <div class="p-4 rounded-xl bg-white dark:bg-brand-darkCard border border-stone-200 dark:border-brand-darkBorder shadow-sm">
+            <span class="text-[11px] uppercase font-semibold text-stone-400">Disetujui</span>
+            <div id="rabDokDivSetuju" class="text-lg font-extrabold text-emerald-600 dark:text-emerald-400 mt-1">Rp 0</div>
+          </div>
+          <div class="p-4 rounded-xl bg-white dark:bg-brand-darkCard border border-stone-200 dark:border-brand-darkBorder shadow-sm">
+            <span class="text-[11px] uppercase font-semibold text-stone-400">Menunggu Tanggapan</span>
+            <div id="rabDokDivMenunggu" class="text-xl font-extrabold text-amber-600 dark:text-amber-400 mt-1">0</div>
+          </div>
+          <div class="p-4 rounded-xl bg-white dark:bg-brand-darkCard border border-stone-200 dark:border-brand-darkBorder shadow-sm">
+            <span class="text-[11px] uppercase font-semibold text-stone-400">Perlu Revisi</span>
+            <div id="rabDokDivRevisi" class="text-xl font-extrabold text-sky-600 dark:text-sky-400 mt-1">0</div>
+          </div>
+        </div>
+
+        <div class="p-5 rounded-2xl bg-white dark:bg-brand-darkCard border border-stone-200 dark:border-brand-darkBorder shadow-sm">
+          <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-4">
+            <div>
+              <h3 class="font-bold text-stone-900 dark:text-white text-base mb-1">Rekap RAB Divisi Anda</h3>
+              <p class="text-xs text-stone-500">Susun RAB berisi komponen pengeluaran, volume, satuan, dan harga satuan. RAB dikirim ke Bendahara untuk ditinjau.</p>
+            </div>
+            <div class="flex items-center space-x-2">
+              <button onclick="muatDataRabDok(true)" class="p-1.5 rounded-xl border border-stone-300 dark:border-stone-700 hover:bg-stone-100 dark:hover:bg-stone-800 text-stone-600 dark:text-stone-300 transition" title="Refresh"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg></button>
+              <button onclick="bukaEditorRab()" class="px-4 py-2 rounded-xl bg-brand-coffee text-white dark:bg-brand-caramel text-xs font-semibold shadow-sm hover:opacity-90 transition flex items-center whitespace-nowrap">
+                <svg class="w-4 h-4 mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"/></svg>
+                Buat RAB Baru
+              </button>
+            </div>
+          </div>
+
+          <div class="overflow-x-auto">
+            <table class="w-full text-left text-xs sm:text-sm">
+              <thead class="bg-stone-50 dark:bg-stone-800/60 text-stone-500 uppercase font-semibold text-[11px] border-b border-stone-200 dark:border-stone-800">
+                <tr>
+                  <th class="py-2.5 px-3">Kode</th>
+                  <th class="py-2.5 px-3">Tanggal</th>
+                  <th class="py-2.5 px-3">Judul RAB</th>
+                  <th class="py-2.5 px-3 text-right">Total</th>
+                  <th class="py-2.5 px-3 text-center">Status</th>
+                  <th class="py-2.5 px-3">Catatan Bendahara</th>
+                  <th class="py-2.5 px-3 text-center">Aksi</th>
+                </tr>
+              </thead>
+              <tbody id="tabelRabDokDivisiBody" class="divide-y divide-stone-100 dark:divide-stone-800/60">
+                <tr><td colspan="7" class="py-6 text-center text-stone-400">Memuat RAB divisi...</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
       <!-- Konten SubTab 4: Rekap Belanja & Sisa Pagu Divisi -->
       <div id="subTabRekapContent" class="hidden space-y-6">
         <!-- Kartu Metrik Anggaran Divisi -->
@@ -596,6 +657,9 @@
         </button>
         <button onclick="gantiSubTabAdmin('verifikasi')" id="adminSubVerifBtn" class="py-2 px-1 border-b-2 border-transparent text-stone-500 hover:text-stone-800 dark:hover:text-stone-200 font-semibold text-xs sm:text-sm whitespace-nowrap">
           Antrean Persetujuan Dana
+        </button>
+        <button onclick="gantiSubTabAdmin('rabdok')" id="adminSubRabDokBtn" class="py-2 px-1 border-b-2 border-transparent text-stone-500 hover:text-stone-800 dark:hover:text-stone-200 font-semibold text-xs sm:text-sm whitespace-nowrap">
+          RAB dari Divisi <span id="adminRabDokBadge" class="hidden ml-1 px-1.5 py-0.5 rounded-full bg-rose-600 text-white text-[10px] font-bold align-middle">0</span>
         </button>
         <button onclick="gantiSubTabAdmin('pemasukan')" id="adminSubInBtn" class="py-2 px-1 border-b-2 border-transparent text-stone-500 hover:text-stone-800 dark:hover:text-stone-200 font-semibold text-xs sm:text-sm whitespace-nowrap">
           Catat Pemasukan
@@ -937,6 +1001,72 @@
         </div>
       </div>
 
+      <!-- Konten Admin 2C: RAB Masuk dari Divisi -->
+      <div id="adminContentRabdok" class="hidden space-y-4">
+        <div class="grid grid-cols-2 lg:grid-cols-4 gap-3">
+          <div class="p-4 rounded-xl bg-white dark:bg-brand-darkCard border border-stone-200 dark:border-brand-darkBorder shadow-sm">
+            <span class="text-[11px] uppercase font-semibold text-stone-400">Menunggu Ditinjau</span>
+            <div id="rabDokAdmMenunggu" class="text-xl font-extrabold text-amber-600 dark:text-amber-400 mt-1">0</div>
+            <div id="rabDokAdmMenungguNilai" class="text-[11px] text-stone-500">Rp 0</div>
+          </div>
+          <div class="p-4 rounded-xl bg-white dark:bg-brand-darkCard border border-stone-200 dark:border-brand-darkBorder shadow-sm">
+            <span class="text-[11px] uppercase font-semibold text-stone-400">Perlu Revisi</span>
+            <div id="rabDokAdmRevisi" class="text-xl font-extrabold text-sky-600 dark:text-sky-400 mt-1">0</div>
+          </div>
+          <div class="p-4 rounded-xl bg-white dark:bg-brand-darkCard border border-stone-200 dark:border-brand-darkBorder shadow-sm">
+            <span class="text-[11px] uppercase font-semibold text-stone-400">Total Disetujui</span>
+            <div id="rabDokAdmSetuju" class="text-lg font-extrabold text-emerald-600 dark:text-emerald-400 mt-1">Rp 0</div>
+          </div>
+          <div class="p-4 rounded-xl bg-white dark:bg-brand-darkCard border border-stone-200 dark:border-brand-darkBorder shadow-sm">
+            <span class="text-[11px] uppercase font-semibold text-stone-400">Total Seluruh RAB</span>
+            <div id="rabDokAdmTotal" class="text-lg font-extrabold text-brand-coffee dark:text-brand-lightCaramel mt-1">Rp 0</div>
+          </div>
+        </div>
+
+        <div class="p-5 rounded-2xl bg-white dark:bg-brand-darkCard border border-stone-200 dark:border-brand-darkBorder shadow-sm">
+          <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-4">
+            <div>
+              <h3 class="font-bold text-stone-900 dark:text-white text-base">RAB Masuk dari Divisi</h3>
+              <p class="text-xs text-stone-500">Tinjau komponen pengeluaran tiap RAB, lalu setujui, minta revisi, atau tolak. Anda juga dapat mengedit atau menghapus RAB.</p>
+            </div>
+            <button onclick="muatDataRabDok(true)" class="self-start p-1.5 rounded-xl border border-stone-300 dark:border-stone-700 hover:bg-stone-100 dark:hover:bg-stone-800 text-stone-600 dark:text-stone-300 transition" title="Refresh"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg></button>
+          </div>
+
+          <div class="grid grid-cols-1 sm:grid-cols-3 gap-2 mb-4">
+            <select id="filterRabStatus" onchange="renderRabDokAdmin()" class="px-3 py-2 rounded-xl border border-stone-300 dark:border-stone-700 bg-stone-50 dark:bg-stone-800 text-xs focus:ring-2 focus:ring-brand-caramel outline-none">
+              <option value="">Semua Status</option>
+              <option value="Menunggu">Menunggu</option>
+              <option value="Perlu Revisi">Perlu Revisi</option>
+              <option value="Disetujui">Disetujui</option>
+              <option value="Ditolak">Ditolak</option>
+            </select>
+            <select id="filterRabDivisi" onchange="renderRabDokAdmin()" class="px-3 py-2 rounded-xl border border-stone-300 dark:border-stone-700 bg-stone-50 dark:bg-stone-800 text-xs focus:ring-2 focus:ring-brand-caramel outline-none">
+              <option value="">Semua Divisi</option>
+            </select>
+            <input type="text" id="cariRabDok" oninput="renderRabDokAdmin()" placeholder="Cari judul / divisi / kode..." class="px-3 py-2 rounded-xl border border-stone-300 dark:border-stone-700 bg-stone-50 dark:bg-stone-800 text-xs focus:ring-2 focus:ring-brand-caramel outline-none">
+          </div>
+
+          <div class="overflow-x-auto">
+            <table class="w-full text-left text-xs sm:text-sm">
+              <thead class="bg-stone-50 dark:bg-stone-800/60 text-stone-500 uppercase font-semibold text-[11px] border-b border-stone-200 dark:border-stone-800">
+                <tr>
+                  <th class="py-2.5 px-3">Kode</th>
+                  <th class="py-2.5 px-3">Tanggal</th>
+                  <th class="py-2.5 px-3">Divisi</th>
+                  <th class="py-2.5 px-3">Judul RAB</th>
+                  <th class="py-2.5 px-3 text-right">Total</th>
+                  <th class="py-2.5 px-3 text-center">Status</th>
+                  <th class="py-2.5 px-3 text-center">Aksi</th>
+                </tr>
+              </thead>
+              <tbody id="tabelRabDokAdminBody" class="divide-y divide-stone-100 dark:divide-stone-800/60">
+                <tr><td colspan="7" class="py-6 text-center text-stone-400">Memuat RAB dari divisi...</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
       <!-- Konten Admin 3b: Pemantauan Dana Per Divisi -->
       <div id="adminContentMonitor" class="hidden space-y-4">
         <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
@@ -1220,7 +1350,7 @@
             📄
           </div>
           <h4 class="font-bold text-sm text-stone-900 dark:text-white">Cetak / Unduh PDF</h4>
-          <p class="text-xs text-stone-500 mt-1">Format layout rapi siap cetak langsung untuk arsip fisik LPJ kuliah tamu.</p>
+          <p class="text-xs text-stone-500 mt-1">Format layout rapi siap cetak langsung untuk arsip fisik LPJ kuliah Umum.</p>
         </div>
 
         <div onclick="unduhDataCSV()" class="p-5 rounded-xl border-2 border-dashed border-stone-300 dark:border-stone-700 hover:border-brand-caramel dark:hover:border-brand-caramel cursor-pointer transition text-center group">
@@ -1511,6 +1641,125 @@
     </div>
   </div>
 
+  <!-- ================= MODAL EDITOR RAB DIVISI ================= -->
+  <div id="modalRabEditor" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm hidden">
+    <div class="bg-white dark:bg-brand-darkCard rounded-2xl max-w-4xl w-full p-5 sm:p-6 shadow-2xl border border-stone-200 dark:border-brand-darkBorder relative max-h-[92vh] overflow-y-auto">
+      <button onclick="tutupEditorRab()" class="absolute top-4 right-4 text-stone-400 hover:text-stone-600 dark:hover:text-stone-200"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg></button>
+
+      <h3 class="text-base font-bold text-stone-900 dark:text-white mb-1" id="rabEdJudulModal">Buat RAB Divisi Baru</h3>
+      <p class="text-xs text-stone-500 mb-4" id="rabEdSubjudul"></p>
+      <div id="rabEdCatatanInfo" class="hidden mb-4 text-xs rounded-xl bg-sky-50 dark:bg-sky-950/40 border border-sky-200 dark:border-sky-900 text-sky-800 dark:text-sky-300 p-3"></div>
+
+      <form id="formRabEditor" onsubmit="handleSimpanRabEditor(event)" class="space-y-4">
+        <input type="hidden" id="rabEdId">
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          <div>
+            <label class="block text-xs font-semibold text-stone-600 dark:text-stone-300 mb-1">Judul RAB / Kegiatan *</label>
+            <input type="text" id="rabEdJudul" required maxlength="150" placeholder="Contoh: RAB Acara Malam Puncak" class="w-full px-3 py-2 text-sm rounded-xl border border-stone-300 dark:border-stone-700 bg-stone-50 dark:bg-stone-800 focus:ring-2 focus:ring-brand-caramel outline-none">
+          </div>
+          <div>
+            <label class="block text-xs font-semibold text-stone-600 dark:text-stone-300 mb-1">Keterangan (Opsional)</label>
+            <input type="text" id="rabEdKeterangan" placeholder="Catatan singkat untuk Bendahara" class="w-full px-3 py-2 text-sm rounded-xl border border-stone-300 dark:border-stone-700 bg-stone-50 dark:bg-stone-800 focus:ring-2 focus:ring-brand-caramel outline-none">
+          </div>
+        </div>
+
+        <div>
+          <div class="hidden sm:grid grid-cols-12 gap-2 text-[11px] uppercase font-semibold text-stone-400 mb-1 px-0.5">
+            <div class="col-span-3">Komponen Pengeluaran</div>
+            <div class="col-span-2">Volume</div>
+            <div class="col-span-2">Satuan</div>
+            <div class="col-span-2">Harga Satuan (Rp)</div>
+            <div class="col-span-2">Total</div>
+            <div class="col-span-1"></div>
+          </div>
+          <div id="rabEdItems" class="space-y-2"></div>
+          <button type="button" onclick="tambahBarisRab()" class="mt-3 px-3 py-2 rounded-xl border border-dashed border-brand-caramel text-brand-coffee dark:text-brand-lightCaramel text-xs font-semibold hover:bg-brand-creamDark dark:hover:bg-stone-800 transition">+ Tambah Komponen</button>
+        </div>
+
+        <div class="flex items-center justify-between rounded-xl bg-stone-50 dark:bg-stone-800/60 border border-stone-200 dark:border-stone-700 px-4 py-3">
+          <div>
+            <div class="text-[11px] uppercase font-semibold text-stone-400">Total RAB</div>
+            <div class="text-[11px] text-stone-500" id="rabEdJumlah">0 komponen</div>
+          </div>
+          <div id="rabEdTotal" class="text-xl font-extrabold text-brand-coffee dark:text-brand-lightCaramel">Rp 0</div>
+        </div>
+
+        <div class="pt-1 flex justify-end space-x-2">
+          <button type="button" onclick="tutupEditorRab()" class="px-4 py-2 rounded-xl text-xs font-medium text-stone-600 dark:text-stone-400 hover:bg-stone-100 dark:hover:bg-stone-800">Batal</button>
+          <button type="submit" id="btnSubmitRabEditor" class="px-4 py-2 rounded-xl bg-brand-coffee text-white dark:bg-brand-caramel text-xs font-semibold shadow-sm hover:opacity-90 transition">Kirim RAB ke Bendahara</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- ================= MODAL DETAIL / TINJAUAN RAB DIVISI ================= -->
+  <div id="modalRabDetail" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm hidden">
+    <div class="bg-white dark:bg-brand-darkCard rounded-2xl max-w-3xl w-full p-5 sm:p-6 shadow-2xl border border-stone-200 dark:border-brand-darkBorder relative max-h-[92vh] overflow-y-auto">
+      <button onclick="tutupDetailRab()" class="absolute top-4 right-4 text-stone-400 hover:text-stone-600 dark:hover:text-stone-200"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg></button>
+
+      <div class="flex items-start justify-between gap-3 pr-8 mb-1">
+        <h3 class="text-base font-bold text-stone-900 dark:text-white" id="rabDetJudul">-</h3>
+        <div id="rabDetStatus"></div>
+      </div>
+      <p class="text-xs text-stone-500" id="rabDetMeta"></p>
+      <p class="text-xs text-stone-600 dark:text-stone-300 mt-2 hidden" id="rabDetKet"></p>
+
+      <div class="overflow-x-auto mt-4">
+        <table class="w-full text-left text-xs">
+          <thead class="bg-stone-50 dark:bg-stone-800/60 text-stone-500 uppercase font-semibold text-[11px] border-b border-stone-200 dark:border-stone-800">
+            <tr>
+              <th class="py-2 px-3">No</th>
+              <th class="py-2 px-3">Komponen Pengeluaran</th>
+              <th class="py-2 px-3 text-right">Volume</th>
+              <th class="py-2 px-3">Satuan</th>
+              <th class="py-2 px-3 text-right">Harga Satuan</th>
+              <th class="py-2 px-3 text-right">Total</th>
+            </tr>
+          </thead>
+          <tbody id="rabDetBody" class="divide-y divide-stone-100 dark:divide-stone-800/60"></tbody>
+          <tfoot>
+            <tr class="border-t-2 border-stone-300 dark:border-stone-600">
+              <td colspan="5" class="py-2.5 px-3 text-right font-bold uppercase text-[11px] text-stone-500">Total RAB</td>
+              <td id="rabDetTotal" class="py-2.5 px-3 text-right font-extrabold text-brand-coffee dark:text-brand-lightCaramel whitespace-nowrap">Rp 0</td>
+            </tr>
+          </tfoot>
+        </table>
+      </div>
+
+      <div id="rabDetCatatan" class="hidden mt-4 text-xs rounded-xl bg-stone-50 dark:bg-stone-800/60 border border-stone-200 dark:border-stone-700 p-3 text-stone-700 dark:text-stone-200"></div>
+
+      <!-- Tanggapan Bendahara -->
+      <div id="rabDetAdminWrap" class="hidden mt-4 rounded-xl border border-brand-caramel/40 p-4 space-y-3">
+        <h4 class="text-sm font-bold text-stone-800 dark:text-stone-100">Tanggapan Bendahara</h4>
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+          <div>
+            <label class="block text-xs font-semibold text-stone-600 dark:text-stone-300 mb-1">Status RAB</label>
+            <select id="rabDetStatusPilih" class="w-full px-3 py-2 text-sm rounded-xl border border-stone-300 dark:border-stone-700 bg-stone-50 dark:bg-stone-800 focus:ring-2 focus:ring-brand-caramel outline-none">
+              <option value="Menunggu">Menunggu</option>
+              <option value="Disetujui">Disetujui</option>
+              <option value="Perlu Revisi">Perlu Revisi</option>
+              <option value="Ditolak">Ditolak</option>
+            </select>
+          </div>
+          <div class="sm:col-span-2">
+            <label class="block text-xs font-semibold text-stone-600 dark:text-stone-300 mb-1">Catatan untuk Divisi (wajib bila Perlu Revisi / Ditolak)</label>
+            <textarea id="rabDetCatatanInput" rows="2" class="w-full px-3 py-2 text-sm rounded-xl border border-stone-300 dark:border-stone-700 bg-stone-50 dark:bg-stone-800 focus:ring-2 focus:ring-brand-caramel outline-none" placeholder="Contoh: Harga sewa sound terlalu tinggi, mohon dinegosiasi ulang."></textarea>
+          </div>
+        </div>
+        <div class="flex justify-end">
+          <button onclick="handleSimpanTanggapanRab()" id="btnSimpanTanggapanRab" class="px-4 py-2 rounded-xl bg-brand-coffee text-white dark:bg-brand-caramel text-xs font-semibold shadow-sm hover:opacity-90 transition">Simpan Tanggapan</button>
+        </div>
+      </div>
+
+      <div class="mt-5 flex flex-wrap justify-end gap-2">
+        <button onclick="unduhCsvRab()" class="px-3 py-2 rounded-xl border border-stone-300 dark:border-stone-700 hover:bg-stone-100 dark:hover:bg-stone-800 text-xs font-semibold text-stone-700 dark:text-stone-200 transition">Unduh CSV</button>
+        <button id="rabDetBtnEdit" onclick="editDariDetailRab()" class="px-3 py-2 rounded-xl bg-stone-100 dark:bg-stone-800 hover:bg-brand-creamDark text-brand-caramel text-xs font-semibold transition">Edit</button>
+        <button id="rabDetBtnHapus" onclick="hapusDariDetailRab()" class="px-3 py-2 rounded-xl bg-rose-50 dark:bg-rose-950/40 hover:bg-rose-100 text-rose-600 text-xs font-semibold transition">Hapus</button>
+        <button onclick="tutupDetailRab()" class="px-4 py-2 rounded-xl text-xs font-medium text-stone-600 dark:text-stone-400 hover:bg-stone-100 dark:hover:bg-stone-800">Tutup</button>
+      </div>
+    </div>
+  </div>
+
   <!-- ================= MODAL RINCIAN DANA DIVISI (BENDAHARA) ================= -->
   <div id="modalRincianDivisi" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm hidden">
     <div class="bg-white dark:bg-brand-darkCard rounded-2xl max-w-3xl w-full p-6 shadow-2xl border border-stone-200 dark:border-brand-darkBorder relative max-h-[90vh] overflow-y-auto">
@@ -1620,6 +1869,8 @@
       pendingBuktiPenyaluran: null,
       installPrompt: null,
       rabDivisiCache: [],
+      rabDocs: [],
+      rabDetailId: null,
       publikSnapshot: '',
       publikTimer: null,
       konfirmasiCallback: null
@@ -1841,17 +2092,19 @@
     }
 
     function gantiSubTabDivisi(sub) {
-      const subTabs = ['pengajuan', 'lapor', 'rab', 'rekap'];
+      const subTabs = ['pengajuan', 'lapor', 'rab', 'rabdok', 'rekap'];
       const btnMap = {
         pengajuan: 'subTabPengajuanBtn',
         lapor: 'subTabLaporBtn',
         rab: 'subTabRabDivisiBtn',
+        rabdok: 'subTabRabDokBtn',
         rekap: 'subTabRekapDivisiBtn'
       };
       const contentMap = {
         pengajuan: 'subTabPengajuanContent',
         lapor: 'subTabLaporContent',
         rab: 'subTabRabContent',
+        rabdok: 'subTabRabDokContent',
         rekap: 'subTabRekapContent'
       };
 
@@ -1873,11 +2126,13 @@
         muatDataRekapDivisi();
       } else if (sub === 'lapor') {
         muatDataLaporDivisi();
+      } else if (sub === 'rabdok') {
+        muatDataRabDok();
       }
     }
 
     function gantiSubTabAdmin(sub) {
-      const tabs = ['rekapKas', 'verifikasi', 'pemasukan', 'pengeluaran', 'rab', 'monitor', 'users', 'profil'];
+      const tabs = ['rekapKas', 'verifikasi', 'rabdok', 'pemasukan', 'pengeluaran', 'rab', 'monitor', 'users', 'profil'];
       tabs.forEach(t => {
         const el = document.getElementById('adminContent' + t.charAt(0).toUpperCase() + t.slice(1));
         if (el) el.classList.add('hidden');
@@ -1886,6 +2141,7 @@
       const buttons = {
         rekapKas: 'adminSubRekapKasBtn',
         verifikasi: 'adminSubVerifBtn',
+        rabdok: 'adminSubRabDokBtn',
         pemasukan: 'adminSubInBtn',
         pengeluaran: 'adminSubOutBtn',
         rab: 'adminSubRabBtn',
@@ -1923,6 +2179,8 @@
         muatDataPengeluaranAdmin();
       } else if (sub === 'monitor') {
         muatDataMonitorDivisi();
+      } else if (sub === 'rabdok') {
+        muatDataRabDok();
       }
     }
 
@@ -2500,7 +2758,8 @@
         muatDataPengajuanAdmin(),
         muatDataPenggunaAdmin(),
         muatDataPemasukanAdmin(),
-        muatDataPengeluaranAdmin()
+        muatDataPengeluaranAdmin(),
+        muatDataRabDok()
       ]);
     }
 
@@ -4362,6 +4621,428 @@
       document.body.removeChild(a);
       URL.revokeObjectURL(url);
       tampilkanToast('Rekap dana divisi berhasil diunduh!', 'success');
+    }
+
+    // =========================================================================
+    // 6E. REVISI V5: RAB DIVISI (RENCANA ANGGARAN BIAYA BERKOMPONEN)
+    //     Divisi membuat RAB -> masuk panel Bendahara -> ditanggapi -> rekap di divisi
+    // =========================================================================
+
+    const CLS_INPUT_RAB = 'w-full px-3 py-2 text-sm rounded-xl border border-stone-300 dark:border-stone-700 bg-stone-50 dark:bg-stone-800 focus:ring-2 focus:ring-brand-caramel outline-none';
+
+    function badgeStatusRab(status) {
+      const peta = {
+        'Menunggu': 'bg-amber-100 text-amber-800 dark:bg-amber-950/60 dark:text-amber-400',
+        'Disetujui': 'bg-emerald-100 text-emerald-800 dark:bg-emerald-950/60 dark:text-emerald-400',
+        'Ditolak': 'bg-rose-100 text-rose-800 dark:bg-rose-950/60 dark:text-rose-400',
+        'Perlu Revisi': 'bg-sky-100 text-sky-800 dark:bg-sky-950/60 dark:text-sky-400'
+      };
+      return `<span class="badge-soft ${peta[status] || peta['Menunggu']}">${escapeHTML(status || 'Menunggu')}</span>`;
+    }
+
+    function angkaRab(n) {
+      return Number(n || 0).toLocaleString('id-ID', { maximumFractionDigits: 2 });
+    }
+
+    // Divisi hanya boleh mengubah/menghapus selama Menunggu atau Perlu Revisi; Bendahara selalu boleh
+    function bisaUbahRabDok(doc) {
+      if (!STATE.session) return false;
+      if (STATE.session.user.peran === 'Admin') return true;
+      return doc.Status === 'Menunggu' || doc.Status === 'Perlu Revisi';
+    }
+
+    async function muatDataRabDok(force = false) {
+      if (!STATE.apiUrl || !STATE.session) return;
+      try {
+        const res = await fetch(`${STATE.apiUrl}?action=getDataRabDok&token=${encodeURIComponent(STATE.session.token)}&ts=${Date.now()}`).then(r => r.json());
+        if (!STATE.session) return; // pengguna sudah logout saat data tiba
+        if (res.success) {
+          STATE.rabDocs = res.data || [];
+          if (STATE.session.user.peran === 'Admin') {
+            isiFilterDivisiRabAdmin();
+            renderRabDokAdmin();
+          } else {
+            renderRabDokDivisi();
+          }
+          if (force) tampilkanToast('Data RAB diperbarui!', 'success');
+        } else if (res.error) {
+          tampilkanToast(res.error, 'error');
+        }
+      } catch (err) {
+        console.error('Gagal mengambil data RAB divisi:', err);
+      }
+    }
+
+    // ---------- Daftar & rekap di panel DIVISI ----------
+    function renderRabDokDivisi() {
+      const docs = STATE.rabDocs || [];
+      const jumlahPerStatus = s => docs.filter(d => d.Status === s).length;
+      const sum = list => list.reduce((a, d) => a + (Number(d.Total_Rp) || 0), 0);
+
+      document.getElementById('rabDokDivJumlah').innerText = String(docs.length);
+      document.getElementById('rabDokDivTotal').innerText = formatRupiah(sum(docs));
+      document.getElementById('rabDokDivSetuju').innerText = formatRupiah(sum(docs.filter(d => d.Status === 'Disetujui')));
+      document.getElementById('rabDokDivMenunggu').innerText = String(jumlahPerStatus('Menunggu'));
+      document.getElementById('rabDokDivRevisi').innerText = String(jumlahPerStatus('Perlu Revisi'));
+
+      const tbody = document.getElementById('tabelRabDokDivisiBody');
+      if (docs.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="7" class="py-6 text-center text-stone-400">Belum ada RAB. Klik "Buat RAB Baru" untuk menyusun rencana anggaran biaya divisi Anda.</td></tr>`;
+        return;
+      }
+
+      tbody.innerHTML = docs.map(d => {
+        const aksi = bisaUbahRabDok(d)
+          ? `<button onclick="bukaEditorRab('${d.ID_RAB_Divisi}')" class="${CLS_BTN_EDIT} mr-1">Edit</button><button onclick="konfirmasiHapusRabDok('${d.ID_RAB_Divisi}')" class="${CLS_BTN_HAPUS}">Hapus</button>`
+          : `<span class="text-[11px] italic text-stone-400">Terkunci</span>`;
+        return `
+          <tr class="hover:bg-stone-50/60 dark:hover:bg-stone-800/40 transition">
+            <td class="py-2.5 px-3 font-mono text-xs text-stone-500 whitespace-nowrap">${escapeHTML(d.ID_RAB_Divisi)}</td>
+            <td class="py-2.5 px-3 text-stone-600 dark:text-stone-300 whitespace-nowrap">${formatTanggal(d.Tanggal_Dibuat)}</td>
+            <td class="py-2.5 px-3 text-stone-800 dark:text-stone-100">
+              <div class="font-semibold">${escapeHTML(d.Judul_RAB)}</div>
+              <div class="text-[11px] text-stone-400">${(d.Items || []).length} komponen pengeluaran</div>
+            </td>
+            <td class="py-2.5 px-3 text-right font-bold text-stone-900 dark:text-white whitespace-nowrap">${formatRupiah(d.Total_Rp)}</td>
+            <td class="py-2.5 px-3 text-center">${badgeStatusRab(d.Status)}</td>
+            <td class="py-2.5 px-3 text-xs text-stone-600 dark:text-stone-300 max-w-xs truncate" title="${escapeHTML(d.Catatan_Bendahara || '')}">${escapeHTML(d.Catatan_Bendahara || '-')}</td>
+            <td class="py-2.5 px-3 text-center whitespace-nowrap">
+              <button onclick="bukaDetailRab('${d.ID_RAB_Divisi}')" class="${CLS_BTN_EDIT} mr-1">Lihat</button>${aksi}
+            </td>
+          </tr>`;
+      }).join('');
+    }
+
+    // ---------- Daftar RAB masuk di panel BENDAHARA ----------
+    function isiFilterDivisiRabAdmin() {
+      const sel = document.getElementById('filterRabDivisi');
+      if (!sel) return;
+      const dipilih = kunciNama(sel.value);
+      const peta = new Map();
+      (STATE.rabDocs || []).forEach(d => { const k = kunciNama(d.Divisi); if (k && !peta.has(k)) peta.set(k, String(d.Divisi).trim()); });
+      sel.innerHTML = '<option value="">Semua Divisi</option>' +
+        Array.from(peta.values()).sort((a, b) => a.localeCompare(b, 'id')).map(n => `<option value="${escapeHTML(n)}">${escapeHTML(n)}</option>`).join('');
+      const cocok = Array.from(sel.options).find(o => o.value && kunciNama(o.value) === dipilih);
+      sel.value = cocok ? cocok.value : '';
+    }
+
+    function renderRabDokAdmin() {
+      const semua = STATE.rabDocs || [];
+      const sum = list => list.reduce((a, d) => a + (Number(d.Total_Rp) || 0), 0);
+      const menunggu = semua.filter(d => d.Status === 'Menunggu');
+
+      document.getElementById('rabDokAdmMenunggu').innerText = String(menunggu.length);
+      document.getElementById('rabDokAdmMenungguNilai').innerText = formatRupiah(sum(menunggu));
+      document.getElementById('rabDokAdmRevisi').innerText = String(semua.filter(d => d.Status === 'Perlu Revisi').length);
+      document.getElementById('rabDokAdmSetuju').innerText = formatRupiah(sum(semua.filter(d => d.Status === 'Disetujui')));
+      document.getElementById('rabDokAdmTotal').innerText = formatRupiah(sum(semua));
+
+      // Lencana jumlah RAB yang menunggu pada tab
+      const badge = document.getElementById('adminRabDokBadge');
+      if (badge) {
+        badge.innerText = String(menunggu.length);
+        badge.classList.toggle('hidden', menunggu.length === 0);
+      }
+
+      const fs = document.getElementById('filterRabStatus').value;
+      const fd = document.getElementById('filterRabDivisi').value;
+      const q = (document.getElementById('cariRabDok').value || '').toLowerCase().trim();
+
+      const list = semua.filter(d => {
+        if (fs && d.Status !== fs) return false;
+        if (fd && kunciNama(d.Divisi) !== kunciNama(fd)) return false;
+        if (q && !(String(d.Judul_RAB).toLowerCase().includes(q) || String(d.Divisi).toLowerCase().includes(q) || String(d.ID_RAB_Divisi).toLowerCase().includes(q))) return false;
+        return true;
+      });
+
+      const tbody = document.getElementById('tabelRabDokAdminBody');
+      if (list.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="7" class="py-6 text-center text-stone-400">${semua.length ? 'Tidak ada RAB yang cocok dengan filter.' : 'Belum ada RAB yang dikirim divisi.'}</td></tr>`;
+        return;
+      }
+
+      tbody.innerHTML = list.map(d => `
+        <tr class="hover:bg-stone-50/60 dark:hover:bg-stone-800/40 transition">
+          <td class="py-2.5 px-3 font-mono text-xs text-stone-500 whitespace-nowrap">${escapeHTML(d.ID_RAB_Divisi)}</td>
+          <td class="py-2.5 px-3 text-stone-600 dark:text-stone-300 whitespace-nowrap">${formatTanggal(d.Tanggal_Dibuat)}</td>
+          <td class="py-2.5 px-3 font-semibold text-stone-800 dark:text-stone-100">${escapeHTML(d.Divisi)}</td>
+          <td class="py-2.5 px-3 text-stone-800 dark:text-stone-100">
+            <div class="font-medium">${escapeHTML(d.Judul_RAB)}</div>
+            <div class="text-[11px] text-stone-400">${(d.Items || []).length} komponen pengeluaran</div>
+          </td>
+          <td class="py-2.5 px-3 text-right font-bold text-stone-900 dark:text-white whitespace-nowrap">${formatRupiah(d.Total_Rp)}</td>
+          <td class="py-2.5 px-3 text-center">${badgeStatusRab(d.Status)}</td>
+          <td class="py-2.5 px-3 text-center whitespace-nowrap">
+            <button onclick="bukaDetailRab('${d.ID_RAB_Divisi}')" class="px-2 py-1 rounded bg-brand-coffee text-white dark:bg-brand-caramel font-semibold text-xs hover:opacity-90 transition mr-1">Tinjau</button>
+            <button onclick="bukaEditorRab('${d.ID_RAB_Divisi}')" class="${CLS_BTN_EDIT} mr-1">Edit</button>
+            <button onclick="konfirmasiHapusRabDok('${d.ID_RAB_Divisi}')" class="${CLS_BTN_HAPUS}">Hapus</button>
+          </td>
+        </tr>`).join('');
+    }
+
+    // ---------- Editor RAB (buat / edit) ----------
+    function tambahBarisRab(data) {
+      const d = data || {};
+      const wrap = document.getElementById('rabEdItems');
+      const row = document.createElement('div');
+      row.className = 'rab-row grid grid-cols-12 gap-2 items-end p-2 sm:p-0 rounded-xl border border-stone-200 dark:border-stone-700 sm:border-0';
+      const lbl = t => `<span class="sm:hidden block text-[10px] text-stone-400 mb-0.5">${t}</span>`;
+      row.innerHTML = `
+        <div class="col-span-12 sm:col-span-3">${lbl('Komponen pengeluaran')}<input type="text" data-f="komponen" value="${escapeHTML(d.komponen || '')}" placeholder="Komponen (mis. Sewa sound)" oninput="hitungTotalRabEditor()" class="${CLS_INPUT_RAB}"></div>
+        <div class="col-span-4 sm:col-span-2">${lbl('Volume')}<input type="number" data-f="volume" min="0" step="any" value="${d.volume !== undefined ? escapeHTML(String(d.volume)) : ''}" placeholder="Volume" oninput="hitungTotalRabEditor()" class="${CLS_INPUT_RAB}"></div>
+        <div class="col-span-4 sm:col-span-2">${lbl('Satuan')}<input type="text" data-f="satuan" value="${escapeHTML(d.satuan || '')}" placeholder="Satuan (pcs, hari)" oninput="hitungTotalRabEditor()" class="${CLS_INPUT_RAB}"></div>
+        <div class="col-span-4 sm:col-span-2">${lbl('Harga satuan (Rp)')}<input type="number" data-f="harga" min="0" step="any" value="${d.harga !== undefined ? escapeHTML(String(d.harga)) : ''}" placeholder="Harga satuan" oninput="hitungTotalRabEditor()" class="${CLS_INPUT_RAB}"></div>
+        <div class="col-span-10 sm:col-span-2">${lbl('Total')}<div data-f="total" class="px-3 py-2 text-sm font-bold text-brand-coffee dark:text-brand-lightCaramel whitespace-nowrap">Rp 0</div></div>
+        <div class="col-span-2 sm:col-span-1 flex justify-end"><button type="button" onclick="hapusBarisRab(this)" title="Hapus baris" class="px-2.5 py-2 rounded-xl text-rose-600 hover:bg-rose-50 dark:hover:bg-rose-950/40 font-bold transition">✕</button></div>`;
+      wrap.appendChild(row);
+      hitungTotalRabEditor();
+    }
+
+    function hapusBarisRab(btn) {
+      const wrap = document.getElementById('rabEdItems');
+      if (wrap.querySelectorAll('.rab-row').length <= 1) {
+        tampilkanToast('RAB minimal memiliki 1 komponen pengeluaran.', 'error');
+        return;
+      }
+      btn.closest('.rab-row').remove();
+      hitungTotalRabEditor();
+    }
+
+    function hitungTotalRabEditor() {
+      let grand = 0;
+      let jumlah = 0;
+      document.querySelectorAll('#rabEdItems .rab-row').forEach(row => {
+        const v = Number(row.querySelector('[data-f="volume"]').value) || 0;
+        const h = Number(row.querySelector('[data-f="harga"]').value) || 0;
+        const sub = Math.round(v * h * 100) / 100;
+        grand += sub;
+        jumlah++;
+        row.querySelector('[data-f="total"]').innerText = formatRupiah(sub);
+      });
+      document.getElementById('rabEdTotal').innerText = formatRupiah(Math.round(grand * 100) / 100);
+      document.getElementById('rabEdJumlah').innerText = `${jumlah} komponen`;
+    }
+
+    function kumpulkanItemRab() {
+      return Array.from(document.querySelectorAll('#rabEdItems .rab-row')).map(row => ({
+        komponen: row.querySelector('[data-f="komponen"]').value.trim(),
+        volume: Number(row.querySelector('[data-f="volume"]').value),
+        satuan: row.querySelector('[data-f="satuan"]').value.trim(),
+        hargaSatuan: Number(row.querySelector('[data-f="harga"]').value)
+      }));
+    }
+
+    function bukaEditorRab(id) {
+      const admin = STATE.session && STATE.session.user.peran === 'Admin';
+      const doc = id ? STATE.rabDocs.find(x => x.ID_RAB_Divisi === id) : null;
+      if (id && !doc) return;
+      if (doc && !bisaUbahRabDok(doc)) {
+        tampilkanToast('RAB yang sudah ditanggapi Bendahara tidak dapat diubah lagi.', 'error');
+        return;
+      }
+
+      document.getElementById('rabEdId').value = id || '';
+      document.getElementById('rabEdJudul').value = doc ? (doc.Judul_RAB || '') : '';
+      document.getElementById('rabEdKeterangan').value = doc ? (doc.Keterangan || '') : '';
+      document.getElementById('rabEdItems').innerHTML = '';
+
+      if (doc && (doc.Items || []).length) {
+        doc.Items.forEach(it => tambahBarisRab({ komponen: it.Komponen_Pengeluaran, volume: it.Volume, satuan: it.Satuan, harga: it.Harga_Satuan_Rp }));
+      } else {
+        tambahBarisRab();
+      }
+
+      document.getElementById('rabEdJudulModal').innerText = doc ? `Edit RAB [${id}]` : 'Buat RAB Divisi Baru';
+      document.getElementById('rabEdSubjudul').innerText = doc
+        ? (admin ? `Divisi: ${doc.Divisi} • perubahan Bendahara tidak mengubah status RAB.` : 'Setelah disimpan, RAB dikirim ulang ke Bendahara dengan status Menunggu.')
+        : 'Susun komponen pengeluaran beserta volume, satuan, dan harga satuan. Total dihitung otomatis.';
+      document.getElementById('btnSubmitRabEditor').innerText = !doc ? 'Kirim RAB ke Bendahara' : (admin ? 'Simpan Perubahan' : 'Simpan & Kirim Ulang');
+
+      const info = document.getElementById('rabEdCatatanInfo');
+      if (doc && doc.Catatan_Bendahara && !admin) {
+        info.innerText = `Catatan Bendahara: ${doc.Catatan_Bendahara}`;
+        info.classList.remove('hidden');
+      } else {
+        info.classList.add('hidden');
+      }
+      document.getElementById('modalRabEditor').classList.remove('hidden');
+    }
+
+    function tutupEditorRab() {
+      document.getElementById('modalRabEditor').classList.add('hidden');
+    }
+
+    async function handleSimpanRabEditor(e) {
+      e.preventDefault();
+      const btn = document.getElementById('btnSubmitRabEditor');
+      const teksAsli = btn.innerText;
+      const id = document.getElementById('rabEdId').value;
+
+      const items = kumpulkanItemRab();
+      for (let i = 0; i < items.length; i++) {
+        const it = items[i];
+        if (!it.komponen) { tampilkanToast(`Baris ${i + 1}: nama komponen wajib diisi.`, 'error'); return; }
+        if (!(it.volume > 0)) { tampilkanToast(`Baris ${i + 1}: volume harus lebih dari 0.`, 'error'); return; }
+        if (!it.satuan) { tampilkanToast(`Baris ${i + 1}: satuan wajib diisi.`, 'error'); return; }
+        if (!(it.hargaSatuan > 0)) { tampilkanToast(`Baris ${i + 1}: harga satuan harus lebih dari 0.`, 'error'); return; }
+      }
+
+      btn.disabled = true;
+      btn.innerText = 'Menyimpan...';
+      try {
+        const payload = {
+          action: id ? 'updateRabDok' : 'simpanRabDok',
+          judul: document.getElementById('rabEdJudul').value.trim(),
+          keterangan: document.getElementById('rabEdKeterangan').value.trim(),
+          items: items
+        };
+        if (id) payload.idRabDivisi = id;
+        const res = await panggilApiPost(payload);
+
+        if (res.success) {
+          tampilkanToast(res.message, 'success');
+          tutupEditorRab();
+          muatDataRabDok();
+        } else {
+          tampilkanToast(res.error || 'Gagal menyimpan RAB.', 'error');
+        }
+      } catch (err) {
+        tampilkanToast('Gangguan komunikasi: ' + err.message, 'error');
+      } finally {
+        btn.disabled = false;
+        btn.innerText = teksAsli;
+      }
+    }
+
+    // ---------- Detail RAB (divisi: lihat; Bendahara: tinjau & tanggapi) ----------
+    function bukaDetailRab(id) {
+      const d = STATE.rabDocs.find(x => x.ID_RAB_Divisi === id);
+      if (!d) return;
+      const admin = STATE.session.user.peran === 'Admin';
+      STATE.rabDetailId = id;
+
+      document.getElementById('rabDetJudul').innerText = d.Judul_RAB || '-';
+      document.getElementById('rabDetMeta').innerText = `${d.ID_RAB_Divisi} • ${d.Divisi} • dibuat ${formatTanggal(d.Tanggal_Dibuat)}`;
+      document.getElementById('rabDetStatus').innerHTML = badgeStatusRab(d.Status);
+      const ket = document.getElementById('rabDetKet');
+      ket.innerText = d.Keterangan || '';
+      ket.classList.toggle('hidden', !d.Keterangan);
+
+      const items = d.Items || [];
+      document.getElementById('rabDetBody').innerHTML = items.length
+        ? items.map(it => `
+            <tr>
+              <td class="py-2 px-3 text-stone-500">${escapeHTML(it.No)}</td>
+              <td class="py-2 px-3 text-stone-800 dark:text-stone-100 font-medium">${escapeHTML(it.Komponen_Pengeluaran)}</td>
+              <td class="py-2 px-3 text-right">${angkaRab(it.Volume)}</td>
+              <td class="py-2 px-3">${escapeHTML(it.Satuan)}</td>
+              <td class="py-2 px-3 text-right whitespace-nowrap">${formatRupiah(it.Harga_Satuan_Rp)}</td>
+              <td class="py-2 px-3 text-right font-bold whitespace-nowrap">${formatRupiah(it.Total_Rp)}</td>
+            </tr>`).join('')
+        : `<tr><td colspan="6" class="py-4 text-center text-stone-400">Tidak ada komponen.</td></tr>`;
+      document.getElementById('rabDetTotal').innerText = formatRupiah(d.Total_Rp);
+
+      const cat = document.getElementById('rabDetCatatan');
+      if (d.Catatan_Bendahara) {
+        cat.innerText = `Catatan Bendahara${d.Tanggal_Respon ? ' (' + formatTanggal(d.Tanggal_Respon) + ')' : ''}: ${d.Catatan_Bendahara}`;
+        cat.classList.remove('hidden');
+      } else {
+        cat.classList.add('hidden');
+      }
+
+      document.getElementById('rabDetAdminWrap').classList.toggle('hidden', !admin);
+      if (admin) {
+        document.getElementById('rabDetStatusPilih').value = d.Status || 'Menunggu';
+        document.getElementById('rabDetCatatanInput').value = d.Catatan_Bendahara || '';
+      }
+
+      const boleh = bisaUbahRabDok(d);
+      document.getElementById('rabDetBtnEdit').classList.toggle('hidden', !boleh);
+      document.getElementById('rabDetBtnHapus').classList.toggle('hidden', !boleh);
+      document.getElementById('modalRabDetail').classList.remove('hidden');
+    }
+
+    function tutupDetailRab() {
+      document.getElementById('modalRabDetail').classList.add('hidden');
+    }
+
+    function editDariDetailRab() {
+      const id = STATE.rabDetailId;
+      tutupDetailRab();
+      bukaEditorRab(id);
+    }
+
+    function hapusDariDetailRab() {
+      const id = STATE.rabDetailId;
+      tutupDetailRab();
+      konfirmasiHapusRabDok(id);
+    }
+
+    async function handleSimpanTanggapanRab() {
+      const id = STATE.rabDetailId;
+      const status = document.getElementById('rabDetStatusPilih').value;
+      const catatan = document.getElementById('rabDetCatatanInput').value.trim();
+      if ((status === 'Ditolak' || status === 'Perlu Revisi') && !catatan) {
+        tampilkanToast(`Catatan wajib diisi untuk status ${status}.`, 'error');
+        return;
+      }
+      const btn = document.getElementById('btnSimpanTanggapanRab');
+      btn.disabled = true;
+      try {
+        const res = await panggilApiPost({ action: 'responRabDok', idRabDivisi: id, status: status, catatan: catatan });
+        if (res.success) {
+          tampilkanToast(res.message, 'success');
+          tutupDetailRab();
+          muatDataRabDok();
+        } else {
+          tampilkanToast(res.error || 'Gagal menyimpan tanggapan.', 'error');
+        }
+      } catch (err) {
+        tampilkanToast('Gangguan komunikasi: ' + err.message, 'error');
+      } finally {
+        btn.disabled = false;
+      }
+    }
+
+    function konfirmasiHapusRabDok(id) {
+      const d = STATE.rabDocs.find(x => x.ID_RAB_Divisi === id);
+      const label = d ? `"${d.Judul_RAB}" (${formatRupiah(d.Total_Rp)})` : id;
+      bukaModalKonfirmasi(`Hapus RAB ${label} [${id}] beserta seluruh komponennya secara permanen?`, async () => {
+        try {
+          const res = await panggilApiPost({ action: 'hapusRabDok', idRabDivisi: id });
+          if (res.success) {
+            tampilkanToast(res.message, 'success');
+            muatDataRabDok();
+          } else {
+            tampilkanToast(res.error || 'Gagal menghapus RAB.', 'error');
+          }
+        } catch (err) {
+          tampilkanToast('Gangguan komunikasi: ' + err.message, 'error');
+        }
+      });
+    }
+
+    function unduhCsvRab() {
+      const d = STATE.rabDocs.find(x => x.ID_RAB_Divisi === STATE.rabDetailId);
+      if (!d) return;
+      const q = t => `"${String(t === undefined || t === null ? '' : t).replace(/"/g, '""')}"`;
+      let csv = `${q('RAB')},${q(d.ID_RAB_Divisi)}\n${q('Divisi')},${q(d.Divisi)}\n${q('Judul')},${q(d.Judul_RAB)}\n${q('Status')},${q(d.Status)}\n\n`;
+      csv += 'No,Komponen Pengeluaran,Volume,Satuan,Harga Satuan (Rp),Total (Rp)\n';
+      (d.Items || []).forEach(it => {
+        csv += `${it.No},${q(it.Komponen_Pengeluaran)},${it.Volume},${q(it.Satuan)},${it.Harga_Satuan_Rp},${it.Total_Rp}\n`;
+      });
+      csv += `,,,,${q('TOTAL')},${d.Total_Rp}\n`;
+
+      const blob = new Blob(['\ufeff' + csv], { type: 'text/csv;charset=utf-8;' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `RAB_${d.ID_RAB_Divisi}_${String(d.Divisi).replace(/\s+/g, '_')}.csv`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+      tampilkanToast('RAB berhasil diunduh!', 'success');
     }
 
     // Modal Konfirmasi Aksi Kustom (Pengganti window.confirm)

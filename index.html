@@ -156,7 +156,7 @@
       <div class="rounded-2xl p-6 bg-gradient-to-r from-brand-coffee via-brand-caramel to-amber-800 text-white shadow-lg relative overflow-hidden">
         <div class="relative z-10 max-w-2xl">
           <div class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold bg-white/20 text-white mb-2">
-            Kuliah Umum Studi Kasus BK 2024
+            Kuliah Umum Studi Kasus BK 24
           </div>
           <h2 class="text-2xl sm:text-3xl font-extrabold tracking-tight">Keterbukaan Anggaran Audere 24</h2>
           <p class="mt-2 text-stone-200 text-sm sm:text-base leading-relaxed">
@@ -225,6 +225,33 @@
         </div>
       </div>
 
+      <!-- Rincian Sisa Dana per Sumber Pemasukan -->
+      <div class="p-5 rounded-2xl bg-white dark:bg-brand-darkCard border border-brand-creamDark dark:border-brand-darkBorder shadow-sm">
+        <div class="mb-4">
+          <h3 class="font-bold text-stone-900 dark:text-white text-base">Rincian Sisa Dana per Sumber Pemasukan</h3>
+          <p class="text-xs text-stone-500">Setiap rupiah yang masuk bisa ditelusuri: berapa yang sudah dipagukan ke divisi, berapa yang terpakai, dan berapa sisanya dari tiap sumber.</p>
+        </div>
+        <div class="overflow-x-auto">
+          <table class="w-full text-left text-xs sm:text-sm">
+            <thead class="bg-stone-50 dark:bg-stone-800/60 text-stone-500 dark:text-stone-400 uppercase font-semibold text-[11px] border-b border-stone-200 dark:border-stone-800">
+              <tr>
+                <th class="py-3 px-3">Sumber Dana</th>
+                <th class="py-3 px-3 text-right">Dana Masuk</th>
+                <th class="py-3 px-3 text-right">Dipagukan ke Divisi</th>
+                <th class="py-3 px-3 text-right">Terpakai*</th>
+                <th class="py-3 px-3 text-right">Sisa Dana</th>
+                <th class="py-3 px-3 text-right">Belum Dipagukan</th>
+              </tr>
+            </thead>
+            <tbody id="publikSumberBody" class="divide-y divide-stone-100 dark:divide-stone-800/60">
+              <tr><td colspan="6" class="py-6 text-center text-stone-400">Memuat rincian sumber dana...</td></tr>
+            </tbody>
+            <tfoot id="publikSumberFoot"></tfoot>
+          </table>
+        </div>
+        <div id="publikSumberCatatan" class="mt-3 text-[11px] text-stone-500 space-y-1"></div>
+      </div>
+
       <!-- Tabel Transaksi Publik Terbuka -->
       <div class="p-5 rounded-2xl bg-white dark:bg-brand-darkCard border border-brand-creamDark dark:border-brand-darkBorder shadow-sm">
         <div class="sm:flex sm:items-center sm:justify-between mb-4">
@@ -265,7 +292,7 @@
                 <th class="py-3 px-3">Pihak / Divisi</th>
                 <th class="py-3 px-3">Keterangan</th>
                 <th class="py-3 px-3 text-right">Nominal</th>
-                <th class="py-3 px-3 text-center">Bukti Nota</th>
+                <th class="py-3 px-3 text-center">Bukti</th>
               </tr>
             </thead>
             <tbody id="tabelPublikBody" class="divide-y divide-stone-100 dark:divide-stone-800/60">
@@ -673,6 +700,9 @@
         <button onclick="gantiSubTabAdmin('monitor')" id="adminSubMonitorBtn" class="py-2 px-1 border-b-2 border-transparent text-stone-500 hover:text-stone-800 dark:hover:text-stone-200 font-semibold text-xs sm:text-sm whitespace-nowrap">
           📈 Pemantauan Dana Divisi
         </button>
+        <button onclick="gantiSubTabAdmin('notif')" id="adminSubNotifBtn" class="py-2 px-1 border-b-2 border-transparent text-stone-500 hover:text-stone-800 dark:hover:text-stone-200 font-semibold text-xs sm:text-sm whitespace-nowrap">
+          🔔 Notifikasi WA <span id="adminNotifBadge" class="hidden ml-1 px-1.5 py-0.5 rounded-full bg-rose-600 text-white text-[10px] font-bold align-middle">0</span>
+        </button>
         <button onclick="gantiSubTabAdmin('users')" id="adminSubUsersBtn" class="py-2 px-1 border-b-2 border-transparent text-stone-500 hover:text-stone-800 dark:hover:text-stone-200 font-semibold text-xs sm:text-sm whitespace-nowrap">
           Kelola Akun Panitia
         </button>
@@ -811,6 +841,12 @@
               <input type="text" id="inCatatan" placeholder="Contoh: Transfer rekening BNI nomor ref #99812 - Tahap 1" class="w-full px-3 py-2 text-sm rounded-xl border border-stone-300 dark:border-stone-700 bg-stone-50 dark:bg-stone-800 focus:ring-2 focus:ring-brand-caramel outline-none">
             </div>
 
+            <div class="sm:col-span-3">
+              <label class="block text-xs font-semibold text-stone-600 dark:text-stone-300 mb-1">Bukti Pemasukan Dana <span class="font-normal text-stone-400">(opsional • foto/PDF bukti transfer, kwitansi, dll.)</span></label>
+              <input type="file" id="inBukti" accept=".jpg,.jpeg,.png,.pdf" onchange="handlePilihBuktiPemasukan(event)" class="w-full text-xs text-stone-500 file:mr-3 file:py-2 file:px-3 file:rounded-xl file:border-0 file:text-xs file:font-semibold file:bg-brand-creamDark file:text-brand-coffee hover:file:opacity-80">
+              <span id="inBuktiInfo" class="text-[11px] text-emerald-600 dark:text-emerald-400 mt-1 block"></span>
+            </div>
+
             <div class="sm:col-span-3 flex justify-end">
               <button type="submit" id="btnSubmitPemasukan" class="px-5 py-2.5 rounded-xl bg-emerald-700 text-white font-semibold text-sm hover:bg-emerald-800 transition flex items-center shadow-sm">
                 <svg class="w-4 h-4 mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"/></svg>
@@ -844,6 +880,7 @@
                   <th class="py-2.5 px-3">Sumber Dana</th>
                   <th class="py-2.5 px-3">Catatan</th>
                   <th class="py-2.5 px-3 text-right">Nominal</th>
+                  <th class="py-2.5 px-3 text-center">Bukti</th>
                   <th class="py-2.5 px-3 text-center">Aksi</th>
                 </tr>
               </thead>
@@ -954,7 +991,13 @@
 
             <div>
               <label class="block text-xs font-semibold text-stone-600 dark:text-stone-300 mb-1">Pagu Anggaran (Rp) *</label>
-              <input type="number" id="rabPagu" required min="1000" placeholder="Contoh: 1500000" class="w-full px-3 py-2 text-sm rounded-xl border border-stone-300 dark:border-stone-700 bg-stone-50 dark:bg-stone-800 focus:ring-2 focus:ring-brand-caramel outline-none">
+              <input type="number" id="rabPagu" oninput="sinkronPaguSumber('rabSumberList','rabPagu')" required min="1000" placeholder="Contoh: 1500000" class="w-full px-3 py-2 text-sm rounded-xl border border-stone-300 dark:border-stone-700 bg-stone-50 dark:bg-stone-800 focus:ring-2 focus:ring-brand-caramel outline-none">
+            </div>
+
+            <div class="sm:col-span-3">
+              <label class="block text-xs font-semibold text-stone-600 dark:text-stone-300 mb-1">Sumber Dana Pagu <span class="font-normal text-stone-400">(opsional • boleh pilih lebih dari satu, diambil dari catatan pemasukan)</span></label>
+              <div id="rabSumberList" class="space-y-2"></div>
+              <div id="rabSumberListRingkasan" class="mt-2 text-[11px]"></div>
             </div>
 
             <div class="sm:col-span-3 flex justify-end">
@@ -988,13 +1031,14 @@
                   <th class="py-2.5 px-3">Kode</th>
                   <th class="py-2.5 px-3">Divisi</th>
                   <th class="py-2.5 px-3">Nama Pos Kebutuhan</th>
+                  <th class="py-2.5 px-3">Sumber Dana</th>
                   <th class="py-2.5 px-3 text-right">Pagu Anggaran</th>
                   <th class="py-2.5 px-3">Catatan</th>
                   <th class="py-2.5 px-3 text-center">Aksi</th>
                 </tr>
               </thead>
               <tbody id="tabelAdminRABBody" class="divide-y divide-stone-100 dark:divide-stone-800/60">
-                <tr><td colspan="6" class="py-6 text-center text-stone-400">Memuat pos anggaran RAB...</td></tr>
+                <tr><td colspan="7" class="py-6 text-center text-stone-400">Memuat pos anggaran RAB...</td></tr>
               </tbody>
             </table>
           </div>
@@ -1122,6 +1166,72 @@
         </div>
       </div>
 
+      <!-- Konten Admin: Notifikasi Grup WhatsApp Divisi -->
+      <div id="adminContentNotif" class="hidden space-y-4">
+        <div class="p-5 rounded-2xl bg-white dark:bg-brand-darkCard border border-stone-200 dark:border-brand-darkBorder shadow-sm">
+          <h3 class="font-bold text-stone-900 dark:text-white text-base mb-1">Pengaturan Notifikasi Grup WhatsApp</h3>
+          <p class="text-xs text-stone-500 mb-3">Setiap kali Anda menyetujui / menolak pengajuan dana, menanggapi RAB, atau menyalurkan dana, sistem menyiapkan pesan notifikasi untuk grup WhatsApp divisi terkait. Tautan grup diisi di menu <b>Kelola Akun Panitia</b>. Pesan dikirim dari perangkat Anda (WhatsApp tidak mengizinkan server mengirim ke grup secara otomatis), sehingga Anda tetap mengendalikan kapan dan apa yang dikirim.</p>
+          <label class="flex items-start gap-2 text-xs text-stone-700 dark:text-stone-300 cursor-pointer">
+            <input type="checkbox" id="notifOtomatisToggle" onchange="simpanPengaturanNotif()" class="mt-0.5 rounded" checked>
+            <span><b>Munculkan jendela kirim notifikasi otomatis</b> setelah saya menyetujui / menolak / menyalurkan dana. Bila dimatikan, notifikasi hanya masuk ke daftar di bawah dan dikirim manual lewat tombol <b>Kirim Notif</b>.</span>
+          </label>
+        </div>
+
+        <div class="p-5 rounded-2xl bg-white dark:bg-brand-darkCard border border-stone-200 dark:border-brand-darkBorder shadow-sm">
+          <h3 class="font-bold text-stone-900 dark:text-white text-base mb-1">Buat Notifikasi / Pengumuman Manual</h3>
+          <p class="text-xs text-stone-500 mb-3">Tulis pesan bebas untuk satu grup divisi (mis. pengingat laporan nota, informasi pencairan).</p>
+          <div class="grid grid-cols-1 sm:grid-cols-4 gap-3">
+            <div>
+              <label class="block text-xs font-semibold text-stone-600 dark:text-stone-300 mb-1">Divisi Tujuan *</label>
+              <select id="notifManualDivisi" class="w-full px-3 py-2 text-sm rounded-xl border border-stone-300 dark:border-stone-700 bg-stone-50 dark:bg-stone-800 focus:ring-2 focus:ring-brand-caramel outline-none"></select>
+            </div>
+            <div class="sm:col-span-3">
+              <label class="block text-xs font-semibold text-stone-600 dark:text-stone-300 mb-1">Isi Pesan *</label>
+              <textarea id="notifManualPesan" rows="3" maxlength="1500" placeholder="Contoh: Dana konsumsi sudah ditransfer, mohon kirim nota maksimal H+2." class="w-full px-3 py-2 text-sm rounded-xl border border-stone-300 dark:border-stone-700 bg-stone-50 dark:bg-stone-800 focus:ring-2 focus:ring-brand-caramel outline-none"></textarea>
+            </div>
+            <div class="sm:col-span-4 flex justify-end">
+              <button onclick="handleBuatNotifManual()" id="btnBuatNotifManual" class="px-4 py-2 rounded-xl bg-emerald-700 text-white font-semibold text-xs hover:bg-emerald-800 transition shadow-sm">Buat & Siapkan Pengiriman</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="p-5 rounded-2xl bg-white dark:bg-brand-darkCard border border-stone-200 dark:border-brand-darkBorder shadow-sm">
+          <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-4">
+            <div>
+              <h3 class="font-bold text-stone-900 dark:text-white text-base">Antrean & Riwayat Notifikasi</h3>
+              <p class="text-xs text-stone-500">Klik <b>Kirim Notif</b> untuk menyalin pesan dan membuka grup WhatsApp divisi.</p>
+            </div>
+            <div class="flex items-center space-x-2">
+              <select id="filterNotifStatus" onchange="renderTabelNotif()" class="px-3 py-1.5 rounded-xl border border-stone-300 dark:border-stone-700 bg-stone-50 dark:bg-stone-800 text-xs focus:ring-2 focus:ring-brand-caramel outline-none">
+                <option value="">Semua status</option>
+                <option value="Belum Dikirim">Belum dikirim</option>
+                <option value="Sudah Dikirim">Sudah dikirim</option>
+              </select>
+              <button onclick="muatDataNotifikasi(true)" class="p-1.5 rounded-xl border border-stone-300 dark:border-stone-700 hover:bg-stone-100 dark:hover:bg-stone-800 text-stone-600 dark:text-stone-300 transition" title="Muat ulang">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>
+              </button>
+            </div>
+          </div>
+          <div class="overflow-x-auto">
+            <table class="w-full text-left text-xs sm:text-sm">
+              <thead class="bg-stone-50 dark:bg-stone-800/60 text-stone-500 uppercase font-semibold text-[11px] border-b border-stone-200 dark:border-stone-800">
+                <tr>
+                  <th class="py-2.5 px-3">Waktu</th>
+                  <th class="py-2.5 px-3">Divisi</th>
+                  <th class="py-2.5 px-3">Jenis</th>
+                  <th class="py-2.5 px-3">Pesan</th>
+                  <th class="py-2.5 px-3 text-center">Status</th>
+                  <th class="py-2.5 px-3 text-center">Aksi</th>
+                </tr>
+              </thead>
+              <tbody id="tabelNotifBody" class="divide-y divide-stone-100 dark:divide-stone-800/60">
+                <tr><td colspan="6" class="py-6 text-center text-stone-400">Memuat notifikasi...</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
       <!-- Konten Admin 4: Kelola Akun Panitia Divisi -->
       <div id="adminContentUsers" class="hidden space-y-4">
         <div class="p-5 rounded-2xl bg-white dark:bg-brand-darkCard border border-stone-200 dark:border-brand-darkBorder shadow-sm">
@@ -1150,6 +1260,11 @@
                 <option value="Divisi">Divisi</option>
                 <option value="Admin">Admin (Bendahara)</option>
               </select>
+            </div>
+
+            <div class="sm:col-span-4">
+              <label class="block text-xs font-semibold text-stone-600 dark:text-stone-300 mb-1">Tautan Grup WhatsApp Divisi <span class="font-normal text-stone-400">(opsional • untuk notifikasi persetujuan dana & RAB)</span></label>
+              <input type="url" id="userBaruWA" placeholder="https://chat.whatsapp.com/XXXXXXXXXXXXXX" class="w-full px-3 py-2 text-sm rounded-xl border border-stone-300 dark:border-stone-700 bg-stone-50 dark:bg-stone-800 focus:ring-2 focus:ring-brand-caramel outline-none">
             </div>
 
             <div class="sm:col-span-4 flex justify-end">
@@ -1182,12 +1297,13 @@
                   <th class="py-2.5 px-3">Nama Divisi</th>
                   <th class="py-2.5 px-3">Kata Sandi</th>
                   <th class="py-2.5 px-3">Peran</th>
+                  <th class="py-2.5 px-3 text-center">Grup WA</th>
                   <th class="py-2.5 px-3 text-center">Status</th>
                   <th class="py-2.5 px-3 text-center">Aksi</th>
                 </tr>
               </thead>
               <tbody id="tabelAdminUsersBody" class="divide-y divide-stone-100 dark:divide-stone-800/60">
-                <tr><td colspan="7" class="py-4 text-center text-stone-400">Memuat data pengguna...</td></tr>
+                <tr><td colspan="8" class="py-4 text-center text-stone-400">Memuat data pengguna...</td></tr>
               </tbody>
             </table>
           </div>
@@ -1350,7 +1466,7 @@
             📄
           </div>
           <h4 class="font-bold text-sm text-stone-900 dark:text-white">Cetak / Unduh PDF</h4>
-          <p class="text-xs text-stone-500 mt-1">Format layout rapi siap cetak langsung untuk arsip fisik LPJ kuliah Umum.</p>
+          <p class="text-xs text-stone-500 mt-1">Format layout rapi siap cetak langsung untuk arsip fisik LPJ kuliah umum.</p>
         </div>
 
         <div onclick="unduhDataCSV()" class="p-5 rounded-xl border-2 border-dashed border-stone-300 dark:border-stone-700 hover:border-brand-caramel dark:hover:border-brand-caramel cursor-pointer transition text-center group">
@@ -1366,7 +1482,7 @@
 
   <!-- ================= MODAL EDIT POS RAB (REUSABLE DIVISI & ADMIN) ================= -->
   <div id="modalEditRAB" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm hidden">
-    <div class="bg-white dark:bg-brand-darkCard rounded-2xl max-w-md w-full p-6 shadow-2xl border border-stone-200 dark:border-brand-darkBorder relative">
+    <div class="bg-white dark:bg-brand-darkCard rounded-2xl max-w-lg w-full p-6 shadow-2xl border border-stone-200 dark:border-brand-darkBorder relative max-h-[90vh] overflow-y-auto">
       <button onclick="tutupModalEditRAB()" class="absolute top-4 right-4 text-stone-400 hover:text-stone-600 dark:hover:text-stone-200">
         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
       </button>
@@ -1389,12 +1505,18 @@
 
         <div>
           <label class="block text-xs font-semibold text-stone-600 dark:text-stone-300 mb-1">Pagu Anggaran (Rp) *</label>
-          <input type="number" id="editRABPagu" required min="1000" class="w-full px-3 py-2 text-sm rounded-xl border border-stone-300 dark:border-stone-700 bg-stone-50 dark:bg-stone-800 focus:ring-2 focus:ring-brand-caramel outline-none">
+          <input type="number" id="editRABPagu" oninput="sinkronPaguSumber('editRABSumberList','editRABPagu')" required min="1000" class="w-full px-3 py-2 text-sm rounded-xl border border-stone-300 dark:border-stone-700 bg-stone-50 dark:bg-stone-800 focus:ring-2 focus:ring-brand-caramel outline-none">
         </div>
 
         <div>
           <label class="block text-xs font-semibold text-stone-600 dark:text-stone-300 mb-1">Catatan Keterangan</label>
           <input type="text" id="editRABCatatan" class="w-full px-3 py-2 text-sm rounded-xl border border-stone-300 dark:border-stone-700 bg-stone-50 dark:bg-stone-800 focus:ring-2 focus:ring-brand-caramel outline-none">
+        </div>
+
+        <div id="editRABSumberWrap">
+          <label class="block text-xs font-semibold text-stone-600 dark:text-stone-300 mb-1">Sumber Dana Pagu <span class="font-normal text-stone-400">(boleh lebih dari satu)</span></label>
+          <div id="editRABSumberList" class="space-y-2"></div>
+          <div id="editRABSumberListRingkasan" class="mt-2 text-[11px]"></div>
         </div>
 
         <div class="pt-2 flex justify-end space-x-2">
@@ -1436,6 +1558,16 @@
         <div>
           <label class="block text-xs font-semibold text-stone-600 dark:text-stone-300 mb-1">Catatan / Bukti Referensi Transaksi</label>
           <input type="text" id="editInCatatan" class="w-full px-3 py-2 text-sm rounded-xl border border-stone-300 dark:border-stone-700 bg-stone-50 dark:bg-stone-800 focus:ring-2 focus:ring-brand-caramel outline-none">
+        </div>
+
+        <div>
+          <label class="block text-xs font-semibold text-stone-600 dark:text-stone-300 mb-1">Bukti Pemasukan <span class="font-normal text-stone-400">(opsional)</span></label>
+          <div id="editInBuktiLama" class="text-[11px] text-stone-500 mb-1"></div>
+          <input type="file" id="editInBukti" accept=".jpg,.jpeg,.png,.pdf" onchange="handlePilihBuktiEditPemasukan(event)" class="w-full text-xs text-stone-500 file:mr-3 file:py-2 file:px-3 file:rounded-xl file:border-0 file:text-xs file:font-semibold file:bg-brand-creamDark file:text-brand-coffee hover:file:opacity-80">
+          <span id="editInBuktiInfo" class="text-[11px] text-emerald-600 dark:text-emerald-400 mt-1 block"></span>
+          <label id="editInHapusBuktiWrap" class="hidden mt-1.5 inline-flex items-center gap-1.5 text-[11px] text-rose-600 cursor-pointer">
+            <input type="checkbox" id="editInHapusBukti" class="rounded"> Hapus bukti yang tersimpan
+          </label>
         </div>
 
         <div class="pt-2 flex justify-end space-x-2">
@@ -1629,6 +1761,12 @@
           <input type="text" id="editUserPass" placeholder="Kosongkan jika tidak diubah" autocomplete="off" class="w-full px-3 py-2 text-sm rounded-xl border border-stone-300 dark:border-stone-700 bg-stone-50 dark:bg-stone-800 focus:ring-2 focus:ring-brand-caramel outline-none"><span class="text-[11px] text-stone-400 mt-0.5 block">Minimal 6 karakter. Mengubah nama divisi akan ikut memperbarui data RAB, pengajuan & belanja divisi tersebut.</span>
         </div>
 
+        <div id="editUserWAWrap">
+          <label class="block text-xs font-semibold text-stone-600 dark:text-stone-300 mb-1">Tautan Grup WhatsApp Divisi</label>
+          <input type="url" id="editUserWA" placeholder="https://chat.whatsapp.com/XXXXXXXXXXXXXX" autocomplete="off" class="w-full px-3 py-2 text-sm rounded-xl border border-stone-300 dark:border-stone-700 bg-stone-50 dark:bg-stone-800 focus:ring-2 focus:ring-brand-caramel outline-none">
+          <p class="text-[11px] text-stone-400 mt-1">Kosongkan untuk menghapus tautan. Dipakai untuk mengirim notifikasi persetujuan dana, RAB, dan penyaluran dana ke grup divisi.</p>
+        </div>
+
         <div class="pt-2 flex justify-end space-x-2">
           <button type="button" onclick="tutupModalEditUser()" class="px-4 py-2 rounded-xl text-xs font-medium text-stone-600 dark:text-stone-400 hover:bg-stone-100 dark:hover:bg-stone-800">
             Batal
@@ -1753,6 +1891,7 @@
 
       <div class="mt-5 flex flex-wrap justify-end gap-2">
         <button onclick="unduhCsvRab()" class="px-3 py-2 rounded-xl border border-stone-300 dark:border-stone-700 hover:bg-stone-100 dark:hover:bg-stone-800 text-xs font-semibold text-stone-700 dark:text-stone-200 transition">Unduh CSV</button>
+        <button id="rabDetBtnNotif" onclick="buatNotifRabManual()" class="hidden px-3 py-2 rounded-xl bg-emerald-50 dark:bg-emerald-950/40 hover:bg-emerald-100 text-emerald-700 dark:text-emerald-400 text-xs font-semibold transition">🔔 Kirim Notif</button>
         <button id="rabDetBtnEdit" onclick="editDariDetailRab()" class="px-3 py-2 rounded-xl bg-stone-100 dark:bg-stone-800 hover:bg-brand-creamDark text-brand-caramel text-xs font-semibold transition">Edit</button>
         <button id="rabDetBtnHapus" onclick="hapusDariDetailRab()" class="px-3 py-2 rounded-xl bg-rose-50 dark:bg-rose-950/40 hover:bg-rose-100 text-rose-600 text-xs font-semibold transition">Hapus</button>
         <button onclick="tutupDetailRab()" class="px-4 py-2 rounded-xl text-xs font-medium text-stone-600 dark:text-stone-400 hover:bg-stone-100 dark:hover:bg-stone-800">Tutup</button>
@@ -1837,6 +1976,33 @@
     </div>
   </div>
 
+  <!-- ================= MODAL KIRIM NOTIFIKASI GRUP WA ================= -->
+  <div id="modalNotifWA" class="fixed inset-0 z-[60] flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm hidden">
+    <div class="bg-white dark:bg-brand-darkCard rounded-2xl max-w-lg w-full p-6 shadow-2xl border border-stone-200 dark:border-brand-darkBorder relative max-h-[92vh] overflow-y-auto">
+      <button onclick="tutupModalNotif()" class="absolute top-4 right-4 text-stone-400 hover:text-stone-600 dark:hover:text-stone-200">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+      </button>
+      <h3 class="text-base font-bold text-stone-900 dark:text-white mb-1">🔔 Kirim Notifikasi ke Grup WhatsApp</h3>
+      <p class="text-xs text-stone-500 mb-3" id="notifModalMeta"></p>
+
+      <div id="notifModalLinkInfo" class="mb-3 text-xs rounded-xl p-3"></div>
+
+      <label class="block text-xs font-semibold text-stone-600 dark:text-stone-300 mb-1">Isi pesan <span class="font-normal text-stone-400">(boleh diubah sebelum dikirim)</span></label>
+      <textarea id="notifModalPesan" rows="9" class="w-full px-3 py-2 text-sm rounded-xl border border-stone-300 dark:border-stone-700 bg-stone-50 dark:bg-stone-800 focus:ring-2 focus:ring-brand-caramel outline-none font-mono text-xs"></textarea>
+
+      <div class="mt-4 grid grid-cols-1 sm:grid-cols-2 gap-2">
+        <button id="notifBtnGrup" onclick="kirimNotifKeGrup()" class="px-3 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-semibold shadow-sm transition">📲 Salin Pesan & Buka Grup WA</button>
+        <button onclick="kirimNotifViaWA()" class="px-3 py-2.5 rounded-xl bg-stone-100 dark:bg-stone-800 hover:bg-brand-creamDark text-brand-coffee dark:text-brand-lightCaramel text-xs font-semibold transition">Kirim lewat WhatsApp (pilih grup)</button>
+        <button onclick="salinPesanNotif()" class="px-3 py-2.5 rounded-xl border border-stone-300 dark:border-stone-700 hover:bg-stone-100 dark:hover:bg-stone-800 text-stone-700 dark:text-stone-200 text-xs font-semibold transition">📋 Salin Pesan Saja</button>
+        <button onclick="tandaiNotifSudahDikirim()" class="px-3 py-2.5 rounded-xl border border-emerald-600 text-emerald-700 dark:text-emerald-400 hover:bg-emerald-50 dark:hover:bg-emerald-950/40 text-xs font-semibold transition">✔ Tandai Sudah Terkirim</button>
+      </div>
+      <p class="text-[11px] text-stone-400 mt-3">Setelah grup WhatsApp terbuka, tempel (paste) pesan lalu kirim. Kembali ke sini dan tekan <b>Tandai Sudah Terkirim</b> agar tercatat.</p>
+      <div class="mt-3 flex justify-end">
+        <button onclick="tutupModalNotif()" class="px-4 py-2 rounded-xl text-xs font-medium text-stone-600 dark:text-stone-400 hover:bg-stone-100 dark:hover:bg-stone-800">Nanti saja</button>
+      </div>
+    </div>
+  </div>
+
   <!-- ================= JAVASCRIPT LOGIC ================= -->
   <script>
     // =========================================================================
@@ -1873,7 +2039,11 @@
       rabDetailId: null,
       publikSnapshot: '',
       publikTimer: null,
-      konfirmasiCallback: null
+      konfirmasiCallback: null,
+      pendingBuktiPemasukan: null,
+      pendingBuktiEditPemasukan: null,
+      notifCache: [],
+      notifAktifId: null
     };
 
     // Saat Dokumen Siap Dimuat
@@ -2132,7 +2302,7 @@
     }
 
     function gantiSubTabAdmin(sub) {
-      const tabs = ['rekapKas', 'verifikasi', 'rabdok', 'pemasukan', 'pengeluaran', 'rab', 'monitor', 'users', 'profil'];
+      const tabs = ['rekapKas', 'verifikasi', 'rabdok', 'pemasukan', 'pengeluaran', 'rab', 'monitor', 'notif', 'users', 'profil'];
       tabs.forEach(t => {
         const el = document.getElementById('adminContent' + t.charAt(0).toUpperCase() + t.slice(1));
         if (el) el.classList.add('hidden');
@@ -2146,6 +2316,7 @@
         pengeluaran: 'adminSubOutBtn',
         rab: 'adminSubRabBtn',
         monitor: 'adminSubMonitorBtn',
+        notif: 'adminSubNotifBtn',
         users: 'adminSubUsersBtn',
         profil: 'adminSubProfilBtn'
       };
@@ -2170,7 +2341,11 @@
       } else if (sub === 'users') {
         muatDataPenggunaAdmin();
       } else if (sub === 'rab') {
+        muatDataPemasukanAdmin();
         muatDataRABAdmin();
+      } else if (sub === 'notif') {
+        muatDataPenggunaAdmin();
+        muatDataNotifikasi();
       } else if (sub === 'verifikasi') {
         muatDataPengajuanAdmin();
       } else if (sub === 'pemasukan') {
@@ -2212,6 +2387,7 @@
 
             renderDonutChart(res.pengeluaranPerDivisi || {});
             renderBarChart(res.rabPerDivisi || {}, res.pengeluaranPerDivisi || {});
+            renderRincianSumberPublik(res);
 
             STATE.transaksiCache = res.riwayatTransaksi || [];
             isiOpsiFilterPublik();
@@ -2759,7 +2935,8 @@
         muatDataPenggunaAdmin(),
         muatDataPemasukanAdmin(),
         muatDataPengeluaranAdmin(),
-        muatDataRabDok()
+        muatDataRabDok(),
+        muatDataNotifikasi()
       ]);
     }
 
@@ -2891,6 +3068,7 @@
         if (res.success) {
           STATE.rabCache = res.data || [];
           renderTabelAdminRAB(STATE.rabCache);
+          segarkanPilihanSumberRAB();
         }
       } catch (err) {
         console.error('Gagal mengambil data RAB admin:', err);
@@ -2900,7 +3078,7 @@
     function renderTabelAdminRAB(list) {
       const tbody = document.getElementById('tabelAdminRABBody');
       if (!list || list.length === 0) {
-        tbody.innerHTML = `<tr><td colspan="6" class="py-6 text-center text-stone-400">Belum ada pos anggaran RAB tercatat. Silakan tambah melalui formulir di atas.</td></tr>`;
+        tbody.innerHTML = `<tr><td colspan="7" class="py-6 text-center text-stone-400">Belum ada pos anggaran RAB tercatat. Silakan tambah melalui formulir di atas.</td></tr>`;
         return;
       }
 
@@ -2909,6 +3087,7 @@
           <td class="py-2.5 px-3 font-mono text-xs text-stone-500">${item.ID_RAB}</td>
           <td class="py-2.5 px-3 font-semibold text-stone-800 dark:text-stone-100">${escapeHTML(item.Divisi)}</td>
           <td class="py-2.5 px-3 text-stone-700 dark:text-stone-300">${escapeHTML(item.Nama_Pos_Kebutuhan)}</td>
+          <td class="py-2.5 px-3">${htmlSumberPagu(item)}</td>
           <td class="py-2.5 px-3 text-right font-bold text-stone-900 dark:text-white">${formatRupiah(item.Pagu_Anggaran_Rp)}</td>
           <td class="py-2.5 px-3 text-xs text-stone-500 max-w-xs truncate">${escapeHTML(item.Catatan || '-')}</td>
           <td class="py-2.5 px-3 text-center whitespace-nowrap">
@@ -2937,12 +3116,21 @@
       const btn = document.getElementById('btnSubmitRAB');
       btn.disabled = true;
 
+      const paguBaru = Number(document.getElementById('rabPagu').value);
+      const cekSumber = validasiSumberPilihan('rabSumberList', paguBaru);
+      if (!cekSumber.ok) {
+        tampilkanToast(cekSumber.pesan, 'error');
+        btn.disabled = false;
+        return;
+      }
+
       const payload = {
         action: 'tambahRAB',
         token: STATE.session.token,
         divisi: document.getElementById('rabDivisi').value.trim(),
         namaPos: document.getElementById('rabPos').value.trim(),
-        paguAnggaran: Number(document.getElementById('rabPagu').value),
+        paguAnggaran: paguBaru,
+        sumberDana: cekSumber.list,
         catatan: ''
       };
 
@@ -2956,6 +3144,7 @@
         if (res.success) {
           tampilkanToast(res.message, 'success');
           document.getElementById('formRABAdmin').reset();
+          renderPilihanSumber('rabSumberList', 'rabPagu', []);
           muatDataRABAdmin();
           muatDataDashboardPublik();
         } else {
@@ -2979,6 +3168,13 @@
 
       const isDivisiRole = STATE.session && STATE.session.user.peran === 'Divisi';
       document.getElementById('editRABDivisi').readOnly = isDivisiRole;
+
+      const wrapSumber = document.getElementById('editRABSumberWrap');
+      if (wrapSumber) wrapSumber.classList.toggle('hidden', isDivisiRole);
+      if (!isDivisiRole) {
+        const itemRab = (STATE.rabCache || []).find(x => x.ID_RAB === idRAB);
+        renderPilihanSumber('editRABSumberList', 'editRABPagu', itemRab ? parseSumberPagu(itemRab.Sumber_Dana_JSON) : [], idRAB);
+      }
       document.getElementById('modalEditRAB').classList.remove('hidden');
     }
 
@@ -2991,6 +3187,18 @@
       const btn = document.getElementById('btnSubmitEditRAB');
       btn.disabled = true;
 
+      const adminRab = STATE.session.user.peran === 'Admin';
+      let sumberEdit = null;
+      if (adminRab) {
+        const cekSumberEdit = validasiSumberPilihan('editRABSumberList', Number(document.getElementById('editRABPagu').value));
+        if (!cekSumberEdit.ok) {
+          tampilkanToast(cekSumberEdit.pesan, 'error');
+          btn.disabled = false;
+          return;
+        }
+        sumberEdit = cekSumberEdit.list;
+      }
+
       const payload = {
         action: 'updateRAB',
         token: STATE.session.token,
@@ -3000,6 +3208,7 @@
         paguAnggaran: Number(document.getElementById('editRABPagu').value),
         catatan: document.getElementById('editRABCatatan').value.trim()
       };
+      if (sumberEdit !== null) payload.sumberDana = sumberEdit;
 
       try {
         const response = await fetch(STATE.apiUrl, {
@@ -3113,6 +3322,7 @@
                 <button onclick="bukaModalEditAksi('${item.ID_Pengajuan}')" class="px-2 py-1 rounded bg-stone-100 dark:bg-stone-800 hover:bg-brand-creamDark text-brand-caramel font-semibold text-xs transition">
                   Edit Aksi
                 </button>
+                <button onclick="buatNotifPengajuanManual('${item.ID_Pengajuan}')" title="Siapkan notifikasi ke grup WA divisi" class="px-2 py-1 rounded bg-emerald-50 dark:bg-emerald-950/40 hover:bg-emerald-100 text-emerald-700 dark:text-emerald-400 font-semibold text-xs transition">🔔 Notif</button>
                 ${btnHapus}
               </div>
             </div>
@@ -3215,6 +3425,7 @@
           muatDataPengajuanAdmin();
           muatDataRABAdmin();
           muatDataDashboardPublik();
+          if (res.notif) tanganiNotifBaru(res.notif);
         } else {
           tampilkanToast(res.error || 'Gagal memproses pengajuan.', 'error');
         }
@@ -3239,6 +3450,11 @@
         nominal: Number(document.getElementById('inNominal').value),
         catatan: document.getElementById('inCatatan').value.trim()
       };
+      if (STATE.pendingBuktiPemasukan) {
+        payload.fileBase64 = STATE.pendingBuktiPemasukan.base64;
+        payload.fileName = STATE.pendingBuktiPemasukan.fileName;
+        payload.mimeType = STATE.pendingBuktiPemasukan.mimeType;
+      }
 
       try {
         const response = await fetch(STATE.apiUrl, {
@@ -3250,6 +3466,8 @@
         if (res.success) {
           tampilkanToast(res.message, 'success');
           document.getElementById('formPemasukanAdmin').reset();
+          STATE.pendingBuktiPemasukan = null;
+          document.getElementById('inBuktiInfo').innerText = '';
           muatDataDashboardPublik();
           muatDataArusKasAdmin();
           muatDataPemasukanAdmin();
@@ -3276,7 +3494,8 @@
         username: document.getElementById('userBaruName').value.trim(),
         password: document.getElementById('userBaruPass').value,
         namaDivisi: document.getElementById('userBaruDivisi').value.trim(),
-        peran: document.getElementById('userBaruPeran').value
+        peran: document.getElementById('userBaruPeran').value,
+        linkGrupWA: document.getElementById('userBaruWA').value.trim()
       };
 
       try {
@@ -3321,7 +3540,7 @@
     function renderTabelAdminUsers(list) {
       const tbody = document.getElementById('tabelAdminUsersBody');
       if (!list || list.length === 0) {
-        tbody.innerHTML = `<tr><td colspan="7" class="py-4 text-center text-stone-400">Belum ada data pengguna terdaftar.</td></tr>`;
+        tbody.innerHTML = `<tr><td colspan="8" class="py-4 text-center text-stone-400">Belum ada data pengguna terdaftar.</td></tr>`;
         return;
       }
 
@@ -3375,6 +3594,7 @@
             <td class="py-2.5 px-3 text-stone-700 dark:text-stone-300">${escapeHTML(u.Nama_Divisi)}</td>
             <td class="py-2.5 px-3">${kolomSandi}</td>
             <td class="py-2.5 px-3"><span class="px-2 py-0.5 rounded text-[11px] font-semibold ${u.Peran === 'Admin' ? 'bg-brand-creamDark text-brand-coffee' : 'bg-stone-100 text-stone-700 dark:bg-stone-800 dark:text-stone-300'}">${u.Peran}</span></td>
+            <td class="py-2.5 px-3 text-center">${htmlGrupWA(u)}</td>
             <td class="py-2.5 px-3 text-center">${badgeStatus}</td>
             <td class="py-2.5 px-3 text-center">${actionBtn}</td>
           </tr>
@@ -3554,6 +3774,7 @@
             return sel !== 0 ? sel : String(b.ID_Pemasukan).localeCompare(String(a.ID_Pemasukan));
           });
           filterTabelPemasukanAdmin();
+          segarkanPilihanSumberRAB();
           if (force) tampilkanToast('Rekap pemasukan diperbarui!', 'success');
         }
       } catch (err) {
@@ -3575,7 +3796,7 @@
     function renderTabelAdminPemasukan(list) {
       const tbody = document.getElementById('tabelAdminPemasukanBody');
       if (!list || list.length === 0) {
-        tbody.innerHTML = `<tr><td colspan="6" class="py-6 text-center text-stone-400">Belum ada catatan pemasukan.</td></tr>`;
+        tbody.innerHTML = `<tr><td colspan="7" class="py-6 text-center text-stone-400">Belum ada catatan pemasukan.</td></tr>`;
         return;
       }
 
@@ -3586,6 +3807,9 @@
           <td class="py-2.5 px-3 font-semibold text-stone-800 dark:text-stone-100">${escapeHTML(item.Sumber_Dana)}</td>
           <td class="py-2.5 px-3 text-xs text-stone-500 max-w-xs truncate">${escapeHTML(item.Catatan_Keterangan || '-')}</td>
           <td class="py-2.5 px-3 text-right font-bold text-emerald-600 dark:text-emerald-400">+ ${formatRupiah(item.Nominal_Rp)}</td>
+          <td class="py-2.5 px-3 text-center whitespace-nowrap">${item.Link_Bukti_Pemasukan
+            ? `<a href="${escapeHTML(item.Link_Bukti_Pemasukan)}" target="_blank" rel="noopener" class="text-xs font-semibold text-brand-caramel hover:underline">📎 Lihat</a>`
+            : `<span class="text-stone-400 text-xs">-</span>`}</td>
           <td class="py-2.5 px-3 text-center whitespace-nowrap">
             <button onclick="bukaModalEditPemasukan('${item.ID_Pemasukan}')" class="${CLS_BTN_EDIT} mr-1">Edit</button>
             <button onclick="konfirmasiHapusPemasukan('${item.ID_Pemasukan}')" class="${CLS_BTN_HAPUS}">Hapus</button>
@@ -3603,6 +3827,15 @@
       document.getElementById('editInNominal').value = Number(item.Nominal_Rp) || 0;
       document.getElementById('editInCatatan').value = item.Catatan_Keterangan || '';
       document.getElementById('modalEditPemasukanSubjudul').innerText = `Kode: ${id}`;
+      STATE.pendingBuktiEditPemasukan = null;
+      document.getElementById('editInBukti').value = '';
+      document.getElementById('editInBuktiInfo').innerText = '';
+      document.getElementById('editInHapusBukti').checked = false;
+      const adaBukti = !!item.Link_Bukti_Pemasukan;
+      document.getElementById('editInHapusBuktiWrap').classList.toggle('hidden', !adaBukti);
+      document.getElementById('editInBuktiLama').innerHTML = adaBukti
+        ? `Bukti tersimpan: <a href="${escapeHTML(item.Link_Bukti_Pemasukan)}" target="_blank" rel="noopener" class="font-semibold text-brand-caramel hover:underline">📎 Lihat berkas</a> (unggah berkas baru untuk menggantinya)`
+        : 'Belum ada bukti terunggah.';
       document.getElementById('modalEditPemasukan').classList.remove('hidden');
     }
 
@@ -3616,14 +3849,22 @@
       btn.disabled = true;
 
       try {
-        const res = await panggilApiPost({
+        const payloadEdit = {
           action: 'updatePemasukan',
           idPemasukan: document.getElementById('editInId').value,
           tanggal: document.getElementById('editInTanggal').value,
           sumberDana: document.getElementById('editInSumber').value.trim(),
           nominal: Number(document.getElementById('editInNominal').value),
           catatan: document.getElementById('editInCatatan').value.trim()
-        });
+        };
+        if (STATE.pendingBuktiEditPemasukan) {
+          payloadEdit.fileBase64 = STATE.pendingBuktiEditPemasukan.base64;
+          payloadEdit.fileName = STATE.pendingBuktiEditPemasukan.fileName;
+          payloadEdit.mimeType = STATE.pendingBuktiEditPemasukan.mimeType;
+        } else if (document.getElementById('editInHapusBukti').checked) {
+          payloadEdit.hapusBukti = true;
+        }
+        const res = await panggilApiPost(payloadEdit);
 
         if (res.success) {
           tampilkanToast(res.message, 'success');
@@ -4205,6 +4446,8 @@
       document.getElementById('editUserUsername').value = u.Username || '';
       document.getElementById('editUserDivisi').value = u.Nama_Divisi || '';
       document.getElementById('editUserPass').value = '';
+      document.getElementById('editUserWA').value = u.Link_Grup_WA || '';
+      document.getElementById('editUserWAWrap').classList.toggle('hidden', u.Peran === 'Admin');
       document.getElementById('modalEditUserSubjudul').innerText = `ID: ${userId} • Peran: ${u.Peran}`;
       document.getElementById('modalEditUser').classList.remove('hidden');
     }
@@ -4219,14 +4462,19 @@
       btn.disabled = true;
 
       try {
-        const res = await panggilApiPost({
+        const payloadUser = {
           action: 'kelolaPengguna',
           subAction: 'editUser',
           userId: document.getElementById('editUserId').value,
           username: document.getElementById('editUserUsername').value.trim(),
           namaDivisi: document.getElementById('editUserDivisi').value.trim(),
           password: document.getElementById('editUserPass').value
-        });
+        };
+        const akunEdit = STATE.usersCache.find(x => x.ID_User === payloadUser.userId);
+        if (akunEdit && akunEdit.Peran !== 'Admin') {
+          payloadUser.linkGrupWA = document.getElementById('editUserWA').value.trim();
+        }
+        const res = await panggilApiPost(payloadUser);
 
         if (res.success) {
           tampilkanToast(res.message, 'success');
@@ -4959,6 +5207,7 @@
       const boleh = bisaUbahRabDok(d);
       document.getElementById('rabDetBtnEdit').classList.toggle('hidden', !boleh);
       document.getElementById('rabDetBtnHapus').classList.toggle('hidden', !boleh);
+      document.getElementById('rabDetBtnNotif').classList.toggle('hidden', !(admin && d.Status && d.Status !== 'Menunggu'));
       document.getElementById('modalRabDetail').classList.remove('hidden');
     }
 
@@ -4994,6 +5243,7 @@
           tampilkanToast(res.message, 'success');
           tutupDetailRab();
           muatDataRabDok();
+          if (res.notif) tanganiNotifBaru(res.notif);
         } else {
           tampilkanToast(res.error || 'Gagal menyimpan tanggapan.', 'error');
         }
@@ -5167,6 +5417,508 @@
         toast.classList.add('opacity-0', 'translate-y-2');
         setTimeout(() => toast.remove(), 300);
       }, 3500);
+    }
+
+    // =========================================================================
+    // 7. REVISI V5: SUMBER DANA PAGU, RINCIAN SUMBER PUBLIK, BUKTI PEMASUKAN,
+    //    NOTIFIKASI GRUP WHATSAPP
+    // =========================================================================
+
+    // ---------- Sumber dana pada pagu RAB ----------
+    function parseSumberPagu(raw) {
+      if (!raw) return [];
+      try {
+        const arr = JSON.parse(String(raw));
+        return Array.isArray(arr) ? arr.filter(x => x && x.sumber && Number(x.nominal) > 0) : [];
+      } catch (e) { return []; }
+    }
+
+    function htmlSumberPagu(item) {
+      const daftar = parseSumberPagu(item.Sumber_Dana_JSON);
+      if (!daftar.length) {
+        return `<span class="text-[11px] italic text-amber-600 dark:text-amber-400">Belum ditentukan</span>`;
+      }
+      return `<div class="flex flex-wrap gap-1">` + daftar.map(x =>
+        `<span class="inline-block px-2 py-0.5 rounded-md bg-emerald-50 dark:bg-emerald-950/40 text-emerald-800 dark:text-emerald-300 text-[11px] font-medium">${escapeHTML(x.sumber)} · ${formatRupiah(x.nominal)}</span>`
+      ).join('') + `</div>`;
+    }
+
+    // Daftar sumber unik dari catatan pemasukan (beserta total yang masuk)
+    function daftarSumberPemasukan() {
+      const peta = new Map();
+      (STATE.pemasukanAdminCache || []).forEach(p => {
+        const nm = String(p.Sumber_Dana || '').trim();
+        if (!nm) return;
+        const k = kunciNama(nm);
+        if (!peta.has(k)) peta.set(k, { sumber: nm, masuk: 0 });
+        peta.get(k).masuk += Number(p.Nominal_Rp) || 0;
+      });
+      return Array.from(peta.values()).sort((a, b) => a.sumber.localeCompare(b.sumber, 'id'));
+    }
+
+    // Total pagu yang sudah dialokasikan per sumber (opsional: abaikan satu pos RAB yang sedang diedit)
+    function alokasiPerSumber(kecualiIdRAB) {
+      const peta = {};
+      (STATE.rabCache || []).forEach(r => {
+        if (kecualiIdRAB && r.ID_RAB === kecualiIdRAB) return;
+        parseSumberPagu(r.Sumber_Dana_JSON).forEach(x => {
+          const k = kunciNama(x.sumber);
+          peta[k] = (peta[k] || 0) + (Number(x.nominal) || 0);
+        });
+      });
+      return peta;
+    }
+
+    function renderPilihanSumber(containerId, paguInputId, terpilih, kecualiIdRAB) {
+      const wadah = document.getElementById(containerId);
+      if (!wadah) return;
+      wadah.dataset.kecuali = kecualiIdRAB || '';
+      const daftar = daftarSumberPemasukan();
+      const pilih = {};
+      (terpilih || []).forEach(x => { pilih[kunciNama(x.sumber)] = Number(x.nominal) || 0; });
+      const teralokasi = alokasiPerSumber(kecualiIdRAB);
+
+      if (!daftar.length) {
+        wadah.innerHTML = `<div class="text-[11px] text-stone-400 italic rounded-xl border border-dashed border-stone-300 dark:border-stone-700 p-3">Belum ada catatan pemasukan. Catat dana masuk di menu <b>Catat Pemasukan</b> agar bisa dipilih sebagai sumber dana pagu.</div>`;
+        const ring = document.getElementById(containerId + 'Ringkasan');
+        if (ring) ring.innerHTML = '';
+        return;
+      }
+
+      wadah.innerHTML = daftar.map(src => {
+        const k = kunciNama(src.sumber);
+        const dipilih = Object.prototype.hasOwnProperty.call(pilih, k);
+        const tersedia = src.masuk - (teralokasi[k] || 0);
+        return `
+          <div class="rounded-xl border border-stone-200 dark:border-stone-700 p-2.5 flex flex-wrap items-center gap-2" data-sumber-baris="1">
+            <label class="flex items-center gap-2 flex-1 min-w-[11rem] cursor-pointer">
+              <input type="checkbox" class="sumber-cek rounded" value="${escapeHTML(src.sumber)}" ${dipilih ? 'checked' : ''} onchange="ubahPilihanSumber('${containerId}','${paguInputId}')">
+              <span>
+                <span class="block text-xs font-semibold text-stone-800 dark:text-stone-100">${escapeHTML(src.sumber)}</span>
+                <span class="block text-[11px] text-stone-500">Masuk ${formatRupiah(src.masuk)} • belum dipagukan ${formatRupiah(tersedia)}</span>
+              </span>
+            </label>
+            <input type="number" min="1" step="1" placeholder="Nominal (Rp)" value="${dipilih ? pilih[k] : ''}" data-tersedia="${tersedia}"
+              class="sumber-nominal w-36 px-2.5 py-1.5 text-xs rounded-lg border border-stone-300 dark:border-stone-700 bg-stone-50 dark:bg-stone-800 focus:ring-2 focus:ring-brand-caramel outline-none ${dipilih ? '' : 'hidden'}"
+              oninput="perbaruiRingkasanSumber('${containerId}','${paguInputId}')">
+          </div>`;
+      }).join('');
+      perbaruiRingkasanSumber(containerId, paguInputId);
+    }
+
+    function barisSumberTerpilih(containerId) {
+      const wadah = document.getElementById(containerId);
+      if (!wadah) return [];
+      return Array.from(wadah.querySelectorAll('[data-sumber-baris]')).map(row => ({
+        row: row,
+        cek: row.querySelector('.sumber-cek'),
+        input: row.querySelector('.sumber-nominal')
+      })).filter(x => x.cek && x.cek.checked);
+    }
+
+    function ambilSumberTerpilih(containerId) {
+      return barisSumberTerpilih(containerId).map(x => ({
+        sumber: x.cek.value,
+        nominal: Math.round(Number(x.input.value) || 0)
+      }));
+    }
+
+    // Saat centang berubah: tampil/sembunyikan kolom nominal lalu bagi rata pagu ke sumber terpilih
+    function ubahPilihanSumber(containerId, paguInputId) {
+      const wadah = document.getElementById(containerId);
+      wadah.querySelectorAll('[data-sumber-baris]').forEach(row => {
+        const cek = row.querySelector('.sumber-cek');
+        row.querySelector('.sumber-nominal').classList.toggle('hidden', !cek.checked);
+        if (!cek.checked) row.querySelector('.sumber-nominal').value = '';
+      });
+      ratakanSumber(containerId, paguInputId);
+    }
+
+    function ratakanSumber(containerId, paguInputId) {
+      const pagu = Math.round(Number(document.getElementById(paguInputId).value) || 0);
+      const baris = barisSumberTerpilih(containerId);
+      if (baris.length && pagu > 0) {
+        const bagi = Math.floor(pagu / baris.length);
+        baris.forEach((b, i) => {
+          b.input.value = (i === baris.length - 1) ? (pagu - bagi * (baris.length - 1)) : bagi;
+        });
+      }
+      perbaruiRingkasanSumber(containerId, paguInputId);
+    }
+
+    // Pagu diubah: bila hanya 1 sumber terpilih, nominalnya ikut pagu; bila lebih, tampilkan selisih
+    function sinkronPaguSumber(containerId, paguInputId) {
+      const baris = barisSumberTerpilih(containerId);
+      const pagu = Math.round(Number(document.getElementById(paguInputId).value) || 0);
+      if (baris.length === 1 && pagu > 0) baris[0].input.value = pagu;
+      perbaruiRingkasanSumber(containerId, paguInputId);
+    }
+
+    function perbaruiRingkasanSumber(containerId, paguInputId) {
+      const ring = document.getElementById(containerId + 'Ringkasan');
+      if (!ring) return;
+      const baris = barisSumberTerpilih(containerId);
+      if (!baris.length) {
+        ring.innerHTML = `<span class="text-stone-400">Tidak ada sumber dipilih — pagu akan tercatat <i>belum ditentukan sumber dananya</i>.</span>`;
+        return;
+      }
+      const pagu = Math.round(Number(document.getElementById(paguInputId).value) || 0);
+      let total = 0;
+      let peringatan = [];
+      baris.forEach(b => {
+        const nominal = Math.round(Number(b.input.value) || 0);
+        total += nominal;
+        const tersedia = Number(b.input.dataset.tersedia);
+        if (!isNaN(tersedia) && nominal > tersedia) peringatan.push(b.cek.value);
+      });
+      const selisih = pagu - total;
+      let html = (selisih === 0 && pagu > 0)
+        ? `<span class="font-semibold text-emerald-600 dark:text-emerald-400">✓ Terbagi ${formatRupiah(total)} — sesuai nilai pagu</span>`
+        : `<span class="font-semibold text-rose-600 dark:text-rose-400">Terbagi ${formatRupiah(total)} dari pagu ${formatRupiah(pagu)} (${selisih > 0 ? 'kurang' : 'lebih'} ${formatRupiah(Math.abs(selisih))})</span>`;
+      html += ` <button type="button" onclick="ratakanSumber('${containerId}','${paguInputId}')" class="ml-1 underline text-brand-caramel font-semibold">Bagi rata</button>`;
+      if (peringatan.length) {
+        html += `<div class="text-amber-600 dark:text-amber-400 mt-0.5">⚠ Nominal melebihi dana yang belum dipagukan pada: ${peringatan.map(escapeHTML).join(', ')}.</div>`;
+      }
+      ring.innerHTML = html;
+    }
+
+    function validasiSumberPilihan(containerId, pagu) {
+      const list = ambilSumberTerpilih(containerId);
+      if (!list.length) return { ok: true, list: [] };
+      for (const x of list) {
+        if (!(x.nominal > 0)) return { ok: false, pesan: `Isi nominal untuk sumber dana "${x.sumber}".` };
+      }
+      const total = list.reduce((a, x) => a + x.nominal, 0);
+      if (total !== Math.round(pagu)) {
+        return { ok: false, pesan: `Jumlah nominal per sumber dana (${formatRupiah(total)}) harus sama dengan pagu (${formatRupiah(pagu)}).` };
+      }
+      return { ok: true, list: list };
+    }
+
+    // Render ulang pilihan sumber pada form tambah RAB sambil mempertahankan isian yang sedang dipilih
+    function segarkanPilihanSumberRAB() {
+      const terpilih = ambilSumberTerpilih('rabSumberList');
+      renderPilihanSumber('rabSumberList', 'rabPagu', terpilih);
+    }
+
+    // ---------- Rincian sisa dana per sumber (dashboard publik) ----------
+    function renderRincianSumberPublik(res) {
+      const body = document.getElementById('publikSumberBody');
+      const foot = document.getElementById('publikSumberFoot');
+      const cat = document.getElementById('publikSumberCatatan');
+      if (!body) return;
+
+      const list = res.rincianSumberDana || [];
+      if (!list.length) {
+        body.innerHTML = `<tr><td colspan="6" class="py-6 text-center text-stone-400">Belum ada dana masuk yang tercatat.</td></tr>`;
+        if (foot) foot.innerHTML = '';
+        if (cat) cat.innerHTML = '';
+        return;
+      }
+
+      let tMasuk = 0, tPagu = 0, tPakai = 0, tSisa = 0, tBelum = 0;
+      body.innerHTML = list.map(x => {
+        tMasuk += x.masuk; tPagu += x.dialokasikan; tPakai += x.terpakai; tSisa += x.sisa; tBelum += x.belumDialokasi;
+        const persen = x.masuk > 0 ? Math.min(100, Math.round((x.terpakai / x.masuk) * 100)) : 0;
+        return `
+          <tr class="hover:bg-stone-50/60 dark:hover:bg-stone-800/40 transition">
+            <td class="py-3 px-3">
+              <div class="font-semibold text-stone-800 dark:text-stone-100">${escapeHTML(x.sumber)}</div>
+              <div class="text-[11px] text-stone-400">${x.jumlahTransaksi} kali penerimaan</div>
+            </td>
+            <td class="py-3 px-3 text-right font-semibold text-emerald-600 dark:text-emerald-400 whitespace-nowrap">${formatRupiah(x.masuk)}</td>
+            <td class="py-3 px-3 text-right text-stone-700 dark:text-stone-300 whitespace-nowrap">${formatRupiah(x.dialokasikan)}</td>
+            <td class="py-3 px-3 text-right text-rose-600 dark:text-rose-400 whitespace-nowrap">${formatRupiah(x.terpakai)}</td>
+            <td class="py-3 px-3 text-right whitespace-nowrap min-w-[8rem]">
+              <div class="font-bold ${x.sisa < 0 ? 'text-rose-600' : 'text-stone-900 dark:text-white'}">${formatRupiah(x.sisa)}</div>
+              <div class="mt-1 h-1.5 rounded bg-stone-200 dark:bg-stone-700 overflow-hidden"><div class="h-1.5 rounded bg-brand-caramel" style="width:${persen}%"></div></div>
+              <div class="text-[10px] text-stone-400 mt-0.5">${persen}% terpakai</div>
+            </td>
+            <td class="py-3 px-3 text-right text-stone-600 dark:text-stone-300 whitespace-nowrap">${formatRupiah(x.belumDialokasi)}</td>
+          </tr>`;
+      }).join('');
+
+      if (foot) {
+        foot.innerHTML = `
+          <tr class="border-t-2 border-stone-200 dark:border-stone-700 bg-stone-50 dark:bg-stone-800/50 font-bold">
+            <td class="py-3 px-3 text-stone-800 dark:text-stone-100">Total</td>
+            <td class="py-3 px-3 text-right text-emerald-600 dark:text-emerald-400 whitespace-nowrap">${formatRupiah(tMasuk)}</td>
+            <td class="py-3 px-3 text-right whitespace-nowrap">${formatRupiah(tPagu)}</td>
+            <td class="py-3 px-3 text-right text-rose-600 dark:text-rose-400 whitespace-nowrap">${formatRupiah(tPakai)}</td>
+            <td class="py-3 px-3 text-right whitespace-nowrap">${formatRupiah(tSisa)}</td>
+            <td class="py-3 px-3 text-right whitespace-nowrap">${formatRupiah(tBelum)}</td>
+          </tr>`;
+      }
+
+      if (cat) {
+        let teks = `<p>* <b>Terpakai</b> dihitung proporsional: realisasi belanja tiap divisi dibagi ke sumber dana sesuai komposisi sumber pada pagu divisi tersebut. <b>Sisa Dana</b> = Dana Masuk − Terpakai. <b>Belum Dipagukan</b> = Dana Masuk − Dipagukan ke Divisi.</p>`;
+        if (res.paguTanpaSumber > 0) {
+          teks += `<p>• Pagu senilai ${formatRupiah(res.paguTanpaSumber)} belum ditetapkan sumber dananya oleh Bendahara.</p>`;
+        }
+        if (res.pengeluaranTanpaSumber > 0) {
+          teks += `<p>• Belanja senilai ${formatRupiah(res.pengeluaranTanpaSumber)} belum dapat dikaitkan ke sumber dana tertentu (divisi belum memiliki pagu dengan sumber dana), sehingga tidak termasuk kolom Terpakai.</p>`;
+        }
+        cat.innerHTML = teks;
+      }
+    }
+
+    // ---------- Bukti pemasukan (opsional) ----------
+    function handlePilihBuktiPemasukan(e) {
+      siapkanBerkasNota(e.target.files[0], document.getElementById('inBuktiInfo'), f => { STATE.pendingBuktiPemasukan = f; });
+    }
+
+    function handlePilihBuktiEditPemasukan(e) {
+      siapkanBerkasNota(e.target.files[0], document.getElementById('editInBuktiInfo'), f => { STATE.pendingBuktiEditPemasukan = f; });
+    }
+
+    // ---------- Tautan grup WA pada daftar akun ----------
+    function htmlGrupWA(u) {
+      if (u.Peran === 'Admin') return `<span class="text-stone-400 text-xs">-</span>`;
+      if (u.Link_Grup_WA) {
+        return `<a href="${escapeHTML(u.Link_Grup_WA)}" target="_blank" rel="noopener" class="inline-flex items-center px-2 py-0.5 rounded-md bg-emerald-50 dark:bg-emerald-950/40 text-emerald-700 dark:text-emerald-400 text-[11px] font-semibold hover:underline">✓ Tersambung</a>`;
+      }
+      return `<span class="text-[11px] italic text-amber-600 dark:text-amber-400">Belum diisi</span>`;
+    }
+
+    // ---------- Notifikasi grup WhatsApp ----------
+    function notifOtomatisAktif() {
+      return localStorage.getItem('AUDERE24_NOTIF_AUTO') !== '0';
+    }
+
+    function simpanPengaturanNotif() {
+      const aktif = document.getElementById('notifOtomatisToggle').checked;
+      localStorage.setItem('AUDERE24_NOTIF_AUTO', aktif ? '1' : '0');
+      tampilkanToast(aktif ? 'Jendela notifikasi akan muncul otomatis setelah konfirmasi.' : 'Notifikasi hanya masuk antrean; kirim manual lewat tombol Kirim Notif.', 'info');
+    }
+
+    async function muatDataNotifikasi(force = false) {
+      if (!STATE.apiUrl || !STATE.session || STATE.session.user.peran !== 'Admin') return;
+      const toggle = document.getElementById('notifOtomatisToggle');
+      if (toggle) toggle.checked = notifOtomatisAktif();
+      try {
+        const response = await fetch(`${STATE.apiUrl}?action=getNotifikasi&token=${encodeURIComponent(STATE.session.token)}&ts=${Date.now()}`);
+        const res = await response.json();
+        if (res.success) {
+          STATE.notifCache = res.data || [];
+          renderTabelNotif();
+          perbaruiBadgeNotif();
+          isiOpsiDivisiNotif();
+          if (force) tampilkanToast('Daftar notifikasi diperbarui.', 'success');
+        }
+      } catch (err) {
+        console.error('Gagal mengambil notifikasi:', err);
+      }
+    }
+
+    function perbaruiBadgeNotif() {
+      const badge = document.getElementById('adminNotifBadge');
+      if (!badge) return;
+      const n = (STATE.notifCache || []).filter(x => x.Status_Kirim !== 'Sudah Dikirim').length;
+      badge.innerText = n;
+      badge.classList.toggle('hidden', n === 0);
+    }
+
+    function isiOpsiDivisiNotif() {
+      const sel = document.getElementById('notifManualDivisi');
+      if (!sel) return;
+      const dipilih = sel.value;
+      const unik = new Map();
+      (STATE.usersCache || []).forEach(u => {
+        if (u.Peran === 'Admin') return;
+        const k = kunciNama(u.Nama_Divisi);
+        if (k && !unik.has(k)) unik.set(k, u.Nama_Divisi);
+      });
+      sel.innerHTML = Array.from(unik.values()).map(n => `<option value="${escapeHTML(n)}">${escapeHTML(n)}</option>`).join('')
+        || '<option value="">Belum ada akun divisi</option>';
+      if (dipilih) sel.value = dipilih;
+    }
+
+    function renderTabelNotif() {
+      const tbody = document.getElementById('tabelNotifBody');
+      if (!tbody) return;
+      const filter = (document.getElementById('filterNotifStatus') || {}).value || '';
+      const list = (STATE.notifCache || []).filter(x => !filter || x.Status_Kirim === filter);
+
+      if (!list.length) {
+        tbody.innerHTML = `<tr><td colspan="6" class="py-6 text-center text-stone-400">Belum ada notifikasi. Notifikasi dibuat otomatis saat Anda menyetujui / menolak pengajuan, menanggapi RAB, atau menyalurkan dana.</td></tr>`;
+        return;
+      }
+
+      tbody.innerHTML = list.map(n => {
+        const terkirim = n.Status_Kirim === 'Sudah Dikirim';
+        const badge = terkirim
+          ? `<span class="badge-soft bg-emerald-100 text-emerald-800 dark:bg-emerald-950/60 dark:text-emerald-400">Terkirim</span><div class="text-[10px] text-stone-400 mt-0.5">${escapeHTML(n.Waktu_Kirim || '')}</div>`
+          : `<span class="badge-soft bg-amber-100 text-amber-800 dark:bg-amber-950/60 dark:text-amber-400">Belum dikirim</span>`;
+        const ringkas = String(n.Pesan || '').replace(/\s+/g, ' ').slice(0, 110);
+        return `
+          <tr class="hover:bg-stone-50/60 dark:hover:bg-stone-800/40 transition">
+            <td class="py-2.5 px-3 text-stone-600 dark:text-stone-300 whitespace-nowrap text-xs">${escapeHTML(n.Waktu)}</td>
+            <td class="py-2.5 px-3 font-semibold text-stone-800 dark:text-stone-100">${escapeHTML(n.Divisi)}${n.Link_Grup_WA ? '' : '<div class="text-[10px] font-normal text-amber-600">grup belum diisi</div>'}</td>
+            <td class="py-2.5 px-3 text-xs text-stone-600 dark:text-stone-300 whitespace-nowrap">${escapeHTML(n.Jenis)}</td>
+            <td class="py-2.5 px-3 text-xs text-stone-500 max-w-xs truncate" title="${escapeHTML(n.Pesan)}">${escapeHTML(ringkas)}</td>
+            <td class="py-2.5 px-3 text-center">${badge}</td>
+            <td class="py-2.5 px-3 text-center whitespace-nowrap">
+              <button onclick="bukaModalNotif('${n.ID_Notif}')" class="px-2 py-1 rounded bg-emerald-600 text-white font-semibold text-xs hover:bg-emerald-700 transition">${terkirim ? 'Kirim Ulang' : 'Kirim Notif'}</button>
+              <button onclick="hapusNotifikasi('${n.ID_Notif}')" class="${CLS_BTN_HAPUS} ml-1">Hapus</button>
+            </td>
+          </tr>`;
+      }).join('');
+    }
+
+    // Dipanggil setelah server membuat notifikasi baru (otomatis / manual)
+    function tanganiNotifBaru(notif, paksaBuka) {
+      if (!notif) return;
+      STATE.notifCache = [notif].concat((STATE.notifCache || []).filter(x => x.ID_Notif !== notif.ID_Notif));
+      renderTabelNotif();
+      perbaruiBadgeNotif();
+      if (paksaBuka || notifOtomatisAktif()) {
+        bukaModalNotif(notif.ID_Notif);
+      } else {
+        tampilkanToast(`🔔 Notifikasi untuk ${notif.Divisi} siap dikirim. Buka tab "Notifikasi WA" lalu klik Kirim Notif.`, 'info');
+      }
+    }
+
+    function bukaModalNotif(id) {
+      const n = (STATE.notifCache || []).find(x => x.ID_Notif === id);
+      if (!n) return;
+      STATE.notifAktifId = id;
+      document.getElementById('notifModalMeta').innerText = `${n.ID_Notif} • ${n.Divisi} • ${n.Jenis}`;
+      document.getElementById('notifModalPesan').value = n.Pesan || '';
+
+      const info = document.getElementById('notifModalLinkInfo');
+      const btnGrup = document.getElementById('notifBtnGrup');
+      if (n.Link_Grup_WA) {
+        info.className = 'mb-3 text-xs rounded-xl p-3 bg-emerald-50 dark:bg-emerald-950/30 text-emerald-800 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-900';
+        info.innerHTML = `Grup WhatsApp <b>${escapeHTML(n.Divisi)}</b> sudah tersambung.`;
+        btnGrup.disabled = false;
+        btnGrup.classList.remove('opacity-50', 'cursor-not-allowed');
+      } else {
+        info.className = 'mb-3 text-xs rounded-xl p-3 bg-amber-50 dark:bg-amber-950/30 text-amber-800 dark:text-amber-300 border border-amber-200 dark:border-amber-900';
+        info.innerHTML = `Tautan grup <b>${escapeHTML(n.Divisi)}</b> belum diisi. Isi di menu <a href="#" onclick="tutupModalNotif(); gantiSubTabAdmin('users'); return false;" class="underline font-semibold">Kelola Akun Panitia</a>, atau gunakan tombol <b>Kirim lewat WhatsApp (pilih grup)</b>.`;
+        btnGrup.disabled = true;
+        btnGrup.classList.add('opacity-50', 'cursor-not-allowed');
+      }
+      document.getElementById('modalNotifWA').classList.remove('hidden');
+    }
+
+    function tutupModalNotif() {
+      document.getElementById('modalNotifWA').classList.add('hidden');
+      STATE.notifAktifId = null;
+    }
+
+    // Menyalin teks secara sinkron (agar tetap sah dalam gerakan klik sebelum membuka tab baru)
+    function salinPesanSinkron() {
+      const ta = document.getElementById('notifModalPesan');
+      ta.focus();
+      ta.select();
+      let ok = false;
+      try { ok = document.execCommand('copy'); } catch (e) { ok = false; }
+      if (!ok && navigator.clipboard) navigator.clipboard.writeText(ta.value).then(() => { ok = true; }).catch(() => {});
+      ta.setSelectionRange(0, 0);
+      return ok;
+    }
+
+    function salinPesanNotif() {
+      salinPesanSinkron();
+      tampilkanToast('Pesan disalin. Tempel (paste) di grup WhatsApp.', 'success');
+    }
+
+    function kirimNotifKeGrup() {
+      const n = (STATE.notifCache || []).find(x => x.ID_Notif === STATE.notifAktifId);
+      if (!n || !n.Link_Grup_WA) return;
+      salinPesanSinkron();
+      window.open(n.Link_Grup_WA, '_blank', 'noopener');
+      tampilkanToast('Pesan disalin. Tempel (paste) di grup lalu kirim, kemudian tekan "Tandai Sudah Terkirim".', 'success');
+    }
+
+    function kirimNotifViaWA() {
+      const pesan = document.getElementById('notifModalPesan').value.trim();
+      if (!pesan) return;
+      window.open('https://wa.me/?text=' + encodeURIComponent(pesan), '_blank', 'noopener');
+    }
+
+    async function tandaiNotifSudahDikirim() {
+      const id = STATE.notifAktifId;
+      if (!id) return;
+      try {
+        const res = await panggilApiPost({ action: 'tandaiNotifTerkirim', idNotif: id, terkirim: true });
+        if (res.success) {
+          tampilkanToast('Notifikasi ditandai sudah terkirim.', 'success');
+          tutupModalNotif();
+          muatDataNotifikasi();
+        } else {
+          tampilkanToast(res.error || 'Gagal memperbarui status notifikasi.', 'error');
+        }
+      } catch (err) {
+        tampilkanToast('Gangguan komunikasi: ' + err.message, 'error');
+      }
+    }
+
+    function hapusNotifikasi(id) {
+      bukaModalKonfirmasi(`Hapus notifikasi ${id} dari daftar?`, async () => {
+        try {
+          const res = await panggilApiPost({ action: 'hapusNotif', idNotif: id });
+          if (res.success) {
+            tampilkanToast(res.message, 'success');
+            muatDataNotifikasi();
+          } else {
+            tampilkanToast(res.error || 'Gagal menghapus notifikasi.', 'error');
+          }
+        } catch (err) {
+          tampilkanToast('Gangguan komunikasi: ' + err.message, 'error');
+        }
+      });
+    }
+
+    async function buatNotifPengajuanManual(idPengajuan) {
+      try {
+        const res = await panggilApiPost({ action: 'buatNotifDariPengajuan', idPengajuan: idPengajuan });
+        if (res.success && res.notif) {
+          tanganiNotifBaru(res.notif, true);
+        } else {
+          tampilkanToast(res.error || 'Gagal menyiapkan notifikasi.', 'error');
+        }
+      } catch (err) {
+        tampilkanToast('Gangguan komunikasi: ' + err.message, 'error');
+      }
+    }
+
+    async function buatNotifRabManual() {
+      const id = STATE.rabDetailId;
+      if (!id) return;
+      try {
+        const res = await panggilApiPost({ action: 'buatNotifDariRab', idRabDivisi: id });
+        if (res.success && res.notif) {
+          tutupDetailRab();
+          tanganiNotifBaru(res.notif, true);
+        } else {
+          tampilkanToast(res.error || 'Gagal menyiapkan notifikasi.', 'error');
+        }
+      } catch (err) {
+        tampilkanToast('Gangguan komunikasi: ' + err.message, 'error');
+      }
+    }
+
+    async function handleBuatNotifManual() {
+      const divisi = document.getElementById('notifManualDivisi').value;
+      const pesan = document.getElementById('notifManualPesan').value.trim();
+      if (!divisi) { tampilkanToast('Pilih divisi tujuan.', 'error'); return; }
+      if (!pesan) { tampilkanToast('Isi pesan notifikasi wajib diisi.', 'error'); return; }
+      const btn = document.getElementById('btnBuatNotifManual');
+      btn.disabled = true;
+      try {
+        const res = await panggilApiPost({ action: 'buatNotifManual', divisi: divisi, pesan: pesan });
+        if (res.success && res.notif) {
+          document.getElementById('notifManualPesan').value = '';
+          tanganiNotifBaru(res.notif, true);
+        } else {
+          tampilkanToast(res.error || 'Gagal membuat notifikasi.', 'error');
+        }
+      } catch (err) {
+        tampilkanToast('Gangguan komunikasi: ' + err.message, 'error');
+      } finally {
+        btn.disabled = false;
+      }
     }
   </script>
 </body>

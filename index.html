@@ -156,7 +156,7 @@
       <div class="rounded-2xl p-6 bg-gradient-to-r from-brand-coffee via-brand-caramel to-amber-800 text-white shadow-lg relative overflow-hidden">
         <div class="relative z-10 max-w-2xl">
           <div class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold bg-white/20 text-white mb-2">
-            Kuliah Umum Studi Kasus BK 24
+            Kuliah Tamu Studi Kasus 2024
           </div>
           <h2 class="text-2xl sm:text-3xl font-extrabold tracking-tight">Keterbukaan Anggaran Audere 24</h2>
           <p class="mt-2 text-stone-200 text-sm sm:text-base leading-relaxed">
@@ -222,6 +222,32 @@
           <div class="flex-grow min-h-[260px]">
             <canvas id="chartBarRAB"></canvas>
           </div>
+        </div>
+      </div>
+
+      <!-- RAB Divisi (publik) -->
+      <div class="p-5 rounded-2xl bg-white dark:bg-brand-darkCard border border-brand-creamDark dark:border-brand-darkBorder shadow-sm">
+        <div class="sm:flex sm:items-start sm:justify-between gap-3 mb-4">
+          <div>
+            <h3 class="font-bold text-stone-900 dark:text-white text-base">RAB Divisi (Rencana Anggaran Biaya)</h3>
+            <p class="text-xs text-stone-500">Komponen biaya yang direncanakan tiap divisi beserta status persetujuannya oleh Bendahara. Klik sebuah RAB untuk melihat rinciannya.</p>
+          </div>
+          <div class="mt-3 sm:mt-0 grid grid-cols-2 gap-2 sm:w-80 shrink-0">
+            <select id="filterRabPublikDivisi" onchange="renderRabPublik()" class="px-3 py-2 rounded-xl border border-stone-300 dark:border-stone-700 bg-stone-50 dark:bg-stone-800 text-xs focus:ring-2 focus:ring-brand-caramel outline-none">
+              <option value="">Semua Divisi</option>
+            </select>
+            <select id="filterRabPublikStatus" onchange="renderRabPublik()" class="px-3 py-2 rounded-xl border border-stone-300 dark:border-stone-700 bg-stone-50 dark:bg-stone-800 text-xs focus:ring-2 focus:ring-brand-caramel outline-none">
+              <option value="">Semua Status</option>
+              <option value="Disetujui">Disetujui</option>
+              <option value="Menunggu">Menunggu</option>
+              <option value="Perlu Revisi">Perlu Revisi</option>
+              <option value="Ditolak">Ditolak</option>
+            </select>
+          </div>
+        </div>
+        <div id="rabPublikRingkasan" class="grid grid-cols-2 lg:grid-cols-4 gap-3 mb-4"></div>
+        <div id="rabPublikList" class="space-y-2">
+          <div class="py-6 text-center text-stone-400 text-sm">Memuat RAB divisi...</div>
         </div>
       </div>
 
@@ -366,7 +392,7 @@
           <form id="formAjukanDana" onsubmit="handleKirimPengajuan(event)" class="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
               <label class="block text-xs font-semibold text-stone-600 dark:text-stone-300 mb-1">Nama Kebutuhan / Pengadaan *</label>
-              <input type="text" id="ajuNama" required placeholder="Contoh: Konsumsi Narasumber Kuliah Umum" class="w-full px-3 py-2 text-sm rounded-xl border border-stone-300 dark:border-stone-700 bg-stone-50 dark:bg-stone-800 focus:ring-2 focus:ring-brand-caramel outline-none">
+              <input type="text" id="ajuNama" required placeholder="Contoh: Konsumsi Narasumber Kuliah Tamu" class="w-full px-3 py-2 text-sm rounded-xl border border-stone-300 dark:border-stone-700 bg-stone-50 dark:bg-stone-800 focus:ring-2 focus:ring-brand-caramel outline-none">
             </div>
 
             <div>
@@ -699,6 +725,9 @@
         </button>
         <button onclick="gantiSubTabAdmin('monitor')" id="adminSubMonitorBtn" class="py-2 px-1 border-b-2 border-transparent text-stone-500 hover:text-stone-800 dark:hover:text-stone-200 font-semibold text-xs sm:text-sm whitespace-nowrap">
           📈 Pemantauan Dana Divisi
+        </button>
+        <button onclick="gantiSubTabAdmin('migrasi')" id="adminSubMigrasiBtn" class="py-2 px-1 border-b-2 border-transparent text-stone-500 hover:text-stone-800 dark:hover:text-stone-200 font-semibold text-xs sm:text-sm whitespace-nowrap">
+          🔄 Migrasi Database
         </button>
         <button onclick="gantiSubTabAdmin('notif')" id="adminSubNotifBtn" class="py-2 px-1 border-b-2 border-transparent text-stone-500 hover:text-stone-800 dark:hover:text-stone-200 font-semibold text-xs sm:text-sm whitespace-nowrap">
           🔔 Notifikasi WA <span id="adminNotifBadge" class="hidden ml-1 px-1.5 py-0.5 rounded-full bg-rose-600 text-white text-[10px] font-bold align-middle">0</span>
@@ -1071,7 +1100,8 @@
           <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-4">
             <div>
               <h3 class="font-bold text-stone-900 dark:text-white text-base">RAB Masuk dari Divisi</h3>
-              <p class="text-xs text-stone-500">Tinjau komponen pengeluaran tiap RAB, lalu setujui, minta revisi, atau tolak. Anda juga dapat mengedit atau menghapus RAB.</p>
+              <p class="text-xs text-stone-500">Tinjau RAB yang dikirim divisi (setujui, minta revisi, atau tolak), atau rekap RAB sendiri untuk divisi mana pun. RAB juga dapat diedit atau dihapus.</p>
+              <button onclick="bukaEditorRab()" class="mt-2 px-3 py-1.5 rounded-xl bg-emerald-700 text-white text-xs font-semibold hover:bg-emerald-800 transition shadow-sm">+ Buat / Rekap RAB Divisi</button>
             </div>
             <button onclick="muatDataRabDok(true)" class="self-start p-1.5 rounded-xl border border-stone-300 dark:border-stone-700 hover:bg-stone-100 dark:hover:bg-stone-800 text-stone-600 dark:text-stone-300 transition" title="Refresh"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg></button>
           </div>
@@ -1161,6 +1191,95 @@
               <tbody id="tabelMonitorDivisiBody" class="divide-y divide-stone-100 dark:divide-stone-800/60">
                 <tr><td colspan="7" class="py-6 text-center text-stone-400">Memuat pemantauan dana divisi...</td></tr>
               </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- Konten Admin: Migrasi Database -->
+      <div id="adminContentMigrasi" class="hidden space-y-4">
+        <div class="p-5 rounded-2xl bg-white dark:bg-brand-darkCard border border-stone-200 dark:border-brand-darkBorder shadow-sm">
+          <h3 class="font-bold text-stone-900 dark:text-white text-base mb-1">Migrasi Database dari Spreadsheet Lama</h3>
+          <p class="text-xs text-stone-500 mb-3">Saat aplikasi diperbarui dan memakai spreadsheet baru, tempel tautan spreadsheet database <b>lama</b> di sini. Sistem akan memeriksa isinya lalu menyalin data (pemasukan, RAB, pengajuan, pengeluaran, akun, dll.) ke database ini. Kolom dicocokkan berdasarkan nama, jadi database versi lama tetap bisa dimigrasikan.</p>
+          <div class="text-[11px] rounded-xl bg-amber-50 dark:bg-amber-950/30 border border-amber-200 dark:border-amber-900 text-amber-800 dark:text-amber-300 p-3 mb-3 space-y-1">
+            <p>• Akun Google pemilik script ini harus punya akses ke spreadsheet lama (minimal Viewer).</p>
+            <p>• Berkas bukti di Google Drive tidak dipindah; tautannya tetap berfungsi selama berkas lama tidak dihapus.</p>
+            <p>• Database sekarang dicadangkan otomatis ke Drive sebelum migrasi dijalankan.</p>
+          </div>
+          <label class="block text-xs font-semibold text-stone-600 dark:text-stone-300 mb-1">Tautan Spreadsheet Database Lama *</label>
+          <div class="flex flex-col sm:flex-row gap-2">
+            <input type="url" id="migrasiUrl" placeholder="https://docs.google.com/spreadsheets/d/..." class="w-full px-3 py-2 text-sm rounded-xl border border-stone-300 dark:border-stone-700 bg-stone-50 dark:bg-stone-800 focus:ring-2 focus:ring-brand-caramel outline-none">
+            <button onclick="handlePeriksaMigrasi()" id="btnPeriksaMigrasi" class="px-4 py-2 rounded-xl bg-brand-coffee text-white dark:bg-brand-caramel text-xs font-semibold shadow-sm hover:opacity-90 transition whitespace-nowrap">Periksa Spreadsheet</button>
+          </div>
+        </div>
+
+        <div id="migrasiHasilWrap" class="hidden p-5 rounded-2xl bg-white dark:bg-brand-darkCard border border-stone-200 dark:border-brand-darkBorder shadow-sm space-y-4">
+          <div>
+            <h3 class="font-bold text-stone-900 dark:text-white text-base">Hasil Pemeriksaan</h3>
+            <p class="text-xs text-stone-500" id="migrasiNamaSumber"></p>
+          </div>
+          <div class="overflow-x-auto">
+            <table class="w-full text-left text-xs sm:text-sm">
+              <thead class="bg-stone-50 dark:bg-stone-800/60 text-stone-500 uppercase font-semibold text-[11px] border-b border-stone-200 dark:border-stone-800">
+                <tr>
+                  <th class="py-2.5 px-3 w-10">Pilih</th>
+                  <th class="py-2.5 px-3">Data</th>
+                  <th class="py-2.5 px-3 text-right">Di Lama</th>
+                  <th class="py-2.5 px-3 text-right">Di Sini</th>
+                  <th class="py-2.5 px-3 text-right">Data Baru</th>
+                  <th class="py-2.5 px-3">Catatan</th>
+                </tr>
+              </thead>
+              <tbody id="migrasiTabelBody" class="divide-y divide-stone-100 dark:divide-stone-800/60"></tbody>
+            </table>
+          </div>
+
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            <div class="rounded-xl border border-stone-200 dark:border-stone-700 p-3 space-y-2">
+              <div class="text-xs font-semibold text-stone-700 dark:text-stone-200">Cara migrasi</div>
+              <label class="flex items-start gap-2 text-xs text-stone-600 dark:text-stone-300 cursor-pointer">
+                <input type="radio" name="migrasiMode" value="gabung" checked class="mt-0.5">
+                <span><b>Gabungkan</b> — tambahkan hanya data yang belum ada di database ini (kode yang sama dilewati). Aman bila database ini sudah berisi data.</span>
+              </label>
+              <label class="flex items-start gap-2 text-xs text-stone-600 dark:text-stone-300 cursor-pointer">
+                <input type="radio" name="migrasiMode" value="timpa" class="mt-0.5">
+                <span><b>Timpa</b> — hapus data terpilih di database ini lalu ganti dengan data lama. Cocok untuk database baru yang masih kosong. Akun pengguna tidak pernah dihapus.</span>
+              </label>
+            </div>
+            <div class="rounded-xl border border-stone-200 dark:border-stone-700 p-3 space-y-2">
+              <div class="text-xs font-semibold text-stone-700 dark:text-stone-200">Opsi tambahan</div>
+              <label class="flex items-start gap-2 text-xs text-stone-600 dark:text-stone-300 cursor-pointer">
+                <input type="checkbox" id="migrasiBackup" checked class="mt-0.5 rounded">
+                <span>Cadangkan database sekarang ke Google Drive sebelum migrasi (disarankan).</span>
+              </label>
+              <label class="flex items-start gap-2 text-xs text-stone-600 dark:text-stone-300 cursor-pointer">
+                <input type="checkbox" id="migrasiSinkronAkun" class="mt-0.5 rounded">
+                <span>Untuk akun yang username-nya sama, pakai <b>kata sandi & data akun dari database lama</b> (termasuk akun Bendahara). Setelah itu login memakai kata sandi lama.</span>
+              </label>
+            </div>
+          </div>
+
+          <div class="flex justify-end">
+            <button onclick="handleJalankanMigrasi()" id="btnJalankanMigrasi" class="px-5 py-2.5 rounded-xl bg-emerald-700 text-white font-semibold text-sm hover:bg-emerald-800 transition shadow-sm">Mulai Migrasi</button>
+          </div>
+        </div>
+
+        <div id="migrasiLaporanWrap" class="hidden p-5 rounded-2xl bg-white dark:bg-brand-darkCard border border-emerald-300 dark:border-emerald-900 shadow-sm">
+          <h3 class="font-bold text-emerald-700 dark:text-emerald-400 text-base mb-1">✓ Migrasi Selesai</h3>
+          <p class="text-xs text-stone-500 mb-3" id="migrasiLaporanInfo"></p>
+          <div class="overflow-x-auto">
+            <table class="w-full text-left text-xs sm:text-sm">
+              <thead class="bg-stone-50 dark:bg-stone-800/60 text-stone-500 uppercase font-semibold text-[11px] border-b border-stone-200 dark:border-stone-800">
+                <tr>
+                  <th class="py-2.5 px-3">Data</th>
+                  <th class="py-2.5 px-3 text-right">Ditambahkan</th>
+                  <th class="py-2.5 px-3 text-right">Dilewati</th>
+                  <th class="py-2.5 px-3 text-right">Diperbarui</th>
+                  <th class="py-2.5 px-3 text-right">Diganti</th>
+                  <th class="py-2.5 px-3">Catatan</th>
+                </tr>
+              </thead>
+              <tbody id="migrasiLaporanBody" class="divide-y divide-stone-100 dark:divide-stone-800/60"></tbody>
             </table>
           </div>
         </div>
@@ -1351,7 +1470,7 @@
   <!-- ================= FOOTER ================= -->
   <footer class="mt-auto border-t border-brand-creamDark dark:border-brand-darkBorder bg-white/50 dark:bg-brand-darkCard/50 py-4 text-center text-xs text-stone-500">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-      <p>&copy; 2026 Abdul Hakim.</p>
+      <p>&copy; 2024 Panitia Studi Kasus Audere 24. Dilindungi Sistem Transparansi Google Workspace & GitHub.</p>
     </div>
   </footer>
 
@@ -1466,7 +1585,7 @@
             📄
           </div>
           <h4 class="font-bold text-sm text-stone-900 dark:text-white">Cetak / Unduh PDF</h4>
-          <p class="text-xs text-stone-500 mt-1">Format layout rapi siap cetak langsung untuk arsip fisik LPJ kuliah umum.</p>
+          <p class="text-xs text-stone-500 mt-1">Format layout rapi siap cetak langsung untuk arsip fisik LPJ kuliah tamu.</p>
         </div>
 
         <div onclick="unduhDataCSV()" class="p-5 rounded-xl border-2 border-dashed border-stone-300 dark:border-stone-700 hover:border-brand-caramel dark:hover:border-brand-caramel cursor-pointer transition text-center group">
@@ -1801,6 +1920,28 @@
           </div>
         </div>
 
+        <div id="rabEdAdminWrap" class="hidden">
+          <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 rounded-xl border border-brand-caramel/40 p-3">
+            <div>
+              <label class="block text-xs font-semibold text-stone-600 dark:text-stone-300 mb-1">Divisi Pemilik RAB *</label>
+              <input type="text" id="rabEdDivisi" list="daftarDivisiAdmin" autocomplete="off" placeholder="Contoh: Divisi Konsumsi" class="w-full px-3 py-2 text-sm rounded-xl border border-stone-300 dark:border-stone-700 bg-stone-50 dark:bg-stone-800 focus:ring-2 focus:ring-brand-caramel outline-none">
+            </div>
+            <div id="rabEdStatusWrap">
+              <label class="block text-xs font-semibold text-stone-600 dark:text-stone-300 mb-1">Status Awal RAB</label>
+              <select id="rabEdStatus" class="w-full px-3 py-2 text-sm rounded-xl border border-stone-300 dark:border-stone-700 bg-stone-50 dark:bg-stone-800 focus:ring-2 focus:ring-brand-caramel outline-none">
+                <option value="Disetujui">Disetujui</option>
+                <option value="Menunggu">Menunggu</option>
+                <option value="Perlu Revisi">Perlu Revisi</option>
+                <option value="Ditolak">Ditolak</option>
+              </select>
+            </div>
+            <div id="rabEdCatatanWrap">
+              <label class="block text-xs font-semibold text-stone-600 dark:text-stone-300 mb-1">Catatan Bendahara <span class="font-normal text-stone-400">(wajib bila revisi/ditolak)</span></label>
+              <input type="text" id="rabEdCatatanAdmin" class="w-full px-3 py-2 text-sm rounded-xl border border-stone-300 dark:border-stone-700 bg-stone-50 dark:bg-stone-800 focus:ring-2 focus:ring-brand-caramel outline-none">
+            </div>
+          </div>
+        </div>
+
         <div>
           <div class="hidden sm:grid grid-cols-12 gap-2 text-[11px] uppercase font-semibold text-stone-400 mb-1 px-0.5">
             <div class="col-span-3">Komponen Pengeluaran</div>
@@ -2043,7 +2184,10 @@
       pendingBuktiPemasukan: null,
       pendingBuktiEditPemasukan: null,
       notifCache: [],
-      notifAktifId: null
+      notifAktifId: null,
+      rabPublik: [],
+      rabPublikTerbuka: {},
+      migrasiHasil: null
     };
 
     // Saat Dokumen Siap Dimuat
@@ -2302,7 +2446,7 @@
     }
 
     function gantiSubTabAdmin(sub) {
-      const tabs = ['rekapKas', 'verifikasi', 'rabdok', 'pemasukan', 'pengeluaran', 'rab', 'monitor', 'notif', 'users', 'profil'];
+      const tabs = ['rekapKas', 'verifikasi', 'rabdok', 'pemasukan', 'pengeluaran', 'rab', 'monitor', 'migrasi', 'notif', 'users', 'profil'];
       tabs.forEach(t => {
         const el = document.getElementById('adminContent' + t.charAt(0).toUpperCase() + t.slice(1));
         if (el) el.classList.add('hidden');
@@ -2316,6 +2460,7 @@
         pengeluaran: 'adminSubOutBtn',
         rab: 'adminSubRabBtn',
         monitor: 'adminSubMonitorBtn',
+        migrasi: 'adminSubMigrasiBtn',
         notif: 'adminSubNotifBtn',
         users: 'adminSubUsersBtn',
         profil: 'adminSubProfilBtn'
@@ -2343,6 +2488,10 @@
       } else if (sub === 'rab') {
         muatDataPemasukanAdmin();
         muatDataRABAdmin();
+      } else if (sub === 'migrasi') {
+        const urlTersimpan = localStorage.getItem('AUDERE24_MIGRASI_URL');
+        const inp = document.getElementById('migrasiUrl');
+        if (inp && !inp.value && urlTersimpan) inp.value = urlTersimpan;
       } else if (sub === 'notif') {
         muatDataPenggunaAdmin();
         muatDataNotifikasi();
@@ -2388,6 +2537,8 @@
             renderDonutChart(res.pengeluaranPerDivisi || {});
             renderBarChart(res.rabPerDivisi || {}, res.pengeluaranPerDivisi || {});
             renderRincianSumberPublik(res);
+            STATE.rabPublik = res.rabDivisiPublik || [];
+            renderRabPublik();
 
             STATE.transaksiCache = res.riwayatTransaksi || [];
             isiOpsiFilterPublik();
@@ -5100,11 +5251,24 @@
         tambahBarisRab();
       }
 
-      document.getElementById('rabEdJudulModal').innerText = doc ? `Edit RAB [${id}]` : 'Buat RAB Divisi Baru';
+      const wrapAdm = document.getElementById('rabEdAdminWrap');
+      wrapAdm.classList.toggle('hidden', !admin);
+      if (admin) {
+        isiDatalistDivisiAdmin();
+        document.getElementById('rabEdDivisi').value = doc ? (doc.Divisi || '') : '';
+        document.getElementById('rabEdStatus').value = 'Disetujui';
+        document.getElementById('rabEdCatatanAdmin').value = '';
+        document.getElementById('rabEdStatusWrap').classList.toggle('hidden', !!doc);
+        document.getElementById('rabEdCatatanWrap').classList.toggle('hidden', !!doc);
+      }
+
+      document.getElementById('rabEdJudulModal').innerText = doc ? `Edit RAB [${id}]` : (admin ? 'Rekap RAB Divisi oleh Bendahara' : 'Buat RAB Divisi Baru');
       document.getElementById('rabEdSubjudul').innerText = doc
         ? (admin ? `Divisi: ${doc.Divisi} • perubahan Bendahara tidak mengubah status RAB.` : 'Setelah disimpan, RAB dikirim ulang ke Bendahara dengan status Menunggu.')
-        : 'Susun komponen pengeluaran beserta volume, satuan, dan harga satuan. Total dihitung otomatis.';
-      document.getElementById('btnSubmitRabEditor').innerText = !doc ? 'Kirim RAB ke Bendahara' : (admin ? 'Simpan Perubahan' : 'Simpan & Kirim Ulang');
+        : (admin
+            ? 'Rekap RAB untuk divisi mana pun. Total dihitung otomatis dan RAB langsung tampil di dasbor publik sesuai statusnya.'
+            : 'Susun komponen pengeluaran beserta volume, satuan, dan harga satuan. Total dihitung otomatis.');
+      document.getElementById('btnSubmitRabEditor').innerText = !doc ? (admin ? 'Simpan RAB' : 'Kirim RAB ke Bendahara') : (admin ? 'Simpan Perubahan' : 'Simpan & Kirim Ulang');
 
       const info = document.getElementById('rabEdCatatanInfo');
       if (doc && doc.Catatan_Bendahara && !admin) {
@@ -5135,6 +5299,18 @@
         if (!(it.hargaSatuan > 0)) { tampilkanToast(`Baris ${i + 1}: harga satuan harus lebih dari 0.`, 'error'); return; }
       }
 
+      const adminRab = STATE.session.user.peran === 'Admin';
+      let divisiAdm = '';
+      if (adminRab) {
+        divisiAdm = document.getElementById('rabEdDivisi').value.trim();
+        if (!divisiAdm) { tampilkanToast('Nama divisi pemilik RAB wajib diisi.', 'error'); return; }
+        const stAwal = document.getElementById('rabEdStatus').value;
+        if (!id && (stAwal === 'Ditolak' || stAwal === 'Perlu Revisi') && !document.getElementById('rabEdCatatanAdmin').value.trim()) {
+          tampilkanToast(`Catatan Bendahara wajib diisi untuk status ${stAwal}.`, 'error');
+          return;
+        }
+      }
+
       btn.disabled = true;
       btn.innerText = 'Menyimpan...';
       try {
@@ -5145,12 +5321,20 @@
           items: items
         };
         if (id) payload.idRabDivisi = id;
+        if (adminRab) {
+          payload.divisi = divisiAdm;
+          if (!id) {
+            payload.status = document.getElementById('rabEdStatus').value;
+            payload.catatan = document.getElementById('rabEdCatatanAdmin').value.trim();
+          }
+        }
         const res = await panggilApiPost(payload);
 
         if (res.success) {
           tampilkanToast(res.message, 'success');
           tutupEditorRab();
           muatDataRabDok();
+          muatDataDashboardPublik(true);
         } else {
           tampilkanToast(res.error || 'Gagal menyimpan RAB.', 'error');
         }
@@ -5243,6 +5427,7 @@
           tampilkanToast(res.message, 'success');
           tutupDetailRab();
           muatDataRabDok();
+          muatDataDashboardPublik(true);
           if (res.notif) tanganiNotifBaru(res.notif);
         } else {
           tampilkanToast(res.error || 'Gagal menyimpan tanggapan.', 'error');
@@ -5263,6 +5448,7 @@
           if (res.success) {
             tampilkanToast(res.message, 'success');
             muatDataRabDok();
+            muatDataDashboardPublik(true);
           } else {
             tampilkanToast(res.error || 'Gagal menghapus RAB.', 'error');
           }
@@ -5919,6 +6105,206 @@
       } finally {
         btn.disabled = false;
       }
+    }
+
+    // =========================================================================
+    // 8. REVISI V6: RAB DIVISI DI DASBOR PUBLIK, REKAP RAB OLEH BENDAHARA,
+    //    MIGRASI DATABASE
+    // =========================================================================
+
+    // Daftar nama divisi pada kolom isian RAB (gabungan akun divisi & RAB yang sudah ada)
+    function isiDatalistDivisiAdmin() {
+      const dl = document.getElementById('daftarDivisiAdmin');
+      if (!dl) return;
+      const peta = new Map();
+      Array.from(dl.options).forEach(o => { if (o.value) peta.set(kunciNama(o.value), o.value); });
+      (STATE.usersCache || []).forEach(u => { if (u.Peran !== 'Admin' && u.Nama_Divisi) peta.set(kunciNama(u.Nama_Divisi), String(u.Nama_Divisi).trim()); });
+      (STATE.rabDocs || []).forEach(d => { if (d.Divisi && !peta.has(kunciNama(d.Divisi))) peta.set(kunciNama(d.Divisi), String(d.Divisi).trim()); });
+      dl.innerHTML = Array.from(peta.values()).sort((a, b) => a.localeCompare(b, 'id')).map(n => `<option value="${escapeHTML(n)}"></option>`).join('');
+    }
+
+    // ---------- RAB divisi pada dasbor publik ----------
+    function renderRabPublik() {
+      const wadah = document.getElementById('rabPublikList');
+      if (!wadah) return;
+      const semua = STATE.rabPublik || [];
+
+      // Isi pilihan divisi (pertahankan pilihan sebelumnya)
+      const selDiv = document.getElementById('filterRabPublikDivisi');
+      const dipilih = kunciNama(selDiv.value);
+      const peta = new Map();
+      semua.forEach(d => { const k = kunciNama(d.divisi); if (k && !peta.has(k)) peta.set(k, String(d.divisi).trim()); });
+      selDiv.innerHTML = '<option value="">Semua Divisi</option>' +
+        Array.from(peta.values()).sort((a, b) => a.localeCompare(b, 'id')).map(n => `<option value="${escapeHTML(n)}">${escapeHTML(n)}</option>`).join('');
+      const cocok = Array.from(selDiv.options).find(o => o.value && kunciNama(o.value) === dipilih);
+      selDiv.value = cocok ? cocok.value : '';
+
+      const fd = selDiv.value;
+      const fs = document.getElementById('filterRabPublikStatus').value;
+      const list = semua.filter(d => (!fd || kunciNama(d.divisi) === kunciNama(fd)) && (!fs || d.status === fs));
+
+      const sum = arr => arr.reduce((a, d) => a + (Number(d.total) || 0), 0);
+      const kartu = (judul, nilai, kelas) => `
+        <div class="p-3 rounded-xl bg-stone-50 dark:bg-stone-800/50 border border-stone-200 dark:border-stone-700">
+          <div class="text-[11px] uppercase font-semibold text-stone-400">${judul}</div>
+          <div class="text-base sm:text-lg font-extrabold mt-0.5 ${kelas}">${nilai}</div>
+        </div>`;
+      document.getElementById('rabPublikRingkasan').innerHTML =
+        kartu('Jumlah RAB', String(list.length), 'text-stone-900 dark:text-white') +
+        kartu('Total Rencana Biaya', formatRupiah(sum(list)), 'text-brand-coffee dark:text-brand-lightCaramel') +
+        kartu('Sudah Disetujui', formatRupiah(sum(list.filter(d => d.status === 'Disetujui'))), 'text-emerald-600 dark:text-emerald-400') +
+        kartu('Belum Disetujui', formatRupiah(sum(list.filter(d => d.status !== 'Disetujui' && d.status !== 'Ditolak'))), 'text-amber-600 dark:text-amber-400');
+
+      if (!list.length) {
+        wadah.innerHTML = `<div class="py-6 text-center text-stone-400 text-sm">${semua.length ? 'Tidak ada RAB yang cocok dengan filter.' : 'Belum ada RAB divisi yang tercatat.'}</div>`;
+        return;
+      }
+
+      wadah.innerHTML = list.map(d => {
+        const buka = STATE.rabPublikTerbuka[d.id] ? 'open' : '';
+        const baris = (d.items || []).map(it => `
+          <tr>
+            <td class="py-1.5 px-2 text-stone-400">${it.no}</td>
+            <td class="py-1.5 px-2 text-stone-800 dark:text-stone-100">${escapeHTML(it.komponen)}</td>
+            <td class="py-1.5 px-2 text-right">${angkaRab(it.volume)}</td>
+            <td class="py-1.5 px-2">${escapeHTML(it.satuan)}</td>
+            <td class="py-1.5 px-2 text-right whitespace-nowrap">${formatRupiah(it.harga)}</td>
+            <td class="py-1.5 px-2 text-right font-semibold whitespace-nowrap">${formatRupiah(it.total)}</td>
+          </tr>`).join('');
+        return `
+          <details ${buka} ontoggle="STATE.rabPublikTerbuka['${d.id}'] = this.open" class="rounded-xl border border-stone-200 dark:border-stone-700 bg-white dark:bg-brand-darkCard">
+            <summary class="cursor-pointer list-none p-3 flex flex-wrap items-center justify-between gap-2">
+              <div class="min-w-0">
+                <div class="text-sm font-semibold text-stone-800 dark:text-stone-100">${escapeHTML(d.judul)}</div>
+                <div class="text-[11px] text-stone-500">${escapeHTML(d.divisi)} • ${escapeHTML(d.tanggal || '')} • ${(d.items || []).length} komponen</div>
+              </div>
+              <div class="flex items-center gap-3">
+                <span class="text-sm font-bold text-stone-900 dark:text-white whitespace-nowrap">${formatRupiah(d.total)}</span>
+                ${badgeStatusRab(d.status)}
+                <span class="text-stone-400 text-xs">▾</span>
+              </div>
+            </summary>
+            <div class="px-3 pb-3">
+              ${d.keterangan ? `<p class="text-xs text-stone-500 mb-2">${escapeHTML(d.keterangan)}</p>` : ''}
+              <div class="overflow-x-auto">
+                <table class="w-full text-left text-xs">
+                  <thead class="text-stone-400 uppercase text-[10px] border-b border-stone-200 dark:border-stone-700">
+                    <tr><th class="py-1.5 px-2">No</th><th class="py-1.5 px-2">Komponen</th><th class="py-1.5 px-2 text-right">Volume</th><th class="py-1.5 px-2">Satuan</th><th class="py-1.5 px-2 text-right">Harga Satuan</th><th class="py-1.5 px-2 text-right">Total</th></tr>
+                  </thead>
+                  <tbody class="divide-y divide-stone-100 dark:divide-stone-800/60">${baris || '<tr><td colspan="6" class="py-3 text-center text-stone-400">Tidak ada komponen.</td></tr>'}</tbody>
+                  <tfoot><tr class="border-t-2 border-stone-200 dark:border-stone-700 font-bold"><td colspan="5" class="py-2 px-2 text-right">Total RAB</td><td class="py-2 px-2 text-right whitespace-nowrap">${formatRupiah(d.total)}</td></tr></tfoot>
+                </table>
+              </div>
+            </div>
+          </details>`;
+      }).join('');
+    }
+
+    // ---------- Migrasi database ----------
+    async function handlePeriksaMigrasi() {
+      const url = document.getElementById('migrasiUrl').value.trim();
+      if (!url) { tampilkanToast('Tempel tautan spreadsheet database lama terlebih dahulu.', 'error'); return; }
+      const btn = document.getElementById('btnPeriksaMigrasi');
+      btn.disabled = true;
+      const teksAsli = btn.innerText;
+      btn.innerText = 'Memeriksa...';
+      try {
+        const res = await panggilApiPost({ action: 'periksaMigrasi', sumberUrl: url });
+        if (res.success) {
+          localStorage.setItem('AUDERE24_MIGRASI_URL', url);
+          STATE.migrasiHasil = res;
+          renderHasilMigrasi(res);
+          document.getElementById('migrasiLaporanWrap').classList.add('hidden');
+        } else {
+          tampilkanToast(res.error || 'Gagal memeriksa spreadsheet.', 'error');
+        }
+      } catch (err) {
+        tampilkanToast('Gangguan komunikasi: ' + err.message, 'error');
+      } finally {
+        btn.disabled = false;
+        btn.innerText = teksAsli;
+      }
+    }
+
+    function renderHasilMigrasi(res) {
+      document.getElementById('migrasiHasilWrap').classList.remove('hidden');
+      document.getElementById('migrasiNamaSumber').innerText = `Spreadsheet: ${res.namaSpreadsheet}`;
+      document.getElementById('migrasiTabelBody').innerHTML = (res.sheets || []).map(x => {
+        if (!x.ada) {
+          return `<tr class="text-stone-400"><td class="py-2.5 px-3"><input type="checkbox" disabled></td><td class="py-2.5 px-3">${escapeHTML(x.label)}</td><td class="py-2.5 px-3 text-right">-</td><td class="py-2.5 px-3 text-right">-</td><td class="py-2.5 px-3 text-right">-</td><td class="py-2.5 px-3 text-xs italic">Sheet tidak ada di spreadsheet lama</td></tr>`;
+        }
+        const catatan = [];
+        if (!x.kunciOk) catatan.push('<span class="text-rose-600">kolom kunci tidak ditemukan</span>');
+        if ((x.kolomKosong || []).length) catatan.push(`kolom baru dikosongkan: ${escapeHTML(x.kolomKosong.join(', '))}`);
+        const bisa = x.kunciOk && x.barisSumber > 0;
+        return `
+          <tr>
+            <td class="py-2.5 px-3"><input type="checkbox" class="migrasi-cek rounded" value="${x.key}" ${(bisa && x.bawaan) ? 'checked' : ''} ${bisa ? '' : 'disabled'}></td>
+            <td class="py-2.5 px-3 font-semibold text-stone-800 dark:text-stone-100">${escapeHTML(x.label)}</td>
+            <td class="py-2.5 px-3 text-right">${x.barisSumber}</td>
+            <td class="py-2.5 px-3 text-right">${x.barisTujuan}</td>
+            <td class="py-2.5 px-3 text-right font-bold ${x.barisBaru > 0 ? 'text-emerald-600 dark:text-emerald-400' : 'text-stone-400'}">${x.barisBaru}</td>
+            <td class="py-2.5 px-3 text-[11px] text-stone-500">${catatan.join(' • ') || (bisa ? '' : 'Tidak ada data')}</td>
+          </tr>`;
+      }).join('');
+    }
+
+    function handleJalankanMigrasi() {
+      const url = document.getElementById('migrasiUrl').value.trim();
+      const kunci = Array.from(document.querySelectorAll('.migrasi-cek:checked')).map(c => c.value);
+      if (!url || !STATE.migrasiHasil) { tampilkanToast('Periksa spreadsheet lama terlebih dahulu.', 'error'); return; }
+      if (!kunci.length) { tampilkanToast('Pilih minimal satu data yang akan dimigrasikan.', 'error'); return; }
+      const mode = document.querySelector('input[name="migrasiMode"]:checked').value;
+
+      const pesan = mode === 'timpa'
+        ? `TIMPA ${kunci.length} jenis data di database ini dengan data dari spreadsheet lama? Data terpilih yang ada sekarang akan dihapus dan diganti.`
+        : `Gabungkan ${kunci.length} jenis data dari spreadsheet lama ke database ini? Hanya data yang belum ada yang akan ditambahkan.`;
+
+      bukaModalKonfirmasi(pesan, async () => {
+        const btn = document.getElementById('btnJalankanMigrasi');
+        btn.disabled = true;
+        const teksAsli = btn.innerText;
+        btn.innerText = 'Memigrasikan... (mohon tunggu)';
+        try {
+          const res = await panggilApiPost({
+            action: 'jalankanMigrasi',
+            sumberUrl: url,
+            mode: mode,
+            sheets: kunci,
+            backup: document.getElementById('migrasiBackup').checked,
+            sinkronAkun: document.getElementById('migrasiSinkronAkun').checked
+          });
+          if (res.success) {
+            tampilkanToast(res.message, 'success');
+            renderLaporanMigrasi(res);
+            handlePeriksaMigrasi();
+            muatDataAdmin();
+            muatDataDashboardPublik(true);
+          } else {
+            tampilkanToast(res.error || 'Migrasi gagal.', 'error');
+          }
+        } catch (err) {
+          tampilkanToast('Gangguan komunikasi: ' + err.message + '. Periksa isi spreadsheet sebelum mengulang.', 'error');
+        } finally {
+          btn.disabled = false;
+          btn.innerText = teksAsli;
+        }
+      });
+    }
+
+    function renderLaporanMigrasi(res) {
+      document.getElementById('migrasiLaporanWrap').classList.remove('hidden');
+      document.getElementById('migrasiLaporanInfo').innerText =
+        `Mode: ${res.mode === 'timpa' ? 'Timpa' : 'Gabungkan'}${res.backup ? ' • Cadangan: ' + res.backup : ''}`;
+      document.getElementById('migrasiLaporanBody').innerHTML = (res.laporan || []).map(l => `
+        <tr>
+          <td class="py-2.5 px-3 font-semibold text-stone-800 dark:text-stone-100">${escapeHTML(l.label)}</td>
+          <td class="py-2.5 px-3 text-right font-bold text-emerald-600 dark:text-emerald-400">${l.ditambah}</td>
+          <td class="py-2.5 px-3 text-right">${l.dilewati}</td>
+          <td class="py-2.5 px-3 text-right">${l.diperbarui}</td>
+          <td class="py-2.5 px-3 text-right">${l.ditimpa}</td>
+          <td class="py-2.5 px-3 text-[11px] text-stone-500">${escapeHTML(l.catatan || '')}</td>
+        </tr>`).join('');
     }
   </script>
 </body>
